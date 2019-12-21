@@ -1,0 +1,64 @@
+<MenuBar>
+	<Menu name="Solitaire">
+		<Menu name="About Solitaire"/>
+		<Menu type="divider"/>
+		<Menu name="New Game&#8230;">
+			<Menu name="Freecell" click="set-game-engine" arg="freecell" check-group="game-engine"/>
+			<Menu name="Solitaire" click="set-game-engine" arg="solitaire" check-group="game-engine" is-checked="1"/>
+			<Menu name="Spider" click="set-game-engine" arg="spider" check-group="game-engine"/>
+		</Menu>
+		<Menu type="divider"/>
+		<Menu name="Hide Solitaire"/>
+		<Menu name="Hide Others"/>
+		<Menu name="Show All" disabled="1"/>
+		<Menu type="divider"/>
+		<Menu name="Quit Solitaire" shell="win -c"/>
+	</Menu>
+	<Menu name="Game" for="game-board">
+		<Menu name="Undo" click="undo-move" hotkey="alt+z"/>
+		<!-- optional menus depending on game engine -->
+		<Menu name="Deal" click="trigger-solitaire-cycle-flip-cards" show-if-group="game-engine" is="solitaire"/>
+		<Menu name="Deal" click="trigger-spider-deal-cards" show-if-group="game-engine" is="spider"/>
+		<!-- optional menus end -->
+		<Menu name="Auto Complete" click="auto-complete" disable-if="game-engine" is="spider"/>
+		<Menu type="divider"/>
+		<Menu name="Background&#8230;">
+			<Menu name="Casino" click="set-game-theme" arg="casino" check-group="game-theme" is-checked="1"/>
+			<Menu name="Classic" click="set-game-theme" arg="classic" check-group="game-theme"/>
+			<Menu name="Desert" click="set-game-theme" arg="desert" check-group="game-theme"/>
+		</Menu>
+		<Menu name="Card Backs&#8230;">
+			<Menu name="Classic Red" click="set-card-back" arg="red" check-group="card-back" is-checked="1"/>
+			<Menu name="Classic Blue" click="set-card-back" arg="blue" check-group="card-back"/>
+			<Menu name="Green" click="set-card-back" arg="green" check-group="card-back"/>
+			<Menu name="Purple" click="set-card-back" arg="purple" check-group="card-back"/>
+			<Menu name="Teal" click="set-card-back" arg="teal" check-group="card-back"/>
+			<Menu name="Dark Green" click="set-card-back" arg="darkGreen" check-group="card-back"/>
+			<Menu name="Checkered Red" click="set-card-back" arg="checkRed" check-group="card-back"/>
+			<Menu name="Checkered Blue" click="set-card-back" arg="checkBlue" check-group="card-back"/>
+			<Menu name="Barbwire Red" click="set-card-back" arg="barbRed" check-group="card-back"/>
+			<Menu name="Barbwire Blue" click="set-card-back" arg="barbBlue" check-group="card-back"/>
+		</Menu>
+		<!-- Conditional menu options START -->
+		<Menu name="Settings&#8230;" show-if-group="game-engine" is="freecell">
+			<Menu name="Settings for Freecell&#8230;"/>
+		</Menu>
+		<Menu name="Settings&#8230;" show-if-group="game-engine" is="solitaire">
+			<Menu name="Turn 1 card" click="solitaire-set-waste" arg="1" check-group="solitaire-waste" is-checked="1"/>
+			<Menu name="Turn 3 cards" click="solitaire-set-waste" arg="3" check-group="solitaire-waste"/>
+		</Menu>
+		<Menu name="Settings&#8230;" show-if-group="game-engine" is="spider">
+			<Menu name="Easy" click="spider-set-level" arg="1" check-group="spider-level" is-checked="1"/>
+			<Menu name="Medium" click="spider-set-level" arg="2" check-group="spider-level"/>
+			<Menu name="Hard" click="spider-set-level" arg="3" check-group="spider-level"/>
+		</Menu>
+		<!-- Conditional menu options END -->
+		<Menu type="divider"/>
+		<Menu name="New Game" click="new-game" hotkey="alt+n"/>
+	</Menu>
+	<Menu name="Help">
+		<Menu name="How To Play"/>
+		<Menu type="divider"/>
+		<Menu name="Source Code"/>
+	</Menu>
+</MenuBar>
