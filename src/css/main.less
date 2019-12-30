@@ -226,7 +226,7 @@ transition: width 200ms ease-out,
 	background: #050 radial-gradient(circle at top center, rgba(200,255,200,.31) 0%, rgba(0,0,0,.31) 100%);
 	
 	&:before {
-		background: url(~/res/img/pattern-1.png);
+		background: url(~/img/pattern-1.png);
 		background-size: 17%;
 	}
 	.deck {
@@ -268,7 +268,7 @@ transition: width 200ms ease-out,
 	background: #248 radial-gradient(circle at top center, rgba(200,200,255,.29) 0%, rgba(0,0,0,.37) 100%);
 	
 	&:before {
-		background: url(~/res/img/pattern-5.png);
+		background: url(~/img/pattern-5.png);
 		background-size: 10%;
 	}
 	.deck {
@@ -310,7 +310,7 @@ transition: width 200ms ease-out,
 	background: #841 radial-gradient(circle at top center, rgba(255,200,100,.19) 0%, rgba(0,0,0,.23) 100%);
 
 	&:before {
-		background: url(~/res/img/pattern-3.png);
+		background: url(~/img/pattern-3.png);
 		background-size: 10%;
 	}
 	.deck {
@@ -405,7 +405,7 @@ transition: width 200ms ease-out,
 	}
 
 	.deck {
-		background: url(~/res/img/new-cards.webp) -90px -484px no-repeat;
+		background: url(~/img/new-cards.webp) -90px -484px no-repeat;
 		position: absolute;
 		width: 90px;
 		height: 121px;
@@ -975,7 +975,7 @@ transition: width 200ms ease-out,
 	left: 0;
 	width: 90px;
 	height: 121px;
-	background: url(~/res/img/new-cards.webp) -90px -484px no-repeat;
+	background: url(~/img/new-cards.webp) -90px -484px no-repeat;
 	border-radius: 7px;
 	transform-style: preserve-3d;
 	box-shadow: 0 -1px 2px 0 rgba(0,0,0,.25),
@@ -1000,7 +1000,7 @@ transition: width 200ms ease-out,
 
 		&:before {
 			content: "";
-			background: url(~/res/img/new-cards.webp) -90px -484px no-repeat;
+			background: url(~/img/new-cards.webp) -90px -484px no-repeat;
 			position: absolute;
 			top: 0;
 			left: 0;
@@ -1016,11 +1016,11 @@ transition: width 200ms ease-out,
 	}
 
 	&.card-flip {
-		.animation(cardFlip 400ms forwards);
+		animation: cardFlip 400ms forwards;
 	}
 
 	&.card-flip-back {
-		.animation(cardFlipBack 400ms forwards);
+		animation: cardFlipBack 400ms forwards;
 	}
 
 	&[data-pos="0"] { transition-delay: 100ms; z-index: 1; }
@@ -1135,36 +1135,36 @@ transition: width 200ms ease-out,
 	&.cK	{ background-position: -1080px -363px; }
 }
 
-.keyframes(cardFlip; {
+@keyframes cardFlip {
 	0%   { transform: translateZ(0px) rotateY(180deg); }
 	50%  { transform: translateZ(50px) rotateY(90deg); }
 	100% { transform: translateZ(0px) rotateY(0deg); }
-});
+}
 
-.keyframes(cardFlipBack; {
+@keyframes cardFlipBack {
 	0%   { transform: translateZ(0px) rotateY(0deg); }
 	50%  { transform: translateZ(50px) rotateY(-90deg); }
 	100% { transform: translateZ(0px) rotateY(-180deg); }
-});
+}
 
-.keyframes(textBounce; {
+@keyframes textBounce {
 	  0%, 20%, 50%, 80%, 100% { transform: translateZ(0); }
 	  45% { transform: translateZ(-30px); }
 	  60% { transform: translateZ(-15px); }
-});
+}
 
-.keyframes(textColors; {
+@keyframes textColors {
 	100%, 0% { color: #ffb; }
 	20% { color: #fbf; }
 	40% { color: #bff; }
 	60% { color: #bbf; }
 	80% { color: #bfb; }
-});
+}
 
-.keyframes(noDeal; {
+@keyframes noDeal {
 	0%, 30%, 60%, 100% { background: rgba(0,0,0,.15); }
 	15%, 45%, 75% { background: var(--theme-alert); }
-});
+}
 
 .pyroShadowLoop(@count) when (@count > 0) {
     .pyroShadowLoop(@count - 1);
