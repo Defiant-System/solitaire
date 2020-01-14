@@ -22,6 +22,8 @@
 		<!-- optional menus end -->
 		<Menu name="Auto Complete" click="auto-complete" disable-if="game-engine" is="spider"/>
 		<Menu type="divider"/>
+			<Menu name="Music" click="toggle-music" check-group="toggle-music"/>
+		<Menu type="divider"/>
 		<Menu name="Background&#8230;">
 			<Menu name="Casino" click="set-game-theme" arg="casino" check-group="game-theme" is-checked="1"/>
 			<Menu name="Classic" click="set-game-theme" arg="classic" check-group="game-theme"/>

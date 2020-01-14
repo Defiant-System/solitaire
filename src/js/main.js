@@ -84,6 +84,13 @@ const app = {
 				GAME_OVER = true;
 				self.board.removeClass("playing").addClass("game-won");
 				break;
+			case "toggle-music":
+				if (window.music.playing) {
+					window.music.pause();
+				} else {
+					window.music.play("/app/ant/solitaire/midi/The-Entertainer.mid");
+				}
+				break;
 			case "game-fail":
 				GAME_OVER = true;
 				self.board.removeClass("playing").addClass("game-fail");
