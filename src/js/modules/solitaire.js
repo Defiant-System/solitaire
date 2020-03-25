@@ -82,7 +82,7 @@ let solitaire = {
 					el = dropable.append(el)
 						.cssSequence("landing", "transitionend", lEl => {
 							// reset element
-							lEl.removeClass("landing");
+							lEl.removeAttr("style").removeClass("landing");
 
 							last = draggedParent.find(".card:last-child");
 							if (draggedParent.hasClass("pile") && last.hasClass("card-back")) {
