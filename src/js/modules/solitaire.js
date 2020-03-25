@@ -69,6 +69,9 @@ let solitaire = {
 					if (this.isCardFoundationDropable(el, target)) dropable = target;
 				});
 
+				// reset drop zones
+				self.layout.find(".no-drag-hover").removeClass("no-drag-hover");
+
 				if (dropable.length) {
 					cardRect = el[0].getBoundingClientRect();
 					targetRect = dropable[0].getBoundingClientRect();
@@ -421,8 +424,11 @@ let solitaire = {
 
 				return dropable;
 			case "check-pile-drop":
+				// reset drop zones
+				self.layout.find(".no-drag-hover").removeClass("no-drag-hover");
+
 				draggedFirst = event.el.get(0);
-				draggedParent = draggedFirst.parent().removeClass("no-drag-hover");
+				draggedParent = draggedFirst.parent();
 				zoneLastCard = event.target.find(".card:last");
 				zoneLastSuit = zoneLastCard.data("suit");
 				zoneLastNumb = zoneLastCard.data("numb");

@@ -17,6 +17,7 @@
 		<meta name="style" value="src/css/main.less"/>
 		<meta name="content" value="src/partials/content.htm"/>
 
+		@import "src/partials/caption-toolbar.xml"
 		@import "src/partials/menubar.xml"
 	</Head>
 </Application>

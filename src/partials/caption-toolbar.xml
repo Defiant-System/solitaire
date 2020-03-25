@@ -1,0 +1,9 @@
+<CaptionToolBar>
+	<Group>
+		<Options>
+			<Tool name="Solitaire" click="set-game-engine" arg="solitaire" state="active"/>
+			<Tool name="Freecell" click="set-game-engine" arg="freecell"/>
+			<Tool name="Spider" click="set-game-engine" arg="spider"/>
+		</Options>
+	</Group>
+</CaptionToolBar>
