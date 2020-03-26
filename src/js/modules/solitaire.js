@@ -72,7 +72,7 @@ let solitaire = {
 				// reset drop zones
 				self.layout.find(".no-drag-hover").removeClass("no-drag-hover");
 
-				if (dropable.length) {
+				if (dropable && dropable.length) {
 					cardRect = el[0].getBoundingClientRect();
 					targetRect = dropable[0].getBoundingClientRect();
 					draggedParent = el.parents(".hole, .pile");
