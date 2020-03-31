@@ -24,7 +24,7 @@ const app = {
 		if (this.board.hasClass("playing")) {
 			this.activeEngine = ENGINES[ACTIVE];
 		} else {
-			setTimeout(() => this.dispatch({type: "new-game"}), 100);
+			//setTimeout(() => this.dispatch({type: "new-game"}), 100);
 		}
 	},
 	dispatch(event) {
@@ -40,7 +40,7 @@ const app = {
 				// clear all cards
 				window.find(".card").remove();
 				// reset board
-				self.board.removeClass("playing");
+				self.board.removeClass("playing game-won game-fail");
 
 				if (!self.activeEngine) {
 					self.dispatch({type: "set-game-engine", init: true});
@@ -73,7 +73,7 @@ const app = {
 				if (!event.init) {
 					self.dispatch({type: "new-game"});
 				}
-				break;
+				return true;
 			case "set-game-theme":
 				self.board.data({"theme": event.arg});
 				break;
@@ -81,6 +81,10 @@ const app = {
 				self.board.data({"card-back": event.arg});
 				break;
 			case "game-won":
+				// toolbar active item
+				el = window.find(`div.tool-active_[data-click="set-game-engine"]`);
+				el.removeClass("tool-active_");
+
 				GAME_OVER = true;
 				self.board.removeClass("playing").addClass("game-won");
 				break;
