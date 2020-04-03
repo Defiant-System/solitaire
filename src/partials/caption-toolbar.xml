@@ -1,9 +1,19 @@
 <CaptionToolBar>
+	<Group width="17%">
+		<Options>
+			<Tool symbol="icon-undo"/>
+			<Tool symbol="icon-redo"/>
+		</Options>
+		<Tool symbol="icon-new"/>
+	</Group>
 	<Group>
 		<Options>
 			<Tool name="Solitaire" click="set-game-engine" arg="solitaire"/>
 			<Tool name="Freecell" click="set-game-engine" arg="freecell"/>
 			<Tool name="Spider" click="set-game-engine" arg="spider"/>
 		</Options>
+	</Group>
+	<Group width="21%">
+		<Tool symbol="icon-help"/>
 	</Group>
 </CaptionToolBar>
