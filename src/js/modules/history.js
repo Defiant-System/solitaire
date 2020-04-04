@@ -11,7 +11,7 @@ class History {
 		this.stack = [];
 		this.index = -1;
 	}
-	push(performm data) {
+	push(performm, data) {
 		this.index++;
 
 		this.stack.splice(this.index);
@@ -42,3 +42,5 @@ class History {
 		return this.index < this.stack.length - 1;
 	}
 }
+
+export default History;

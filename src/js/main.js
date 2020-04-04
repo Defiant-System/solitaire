@@ -1,6 +1,6 @@
 
 // undo stack
-ant_require("./modules/history.js")
+import History from "./modules/history"
 
 // engines
 import freecell from "./modules/freecell"
@@ -95,7 +95,7 @@ const app = {
 				if (window.music.playing) {
 					window.music.pause();
 				} else {
-					window.music.play("/app/ant/solitaire/midi/The-Entertainer.mid");
+					window.music.play("~/solitaire/midi/The-Entertainer.mid");
 				}
 				break;
 			case "game-fail":
