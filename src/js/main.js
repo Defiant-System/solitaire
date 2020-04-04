@@ -1,4 +1,7 @@
 
+// undo stack
+ant_require("./modules/history.js")
+
 // engines
 import freecell from "./modules/freecell"
 import solitaire from "./modules/solitaire"
@@ -98,6 +101,11 @@ const app = {
 			case "game-fail":
 				GAME_OVER = true;
 				self.board.removeClass("playing").addClass("game-fail");
+				break;
+			case "history-go-prev":
+				console.log(event);
+				break;
+			case "history-go-next":
 				break;
 			case "close-failure":
 			case "close-congratulations":

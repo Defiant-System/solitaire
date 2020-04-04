@@ -1,10 +1,9 @@
 <CaptionToolBar>
 	<Group width="17%">
 		<Options>
-			<Tool symbol="icon-undo" state="disabled"/>
-			<Tool symbol="icon-redo" state="disabled"/>
+			<Tool symbol="icon-undo" sta1te="disabled" click="history-go-prev"/>
+			<Tool symbol="icon-redo" sta1te="disabled" click="history-go-next"/>
 		</Options>
-		<Tool symbol="icon-new" click="new-game"/>
 	</Group>
 	<Group>
 		<Options>
@@ -14,6 +13,6 @@
 		</Options>
 	</Group>
 	<Group width="21%">
-		<Tool symbol="icon-cog"/>
+		<Tool symbol="icon-cog" menu="toolbar-settings"/>
 	</Group>
 </CaptionToolBar>
