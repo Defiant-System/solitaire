@@ -9,7 +9,8 @@ import spider from "./modules/spider"
 
 
 // constants
-let ENGINES = { freecell, solitaire, spider },
+let UNDO_STACK = new History,
+	ENGINES = { freecell, solitaire, spider },
 	ACTIVE = "solitaire",
 	GAME_OVER = true;
 
@@ -20,7 +21,7 @@ const app = {
 
 		// initiate engines
 		for (let key in ENGINES) {
-			ENGINES[key].init(this, CARD_DECK, SUIT_DICT, NUMB_DICT);
+			ENGINES[key].init(this, UNDO_STACK, CARD_DECK, SUIT_DICT, NUMB_DICT);
 		}
 
 		// temp
@@ -103,9 +104,10 @@ const app = {
 				self.board.removeClass("playing").addClass("game-fail");
 				break;
 			case "history-go-prev":
-				console.log(event);
+				UNDO_STACK.undo();
 				break;
 			case "history-go-next":
+				UNDO_STACK.redo();
 				break;
 			case "close-failure":
 			case "close-congratulations":

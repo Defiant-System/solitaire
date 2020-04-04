@@ -11,8 +11,10 @@ class History {
 		this.stack = [];
 		this.index = -1;
 	}
-	push(performm, data) {
+	push(perform, data) {
 		this.index++;
+
+		perform.call({}, true, data);
 
 		this.stack.splice(this.index);
 		this.stack.push(new UndoItem(perform, data));
@@ -31,7 +33,7 @@ class History {
 			this.index++;
 		}
 	}
-	invalidate() {
+	reset() {
 		this.stack = [];
 		this.index = -1;
 	}
