@@ -1,10 +1,10 @@
 <CaptionToolBar>
 	<Group width="17%">
 		<Options>
-			<Tool symbol="icon-undo"/>
-			<Tool symbol="icon-redo"/>
+			<Tool symbol="icon-undo" state="disabled"/>
+			<Tool symbol="icon-redo" state="disabled"/>
 		</Options>
-		<Tool symbol="icon-new"/>
+		<Tool symbol="icon-new" click="new-game"/>
 	</Group>
 	<Group>
 		<Options>
