@@ -105,7 +105,7 @@ let solitaire = {
 					top: top +"px",
 					left: left +"px"
 				})
-			}), 20);
+			}), redo ? 10 : 350);
 	},
 	dispatch(event) {
 		let self = solitaire,
@@ -120,6 +120,8 @@ let solitaire = {
 			targetRect,
 			dropable,
 			dragable,
+			fromEl,
+			toEl,
 			isLastCard,
 			last,
 			cards,
@@ -135,14 +137,30 @@ let solitaire = {
 				break;
 			case "game-double-click":
 				el = $(event.target);
+				if (!el.hasClass("card") || el.hasClass("card-back")) return;
 				
-				let state = {
-					cards: ["0"],
-					from: "225",
-					to: "211",
-					flip: "3"
-				};
-				UNDO_STACK.push(self.action, state);
+				fromEl = el.parent();
+				check = this.layout.find(".hole.fndtn");
+				check.filter((fnd, i) => {
+					if (toEl) return;
+					let target = check.get(i);
+					if (this.isCardFoundationDropable(el, target)) toEl = target;
+				});
+
+				// reset drop zones
+				self.layout.find(".no-drag-hover").removeClass("no-drag-hover");
+				
+				if (toEl && toEl.length) {
+					last = fromEl.hasClass("pile") && fromEl.find(".card-back:nth-last-child(2)").length
+						? fromEl.find(".card-back:nth-last-child(2)") : false;
+
+					UNDO_STACK.push(self.action, {
+							cards: [el.data("id")],
+							from: fromEl.data("id"),
+							to: toEl.data("id"),
+							flip: last ? last.data("id") : false
+						});
+				}
 				break;
 			case "game-double-click2":
 				el = $(event.target);
