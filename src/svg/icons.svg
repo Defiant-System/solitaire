@@ -3,6 +3,6 @@
 	@import "icon-undo.svg"
 	@import "icon-redo.svg"
 	@import "icon-new.svg"
-	@import "icon-help.svg"
+	@import "icon-cog.svg"
 
 </svg>

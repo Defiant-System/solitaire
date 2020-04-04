@@ -24,7 +24,7 @@ const app = {
 		if (this.board.hasClass("playing")) {
 			this.activeEngine = ENGINES[ACTIVE];
 		} else {
-			//setTimeout(() => this.dispatch({type: "new-game"}), 100);
+			setTimeout(() => this.dispatch({type: "new-game"}), 100);
 		}
 	},
 	dispatch(event) {
