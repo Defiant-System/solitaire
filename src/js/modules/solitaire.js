@@ -34,10 +34,6 @@ let solitaire = {
 		this.piles = window.find(".board > .solitaire .pile");
 		this.deck = window.find(".board > .solitaire .deck");
 		this.waste = window.find(".board > .solitaire .waste");
-
-		// temp
-		//setTimeout(() => this.deck.trigger("click"), 400);
-		//setTimeout(() => this.deck.trigger("click"), 1300);
 	},
 	setState(redo, data) {
 		let self = solitaire,
@@ -315,9 +311,6 @@ let solitaire = {
 
 		switch (event.type) {
 			case "new-game":
-				// reset undo-stack
-				UNDO_STACK.reset();
-
 				this.start();
 				break;
 			case "game-double-click":
@@ -637,6 +630,9 @@ let solitaire = {
 					left: (deckOffset.left - pile.left) +"px",
 				});
 		});
+		
+		// reset undo-stack
+		UNDO_STACK.reset();
 
 		// trigger animation
 		setTimeout(() =>
