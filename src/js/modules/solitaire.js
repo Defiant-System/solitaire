@@ -34,6 +34,10 @@ let solitaire = {
 		this.piles = window.find(".board > .solitaire .pile");
 		this.deck = window.find(".board > .solitaire .deck");
 		this.waste = window.find(".board > .solitaire .waste");
+
+		// temp
+		setTimeout(() => this.deck.trigger("click"), 400);
+		setTimeout(() => this.deck.trigger("click"), 1300);
 	},
 	setState(redo, data) {
 		let self = solitaire,
@@ -51,57 +55,84 @@ let solitaire = {
 			el,
 			time = 50;
 
-		switch (data.type) {
+		switch (data.animation) {
 			case "waste-to-deck":
 				if (redo) {
 					fromEl = self.layout.find(`[data-id="${data.from}"]`);
 					toEl = self.layout.find(`[data-id="${data.to}"]`);
-				}
 
-				// prepare for 3d flip in deck-element
-				fromEl.addClass("flipping-card unfan-cards").data({cardsLeft: ""});
-				
-				let fnWasteToDeck = uEl => {
-						if (uEl[0] !== cards[cards.length - 1]) return;
-						
-						cards.cssSequence("card-back card-flip-back", "animationend", fEl => {
-							if (fEl[0] !== cards[cards.length - 1]) return;
-
-							// move cards in DOM
-							cards = toEl.addClass("deck-fill").append(cards).removeClass("card-flip-back card-unfan");
+					// prepare for 3d flip in deck-element
+					fromEl.addClass("flipping-card unfan-cards").data({cardsLeft: ""});
+					
+					let fnWasteToDeck = uEl => {
+							if (uEl[0] !== cards[cards.length - 1]) return;
 							
-							// prepare calculation
-							targetRect = fromEl[0].getBoundingClientRect();
-							cardRect = cards.map(card => card.getBoundingClientRect());
+							cards.cssSequence("card-back card-flip-back", "animationend", fEl => {
+								if (fEl[0] !== cards[cards.length - 1]) return;
 
-							// starting point for animation
-							cards.map((card, i) => {
-								cards.get(i)
-									.css({
-										top: (targetRect.top - cardRect[i].top) +"px",
-										left: (targetRect.left - cardRect[i].left) +"px",
-									});
-							});
-							// trigger animation
-							setTimeout(() => {
-								cards
-									.cssSequence("landing", "transitionend", lEl => {
-										if (lEl[0] !== cards[0]) return;
-										// reset cards
-										cards.removeClass("landing");
-										// reset elements
-										toEl.removeClass("deck-fill");
-										fromEl.removeClass("flipping-card unfan-cards");
-									})
-									.css({ "top": "0", "left": "0" });
-							});
-						});
-					};
+								// move cards in DOM
+								cards = toEl.addClass("deck-fill")
+											.append(cards).removeClass("card-flip-back card-unfan");
+								
+								// prepare calculation
+								targetRect = fromEl[0].getBoundingClientRect();
+								cardRect = cards.map(card => card.getBoundingClientRect());
 
-				if (WASTE_TURN === 1) {
-					fnWasteToDeck(cards.get(cards.length - 1));
+								// starting point for animation
+								cards.map((card, i) => {
+									cards.get(i)
+										.css({
+											top: (targetRect.top - cardRect[i].top) +"px",
+											left: (targetRect.left - cardRect[i].left) +"px",
+										});
+								});
+								// trigger animation
+								setTimeout(() => {
+									cards.cssSequence("landing", "transitionend", lEl => {
+											if (lEl[0] !== cards[0]) return;
+											// reset cards
+											cards.removeClass("landing");
+											// reset elements
+											toEl.removeClass("deck-fill");
+											fromEl.removeClass("flipping-card unfan-cards");
+										})
+										.css({ "top": "0", "left": "0" });
+								});
+							});
+						};
+
+					if (WASTE_TURN === 1) {
+						fnWasteToDeck(cards.get(cards.length - 1));
+					} else {
+						cards.cssSequence("card-unfan", "transitionend", fnWasteToDeck);
+					}
 				} else {
-					cards.cssSequence("card-unfan", "transitionend", fnWasteToDeck);
+					fromEl = self.layout.find(`[data-id="${data.to}"]`);
+					toEl = self.layout.find(`[data-id="${data.from}"]`);
+
+					// adding "flipping-card" to get "3d-perspective"
+					toEl.addClass("flipping-card").data({cardsLeft: cards.length});
+
+					// prepare calculation
+					fromElOffset = fromEl[0].getBoundingClientRect();
+					toElOffset = toEl[0].getBoundingClientRect();
+					cardRect = cards[cards.length - 1].getBoundingClientRect();
+
+					// prepare animation
+					cards = toEl.append(cards)
+						.cssSequence("showing", "transitionend", el => el.addClass("card-flip").removeAttr("style"))
+						.cssSequence("card-flip", "animationend", el => {
+							el.removeClass("card-flip card-back showing");
+
+						})
+						.css({
+							top: (cardRect.top - toElOffset.top) +"px",
+							left: (cardRect.left - toElOffset.left) +"px",
+						});
+					// trigger animation
+					setTimeout(() =>
+						cards.map((card, i) =>
+							cards.get(i).css({ top: "0px", left: "0px", })), time);
 				}
 				break;
 			case "cycle-flip":
@@ -123,6 +154,7 @@ let solitaire = {
 					toEl.addClass("flipping-card")
 						.data({cardsLeft: toEl.find(".card").length + cards.length});
 
+					// prepare animation
 					cards = toEl.append(cards)
 						.cssSequence("showing", "transitionend", el => el.addClass("card-flip").removeAttr("style"))
 						.cssSequence("card-flip", "animationend", el => {
@@ -148,8 +180,8 @@ let solitaire = {
 					fromEl.addClass("flipping-card unfan-cards")
 						.data({cardsLeft: fromEl.find(".card").length - cards.length});
 
-					cards
-						.cssSequence("card-flip-back", "animationend", fEl => {
+					// prepare animation
+					cards.cssSequence("card-flip-back", "animationend", fEl => {
 							fEl.removeClass("card-flip-back").addClass("card-back");
 							if (fEl[0] !== cards[cards.length-1]) return;
 							// reset waste
@@ -305,7 +337,7 @@ let solitaire = {
 						? fromEl.find(".card-back:nth-last-child(2)") : false;
 
 					UNDO_STACK.push({
-							type: "double-click",
+							animation: "double-click",
 							cards: [el.data("id")],
 							from: fromEl.data("id"),
 							to: toEl.data("id"),
@@ -471,7 +503,7 @@ let solitaire = {
 				cards = event.el.find(`.card:nth-child(-n+${WASTE_TURN})`);
 				if (!cards.length) {
 					UNDO_STACK.push({
-						type: "waste-to-deck",
+						animation: "waste-to-deck",
 						cards: self.waste.find(".card").map(el => el.getAttribute("data-id")),
 						from: self.waste.data("id"),
 						to: self.deck.data("id"),
@@ -479,7 +511,7 @@ let solitaire = {
 					return;
 				}
 				UNDO_STACK.push({
-						type: "cycle-flip",
+						animation: "cycle-flip",
 						cards: cards.map(el => el.getAttribute("data-id")),
 						from: self.deck.data("id"),
 						to: self.waste.data("id"),
