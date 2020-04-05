@@ -9,9 +9,9 @@ import spider from "./modules/spider"
 
 
 // constants
-let UNDO_STACK = new History,
-	ENGINES = { freecell, solitaire, spider },
+let ENGINES = { freecell, solitaire, spider },
 	ACTIVE = "solitaire",
+	UNDO_STACK = new History,
 	GAME_OVER = true;
 
 const app = {

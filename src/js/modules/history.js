@@ -1,35 +1,27 @@
 
-class UndoItem {
-	constructor(perform, data) {
-		this.perform = perform;
-		this.data = data;
-	}
-}
-
 class History {
 	constructor() {
 		this.stack = [];
 		this.index = -1;
 	}
-	push(perform, data) {
+	push(data) {
 		this.index++;
 
-		perform.call({}, true, data);
-
+		this.setState.call({}, true, data);
 		this.stack.splice(this.index);
-		this.stack.push(new UndoItem(perform, data));
+		this.stack.push(data);
 	}
 	undo() {
 		if (this.index >= 0) {
-			let item = this.stack[this.index];
-			item.perform.call({}, false, item.data);
+			let data = this.stack[this.index];
+			this.setState.call({}, false, data);
 			this.index--;
 		}
 	}
 	redo() {
-		let item = this.stack[this.index + 1];
-		if (item) {
-			item.perform.call({}, true, item.data);
+		let data = this.stack[this.index + 1];
+		if (data) {
+			this.setState.call({}, true, data);
 			this.index++;
 		}
 	}
