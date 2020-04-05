@@ -52,6 +52,58 @@ let solitaire = {
 			time = 50;
 
 		switch (data.type) {
+			case "waste-to-deck":
+				if (redo) {
+					fromEl = self.layout.find(`[data-id="${data.from}"]`);
+					toEl = self.layout.find(`[data-id="${data.to}"]`);
+				}
+
+				// prepare for 3d flip in deck-element
+				fromEl.addClass("flipping-card unfan-cards").data({cardsLeft: ""});
+				
+				let fnWasteToDeck = uEl => {
+						if (uEl[0] !== cards[cards.length - 1]) return;
+						
+						cards.cssSequence("card-back card-flip-back", "animationend", fEl => {
+							if (fEl[0] !== cards[cards.length - 1]) return;
+
+							// move cards in DOM
+							cards = toEl.addClass("deck-fill").append(cards).removeClass("card-flip-back card-unfan");
+							
+							// prepare calculation
+							targetRect = fromEl[0].getBoundingClientRect();
+							cardRect = cards.map(card => card.getBoundingClientRect());
+
+							// starting point for animation
+							cards.map((card, i) => {
+								cards.get(i)
+									.css({
+										top: (targetRect.top - cardRect[i].top) +"px",
+										left: (targetRect.left - cardRect[i].left) +"px",
+									});
+							});
+							// trigger animation
+							setTimeout(() => {
+								cards
+									.cssSequence("landing", "transitionend", lEl => {
+										if (lEl[0] !== cards[0]) return;
+										// reset cards
+										cards.removeClass("landing");
+										// reset elements
+										toEl.removeClass("deck-fill");
+										fromEl.removeClass("flipping-card unfan-cards");
+									})
+									.css({ "top": "0", "left": "0" });
+							});
+						});
+					};
+
+				if (WASTE_TURN === 1) {
+					fnWasteToDeck(cards.get(cards.length - 1));
+				} else {
+					cards.cssSequence("card-unfan", "transitionend", fnWasteToDeck);
+				}
+				break;
 			case "cycle-flip":
 				if (redo) {
 					fromEl = self.layout.find(`[data-id="${data.from}"]`);
@@ -417,15 +469,21 @@ let solitaire = {
 				break;
 			case "cycle-flip-cards":
 				cards = event.el.find(`.card:nth-child(-n+${WASTE_TURN})`);
-				if (!cards.length) return;
-
+				if (!cards.length) {
+					UNDO_STACK.push({
+						type: "waste-to-deck",
+						cards: self.waste.find(".card").map(el => el.getAttribute("data-id")),
+						from: self.waste.data("id"),
+						to: self.deck.data("id"),
+					});
+					return;
+				}
 				UNDO_STACK.push({
 						type: "cycle-flip",
 						cards: cards.map(el => el.getAttribute("data-id")),
 						from: self.deck.data("id"),
 						to: self.waste.data("id"),
 					});
-
 				break;
 			case "check-void-drop":
 				draggedFirst = event.el.get(0);
