@@ -41,82 +41,150 @@ let solitaire = {
 			cards = self.layout.find(selector.join(",")),
 			fromEl,
 			toEl,
+			fromElOffset,
+			toElOffset,
+			offset,
+			targetCards,
+			targetRect,
+			cardDistance,
+			cardRect,
+			el,
 			time = 10;
 
-		if (redo) {
-			fromEl = self.layout.find(`[data-id="${data.from}"]`);
-			toEl = self.layout.find(`[data-id="${data.to}"]`);
+		switch (data.type) {
+			case "cycle-flip":
+				if (redo) {
+					fromEl = self.layout.find(`[data-id="${data.from}"]`);
+					toEl = self.layout.find(`[data-id="${data.to}"]`);
+				} else {
+					fromEl = self.layout.find(`[data-id="${data.to}"]`);
+					toEl = self.layout.find(`[data-id="${data.from}"]`);
+				}
 
-			if (fromEl.hasClass("waste")) {
-				fromEl.data({"cardsLeft": +fromEl.data("cardsLeft") - 1});
-			}
-		} else {
-			fromEl = self.layout.find(`[data-id="${data.to}"]`);
-			toEl = self.layout.find(`[data-id="${data.from}"]`);
+				// prepare calculation
+				fromElOffset = fromEl[0].getBoundingClientRect();
+				toElOffset = toEl[0].getBoundingClientRect();
+				cardRect = cards[cards.length - 1].getBoundingClientRect();
 
-			if (toEl.hasClass("waste")) {
-				toEl.data({"cardsLeft": +toEl.data("cardsLeft") + 1});
-			}
+				if (redo) {
+					// adding "flipping-card" to get "3d-perspective"
+					toEl.addClass("flipping-card");
 
-			if (data.flip && toEl.hasClass("pile")) {
-				let flipCard = toEl.find(`.card[data-id="${data.flip}"]`);
-				// adding "flipping-card" to get "3d-perspective"
-				toEl.addClass("flipping-card");
-				// flip last card from source pile
-				flipCard.cssSequence("card-flip-back", "animationend", fEl =>
-					fEl.removeClass("card-flip-back").addClass("card-back")
-						.parent()
-						.removeClass("flipping-card"));
-				time = 350;
-			}
-		}
-		let fromElOffset = fromEl[0].getBoundingClientRect(),
-			toElOffset = toEl[0].getBoundingClientRect(),
-			offset = cards.map(card => {
-				let rect = card.getBoundingClientRect();
-				return {
-					top: rect.top - toElOffset.top,
-					left: rect.left - toElOffset.left,
-				};
-			});
+					cards = toEl.append(cards)
+						.cssSequence("card-flip", "animationend", el => {
+							el.removeClass("card-flip card-back showing")
+								.parent()
+								.removeClass("flipping-card");
+						})
+						.css({
+							top: (cardRect.top - toElOffset.top) +"px",
+							left: (cardRect.left - toElOffset.left) +"px",
+						});
+				} else {
+					// adding "flipping-card" to get "3d-perspective"
+					fromEl.addClass("flipping-card");
 
-		// number of cards in from element
-		let targetCards = toEl.find(".card"),
-			cardDistance = toEl.hasClass("waste") ? 0 : parseInt(toEl.cssProp("--card-distance"), 10) || 0,
-			el = toEl.append(cards);
-	
-		el.map((item, i) => {
-			el.get(i)
-				.cssSequence("landing", "transitionend", lEl => {
-					lEl.removeClass("landing").removeAttr("style");
+					cards
+						.cssSequence("card-flip-back", "animationend", fEl => {
+							fEl.removeClass("card-flip-back").addClass("card-back");
 
-					if (redo && data.flip && fromEl.hasClass("pile")) {
-						let flipCard = self.layout.find(`.card[data-id="${data.flip}"]`);
+							cards = toEl.addClass("undo-waste-cards")
+										.prepend(cards.toArray().reverse())
+										.cssSequence("landing", "transitionend", lEl => {
+
+										})
+										.css({
+											top: (fromElOffset.top - toElOffset.top) +"px",
+											left: (fromElOffset.left - toElOffset.left) +"px",
+										});
+							
+							// trigger animation
+							setTimeout(() => cards.css({ top: "0px", left: "0px" }));
+						});
+				}
+
+				setTimeout(() =>
+					cards.map((card, i) =>
+						cards.get(i).css({ top: "0px", left: "0px", })), time);
+
+				break;
+			case "double-click":
+				if (redo) {
+					fromEl = self.layout.find(`[data-id="${data.from}"]`);
+					toEl = self.layout.find(`[data-id="${data.to}"]`);
+
+					if (fromEl.hasClass("waste")) {
+						fromEl.data({"cardsLeft": +fromEl.data("cardsLeft") - 1});
+					}
+				} else {
+					fromEl = self.layout.find(`[data-id="${data.to}"]`);
+					toEl = self.layout.find(`[data-id="${data.from}"]`);
+
+					if (toEl.hasClass("waste")) {
+						toEl.data({"cardsLeft": +toEl.data("cardsLeft") + 1});
+					}
+
+					if (data.flip && toEl.hasClass("pile")) {
+						let flipCard = toEl.find(`.card[data-id="${data.flip}"]`);
 						// adding "flipping-card" to get "3d-perspective"
-						fromEl.addClass("flipping-card");
+						toEl.addClass("flipping-card");
 						// flip last card from source pile
-						flipCard.cssSequence("card-flip", "animationend", fEl =>
-							fEl.removeClass("card-flip card-back")
+						flipCard.cssSequence("card-flip-back", "animationend", fEl =>
+							fEl.removeClass("card-flip-back").addClass("card-back")
 								.parent()
 								.removeClass("flipping-card"));
+						time = 350;
 					}
-				})
-				.css({
-					top: offset[i].top +"px",
-					left: offset[i].left +"px",
+				}
+				fromElOffset = fromEl[0].getBoundingClientRect();
+				toElOffset = toEl[0].getBoundingClientRect();
+				offset = cards.map(card => {
+					let rect = card.getBoundingClientRect();
+					return {
+						top: rect.top - toElOffset.top,
+						left: rect.left - toElOffset.left,
+					};
 				});
-		});
 
-		setTimeout(() => 
-			el.map((item, i) => {
-				let cardsMargin = parseInt(toEl.cssProp("--card-margin"), 10) || 0,
-					left = toEl.hasClass("waste") ? Math.min(+toEl.data("cardsLeft") - 1, 3) * cardsMargin : 0,
-					top = cardDistance * (targetCards.length + i);
-				el.get(i).css({
-					top: top +"px",
-					left: left +"px"
-				})
-			}), time);
+				// number of cards in from element
+				targetCards = toEl.find(".card");
+				cardDistance = toEl.hasClass("waste") ? 0 : parseInt(toEl.cssProp("--card-distance"), 10) || 0;
+				el = toEl.append(cards);
+				el.map((item, i) => {
+					el.get(i)
+						.cssSequence("landing", "transitionend", lEl => {
+							lEl.removeClass("landing").removeAttr("style");
+
+							if (redo && data.flip && fromEl.hasClass("pile")) {
+								let flipCard = self.layout.find(`.card[data-id="${data.flip}"]`);
+								// adding "flipping-card" to get "3d-perspective"
+								fromEl.addClass("flipping-card");
+								// flip last card from source pile
+								flipCard.cssSequence("card-flip", "animationend", fEl =>
+									fEl.removeClass("card-flip card-back")
+										.parent()
+										.removeClass("flipping-card"));
+							}
+						})
+						.css({
+							top: offset[i].top +"px",
+							left: offset[i].left +"px",
+						});
+				});
+
+				setTimeout(() => 
+					el.map((item, i) => {
+						let cardsMargin = parseInt(toEl.cssProp("--card-margin"), 10) || 0,
+							left = !self.layout.hasClass("waste-single") && toEl.hasClass("waste")
+								? Math.min(+toEl.data("cardsLeft") - 1, 3) * cardsMargin : 0,
+							top = cardDistance * (targetCards.length + i);
+						el.get(i).css({
+							top: top +"px",
+							left: left +"px"
+						})
+					}), time);
+				break;
+		}
 	},
 	dispatch(event) {
 		let self = solitaire,
@@ -166,67 +234,12 @@ let solitaire = {
 						? fromEl.find(".card-back:nth-last-child(2)") : false;
 
 					UNDO_STACK.push({
+							type: "double-click",
 							cards: [el.data("id")],
 							from: fromEl.data("id"),
 							to: toEl.data("id"),
 							flip: last ? last.data("id") : false
 						});
-				}
-				break;
-			case "game-double-click2":
-				el = $(event.target);
-				if (!el.hasClass("card") || el.hasClass("card-back")) return;
-				
-				check = this.layout.find(".hole.fndtn");
-				check.filter((fnd, i) => {
-					if (dropable) return;
-					let target = check.get(i);
-					if (this.isCardFoundationDropable(el, target)) dropable = target;
-				});
-
-				// reset drop zones
-				self.layout.find(".no-drag-hover").removeClass("no-drag-hover");
-
-				if (dropable && dropable.length) {
-					cardRect = el[0].getBoundingClientRect();
-					targetRect = dropable[0].getBoundingClientRect();
-					draggedParent = el.parents(".hole, .pile");
-
-					if (draggedParent.hasClass("waste")) {
-						let cardsLeft = +draggedParent.data("cardsLeft") - 1;
-						draggedParent.data({"cardsLeft": cardsLeft});
-					}
-
-					el = dropable.append(el)
-						.cssSequence("landing", "transitionend", lEl => {
-							// reset element
-							lEl.removeAttr("style").removeClass("landing");
-
-							last = draggedParent.find(".card:last-child");
-							if (draggedParent.hasClass("pile") && last.hasClass("card-back")) {
-								// adding "flipping-card" to get "3d-perspective"
-								draggedParent.toggleClass("flipping-card", !last.length);
-
-								// flip last card from source pile
-								last.cssSequence("card-flip", "animationend", fEl =>
-									fEl.removeClass("card-flip card-back")
-										.parent()
-										.removeClass("flipping-card"));
-							}
-
-							// push move to undo stack
-							// UNDO_STACK.push({
-							// 	cards: [el.data("id")],
-							// 	from: draggedParent.data("id"),
-							// 	last: last && last.hasClass("card-back") ? last.data("id") : false
-							// });
-						})
-						.css({
-							top: cardRect.top - targetRect.top +"px",
-							left: cardRect.left - targetRect.left +"px",
-						});
-					// trigger animation
-					setTimeout(() => el.css({ top: "0px", left: "0px" }), 100);
 				}
 				break;
 			case "solitaire-set-waste":
@@ -387,11 +400,11 @@ let solitaire = {
 				cards = event.el.find(`.card:nth-child(-n+${WASTE_TURN})`);
 				if (!cards.length) return;
 
-				
 				UNDO_STACK.push({
-						cards: ["26"],
-						from: "201",
-						to: "202",
+						type: "cycle-flip",
+						cards: cards.map(el => el.getAttribute("data-id")),
+						from: self.deck.data("id"),
+						to: self.waste.data("id"),
 					});
 
 				break;
