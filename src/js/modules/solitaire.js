@@ -2,7 +2,7 @@
 let APP,
 	AUTO_COMPLETE,
 	UNDO_STACK,
-	WASTE_TURN = 1,
+	WASTE_TURN = 3,
 	PILES = [
 		1, 2, 3, 4, 5, 6, 7,
 		2, 3, 4, 5, 6, 7,
@@ -49,7 +49,7 @@ let solitaire = {
 			cardDistance,
 			cardRect,
 			el,
-			time = 10;
+			time = 50;
 
 		switch (data.type) {
 			case "cycle-flip":
@@ -68,13 +68,24 @@ let solitaire = {
 
 				if (redo) {
 					// adding "flipping-card" to get "3d-perspective"
-					toEl.addClass("flipping-card");
+					toEl.addClass("flipping-card")
+						.data({cardsLeft: toEl.find(".card").length + cards.length});
 
 					cards = toEl.append(cards)
+						.cssSequence("showing", "transitionend", el => el.addClass("card-flip").removeAttr("style"))
 						.cssSequence("card-flip", "animationend", el => {
-							el.removeClass("card-flip card-back showing")
-								.parent()
-								.removeClass("flipping-card");
+							el.removeClass("card-flip card-back showing");
+
+							if (cards.length > 1) {
+								el.cssSequence("card-fan", "transitionend", fEl => {
+									let siblings = fEl.parents().find(".card");
+									if (fEl.index() === siblings.length - 1) return;
+									siblings.removeClass("card-fan");
+									fEl.parents().removeClass("flipping-card");
+								});
+							} else {
+								el.parent().removeClass("flipping-card");
+							}
 						})
 						.css({
 							top: (cardRect.top - toElOffset.top) +"px",
@@ -82,27 +93,35 @@ let solitaire = {
 						});
 				} else {
 					// adding "flipping-card" to get "3d-perspective"
-					fromEl.addClass("flipping-card");
+					fromEl.addClass("flipping-card unfan-cards")
+						.data({cardsLeft: fromEl.find(".card").length - cards.length});
 
 					cards
 						.cssSequence("card-flip-back", "animationend", fEl => {
 							fEl.removeClass("card-flip-back").addClass("card-back");
+							if (fEl[0] !== cards[cards.length-1]) return;
+							// reset waste
+							fromEl.addClass("flipping-card unfan-cards");
 
 							cards = toEl.addClass("undo-waste-cards")
 										.prepend(cards.toArray().reverse())
 										.cssSequence("landing", "transitionend", lEl => {
-
+											if (lEl[0] !== cards[cards.length-1]) return;
+											// reset cards
+											cards.removeClass("landing").removeAttr("style");
+											// reset deck
+											toEl.removeClass("undo-waste-cards");
 										})
 										.css({
 											top: (fromElOffset.top - toElOffset.top) +"px",
 											left: (fromElOffset.left - toElOffset.left) +"px",
 										});
-							
+
 							// trigger animation
 							setTimeout(() => cards.css({ top: "0px", left: "0px" }));
 						});
 				}
-
+				// trigger animation
 				setTimeout(() =>
 					cards.map((card, i) =>
 						cards.get(i).css({ top: "0px", left: "0px", })), time);
@@ -171,7 +190,7 @@ let solitaire = {
 							left: offset[i].left +"px",
 						});
 				});
-
+				// trigger animation
 				setTimeout(() => 
 					el.map((item, i) => {
 						let cardsMargin = parseInt(toEl.cssProp("--card-margin"), 10) || 0,
