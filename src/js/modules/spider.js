@@ -272,49 +272,9 @@ let spider = {
 
 				// push move to undo stack
 				UNDO_STACK.push({
+					animation: "deal-cards",
 					cards: cards.map(card => card.getAttribute("data-id")),
-					from: self.deck.data("id"),
 				});
-				/*
-				cards.map((c, i) => {
-					// land and flip cards sequence
-					self.piles.get(i).append(c)
-						.cssSequence("landing", "transitionend", lEl => {
-							lEl.addClass("landed");
-
-							if (!lEl.parent().hasClass("pile-10")) return;
-
-							self.piles.addClass("flipping-cards");
-							cards.cssSequence("card-flip", "animationend", fEl => {
-								if (!fEl.parent().hasClass("pile-10")) return;
-								// reset nodes
-								self.piles.removeClass("dealing-cards flipping-cards");
-								cards.removeClass("card-flip card-back landing landed").removeAttr("style");
-
-								// push move to undo stack
-							//	UNDO_STACK.push({
-							//		cards: cards.map(card => card.getAttribute("data-id")),
-							//		from: "deck",
-							//	});
-							})
-						})
-						.css({
-							top: (deckOffset.top - pilesOffset[i].top) +"px",
-							left: (deckOffset.left - pilesOffset[i].left) +"px",
-						});
-				});
-				
-				// trigger animation
-				setTimeout(() => {
-					cards.map((card, i) => {
-						let pile = self.piles.get(i),
-							top = cardDistance * (pile.find(".card").length - 1);
-
-						cards.get(i).css({ top: top +"px", left: "0px" });
-					});
-				}, 60);
-				*/
-
 				break;
 			case "check-sibling-sequence":
 				cards = event.pile.find(".card:nth-last-child(-n+13)");
@@ -330,6 +290,13 @@ let spider = {
 					});
 				
 				if (cards.length === 13) {
+					// push move to undo stack
+					UNDO_STACK.push({
+						animation: "collapse-cards",
+						cards: cards.map(card => card.getAttribute("data-id")),
+					});
+					
+					/*
 					// find empty slot
 					let target = self.layout.find(".hole:empty").get(0),
 						targetRect = target[0].getBoundingClientRect(),
@@ -392,6 +359,7 @@ let spider = {
 							})
 							.css({ top: cardRects[0].top +"px" })
 					));
+					*/
 
 					return true;
 				}
@@ -583,8 +551,87 @@ let spider = {
 
 		// animation "playbacks"
 		switch (data.animation) {
+			case "collapse-cards":
+				if (redo) {
+					
+				} else {
+					
+				}
+				break;
 			case "deal-cards":
-				
+				if (redo) {
+					// calcaultions
+					toEl = self.piles;
+					toOffset = toEl.addClass("dealing-cards").map((pile, i) => toEl.get(i).offset());
+					fromOffset = self.deck.offset();
+					cardDistance = parseInt(toEl.get(0).cssProp("--card-distance"), 10) || 0;
+
+					// prepare animation
+					cards.map((card, i) => {
+						// land and flip cards sequence
+						toEl.get(i).append(card)
+							.cssSequence("landing", "transitionend", lEl => {
+								lEl.addClass("landed");
+
+								if (!lEl.parent().hasClass("pile-10")) return;
+
+								toEl.addClass("flipping-cards");
+								cards.cssSequence("card-flip", "animationend", fEl => {
+									if (!fEl.parent().hasClass("pile-10")) return;
+									// reset nodes
+									toEl.removeClass("dealing-cards flipping-cards");
+									cards.removeClass("card-flip card-back landing landed").removeAttr("style");
+								})
+							})
+							.css({
+								top: (fromOffset.top - toOffset[i].top) +"px",
+								left: (fromOffset.left - toOffset[i].left) +"px",
+							});
+					});
+					// trigger animation
+					setTimeout(() => {
+						cards.map((card, i) => {
+							let pile = toEl.get(i),
+								top = cardDistance * (pile.find(".card").length - 1);
+							cards.get(i).css({ top: top +"px", left: "0px" });
+						});
+					}, time);
+				} else {
+					// calcaultions
+					toEl = self.deck;
+					toOffset = toEl.addClass("undo-collect")[0].getBoundingClientRect();
+					offset = cards.map((c, i) => c.getBoundingClientRect());
+					
+					// adding "flipping-card" to get "3d-perspective"
+					self.piles.addClass("re-flipping-cards");
+					// prepare for animation
+					cards.cssSequence("card-flip-back", "animationend", fEl => {
+						if (fEl[0] !== cards[0]) return;
+						// reset flipping cards
+						cards.removeClass("card-flip-back").addClass("card-back");
+						// prepare animation
+						cards.map((c, i) => {
+							toEl.append(c)
+								.cssSequence("landing", "transitionend", lEl => {
+									if (lEl[0] !== cards[0]) return;
+									// reset cards
+									cards.removeClass("landing").removeAttr("style");
+									// reset piles
+									self.piles.removeClass("re-flipping-cards");
+									// reset deck
+									toEl.removeClass("undo-collect");
+								})
+								.css({
+									top: (offset[i].top - toOffset.top) +"px",
+									left: (offset[i].left - toOffset.left) +"px",
+								});
+						});
+						// trigger animation
+						setTimeout(() =>
+							cards.map((c, i) =>
+								cards.get(i).css({ top: "0px", left: "0px" })), time);
+					});
+				}
 				break;
 			case "card-move":
 				if (redo) {
