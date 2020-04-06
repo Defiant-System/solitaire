@@ -1,7 +1,7 @@
 
 let APP,
 	AUTO_COMPLETE,
-	UNDO_STACK = [],
+	UNDO_STACK,
 	CARD_DECK,
 	SUIT_DICT,
 	NUMB_DICT;
@@ -14,6 +14,8 @@ let freecell = {
 		CARD_DECK = card_deck;
 		SUIT_DICT = suit_dict;
 		NUMB_DICT = numb_dict;
+		// prepare History
+		UNDO_STACK = app.UNDO_STACK;
 
 		// fast references
 		this.board = window.find(".board");
@@ -41,7 +43,7 @@ let freecell = {
 		switch (event.type) {
 			case "new-game":
 				// reset undo-stack
-				UNDO_STACK = [];
+				UNDO_STACK;
 
 				// show deck before dealing
 				self.deck.cssSequence("show", "transitionend", deck => self.start());
@@ -56,76 +58,18 @@ let freecell = {
 					let target = check.get(i);
 					if (this.isCardFoundationDropable(el, target)) dropable = target;
 				});
-
+				
 				if (dropable.length) {
-					cardRect = el[0].getBoundingClientRect();
-					targetRect = dropable[0].getBoundingClientRect();
 					draggedParent = el.parents(".pile");
 
-					el = dropable.append(el)
-						.cssSequence("landing", "transitionend", lEl => {
-							// reset element
-							lEl.removeClass("landing");
-
-							// push move to undo stack
-							UNDO_STACK.push({
-								cards: [el.data("id")],
-								from: draggedParent.data("id")
-							});
-						})
-						.css({
-							top: cardRect.top - targetRect.top +"px",
-							left: cardRect.left - targetRect.left +"px",
-						});
-					// trigger animation
-					setTimeout(() => el.css({ top: "0px", left: "0px" }), 100);
+					// push move to undo stack
+					UNDO_STACK.push({
+						animation: "card-move",
+						cards: [el.data("id")],
+						from: draggedParent.data("id"),
+						to: dropable.data("id"),
+					});
 				}
-				break;
-			case "undo-move":
-				if (!UNDO_STACK.length) {
-					// nothing to undo
-					return;
-				}
-
-				let undoStep = UNDO_STACK.pop(),
-					selector,
-					offset;
-
-				selector = undoStep.cards.map(id => `.card[data-id="${id}"]`);
-				cards = self.layout.find(selector.join(", "));
-				from = self.layout.find(`[data-id="${undoStep.from}"]`);
-
-				fromOffset = from[0].getBoundingClientRect();
-				offset = cards.map(card => {
-					let cardRect = card.getBoundingClientRect();
-					return {
-						top: cardRect.top - fromOffset.top,
-						left: cardRect.left - fromOffset.left,
-					};
-				});
-
-				// number of cards in from element
-				targetCards = from.find(".card");
-				cardDistance = parseInt(from.cssProp("--card-distance"), 10);
-
-				el = from.append(cards);
-				el.map((item, i) => {
-					el.get(i)
-						.cssSequence("landing", "transitionend", lEl => lEl.removeClass("landing"))
-						.css({
-							top: offset[i].top +"px",
-							left: offset[i].left +"px",
-						});
-				});
-
-				setTimeout(() => 
-					el.map((item, i) => {
-						let top = from.hasClass("pile") ? cardDistance * (targetCards.length + i) : 0;
-						el.get(i).css({
-							top: top +"px",
-							left: "0px"
-						})
-					}), 100);
 				break;
 			case "check-game-won":
 				if (this.layout.find(".hole .card").length === 104) {
@@ -205,8 +149,11 @@ let freecell = {
 					);
 
 					// push move to undo stack
-					cards = event.el.map(card => card.getAttribute("data-id"));
-					UNDO_STACK.push({ cards, from: from.data("id") });
+					UNDO_STACK.push({
+						cards: event.el.map(card => card.getAttribute("data-id")),
+						from: from.data("id"),
+						to: event.target.data("id"),
+					});
 
 					// check if game is complete
 					self.dispatch({type: "check-game-won"})
@@ -234,8 +181,11 @@ let freecell = {
 					);
 
 					// push move to undo stack
-					cards = event.el.map(card => card.getAttribute("data-id"));
-					UNDO_STACK.push({ cards, from: from.data("id") });
+					UNDO_STACK.push({
+						cards: event.el.map(card => card.getAttribute("data-id")),
+						from: from.data("id"),
+						to: event.target.data("id"),
+					});
 				}
 				return dropable;
 			case "check-pile-drop":
@@ -274,8 +224,11 @@ let freecell = {
 						));
 
 					// push move to undo stack
-					cards = event.el.map(card => card.getAttribute("data-id"));
-					UNDO_STACK.push({ cards, from: from.data("id") });
+					UNDO_STACK.push({
+						cards: event.el.map(card => card.getAttribute("data-id")),
+						from: from.data("id"),
+						to: event.target.data("id"),
+					});
 				}
 				return dropable;
 			case "check-card-drag":
@@ -359,9 +312,84 @@ let freecell = {
 					left: (deckOffset.left - pile.left) +"px",
 				});
 		});
+		
+		// reset undo-stack
+		UNDO_STACK.reset(this.setState);
 
 		// trigger animation
 		setTimeout(() => this.layout.find(".card").removeClass("in-deck").css({ top: "", left: "", }), 60);
+	},
+	setState(redo, data) {
+		let self = freecell,
+			selector = data.cards.map(id => `.card[data-id="${id}"]`),
+			cards = self.layout.find(selector.join(",")),
+			fromEl,
+			toEl,
+			fromOffset,
+			toOffset,
+			targetCards,
+			cardRect,
+			cardDistance,
+			offset,
+			el;
+
+		// update toolbar buttons
+		APP.btnPrev.toggleClass("tool-disabled_", UNDO_STACK.canUndo);
+		APP.btnNext.toggleClass("tool-disabled_", UNDO_STACK.canRedo);
+		// reset drop zones
+		self.layout.find(".no-drag-hover").removeClass("no-drag-hover");
+
+		// animation "playbacks"
+		switch (data.animation) {
+			case "card-move":
+				if (redo) {
+					fromEl = self.layout.find(`[data-id="${data.from}"]`);
+					toEl = self.layout.find(`[data-id="${data.to}"]`);
+				} else {
+					fromEl = self.layout.find(`[data-id="${data.to}"]`);
+					toEl = self.layout.find(`[data-id="${data.from}"]`);
+				}
+				// animation calculation
+				fromOffset = toEl[0].getBoundingClientRect();
+				toOffset = toEl[0].getBoundingClientRect();
+				cardRect = cards[0].getBoundingClientRect();
+				targetCards = toEl.find(".card");
+				cardDistance = parseInt(toEl.cssProp("--card-distance"), 10) || 0;
+				offset = cards.map(card => {
+					let rect = card.getBoundingClientRect();
+					return {
+						top: rect.top - toOffset.top,
+						left: rect.left - toOffset.left,
+					};
+				});
+
+				// prepare animation
+				el = toEl.append(cards);
+				el.map((item, i) => {
+					el.get(i)
+						.cssSequence("landing", "transitionend", lEl => {
+							// reset element
+							lEl.removeClass("landing");
+						})
+						.css({
+							top: offset[i].top +"px",
+							left: offset[i].left +"px",
+						});
+				});
+				// trigger animation
+				setTimeout(() => 
+					el.map((item, i) => {
+						let cardsMargin = parseInt(toEl.cssProp("--card-margin"), 10) || 0,
+							top = toEl.hasClass("pile") ? cardDistance * (targetCards.length + i) : 0;
+						el.get(i).css({
+							top: top +"px",
+							left: "0px"
+						})
+					}), 100);
+				break;
+			default:
+				data.animation = "card-move";
+		}
 	}
 };
 

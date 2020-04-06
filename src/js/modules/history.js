@@ -25,7 +25,8 @@ class History {
 			this.setState.call({}, true, data);
 		}
 	}
-	reset() {
+	reset(setState) {
+		this.setState = setState;
 		this.stack = [];
 		this.index = -1;
 	}

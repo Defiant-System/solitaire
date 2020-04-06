@@ -10,7 +10,7 @@ import spider from "./modules/spider"
 
 // constants
 let ENGINES = { freecell, solitaire, spider },
-	ACTIVE = "solitaire",
+	ACTIVE = "freecell",
 	GAME_OVER = true;
 
 const app = {
@@ -29,6 +29,8 @@ const app = {
 		// temp
 		if (this.board.hasClass("playing")) {
 			this.activeEngine = ENGINES[ACTIVE];
+			// set state function
+			this.UNDO_STACK.reset(this.activeEngine.setState);
 		} else {
 			setTimeout(() => this.dispatch({type: "new-game"}), 100);
 		}
@@ -88,8 +90,8 @@ const app = {
 				break;
 			case "game-won":
 				// toolbar active item
-				el = window.find(`div.tool-active_[data-click="set-game-engine"]`);
-				el.removeClass("tool-active_");
+				//el = window.find(`div.tool-active_[data-click="set-game-engine"]`);
+				//el.removeClass("tool-active_");
 
 				GAME_OVER = true;
 				self.board.removeClass("playing").addClass("game-won");
