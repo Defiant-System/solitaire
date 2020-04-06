@@ -51,6 +51,9 @@ let solitaire = {
 			el,
 			time = 50;
 
+		APP.btnPrev.toggleClass("tool-disabled_", UNDO_STACK.canUndo);
+		APP.btnNext.toggleClass("tool-disabled_", UNDO_STACK.canRedo);
+		
 		switch (data.animation) {
 			case "waste-to-deck":
 				if (redo) {

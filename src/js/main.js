@@ -17,6 +17,8 @@ const app = {
 	init() {
 		// fast references
 		this.board = window.find(".board");
+		this.btnPrev = window.find("[data-click='history-go-prev']");
+		this.btnNext = window.find("[data-click='history-go-next']");
 		this.UNDO_STACK = new History;
 
 		// initiate engines

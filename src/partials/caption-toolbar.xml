@@ -1,8 +1,8 @@
 <CaptionToolBar>
 	<Group width="17%">
 		<Options>
-			<Tool symbol="icon-undo" sta1te="disabled" click="history-go-prev"/>
-			<Tool symbol="icon-redo" sta1te="disabled" click="history-go-next"/>
+			<Tool symbol="icon-undo" state="disabled" click="history-go-prev"/>
+			<Tool symbol="icon-redo" state="disabled" click="history-go-next"/>
 		</Options>
 	</Group>
 	<Group>
