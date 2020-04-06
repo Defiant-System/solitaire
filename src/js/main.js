@@ -10,7 +10,7 @@ import spider from "./modules/spider"
 
 // constants
 let ENGINES = { freecell, solitaire, spider },
-	ACTIVE = "spider",
+	ACTIVE = "solitaire",
 	GAME_OVER = true;
 
 const app = {
@@ -92,6 +92,10 @@ const app = {
 				// toolbar active item
 				//el = window.find(`div.tool-active_[data-click="set-game-engine"]`);
 				//el.removeClass("tool-active_");
+
+				// update toolbar buttons
+				self.btnPrev.addClass("tool-disabled_");
+				self.btnNext.addClass("tool-disabled_");
 
 				GAME_OVER = true;
 				self.board.removeClass("playing").addClass("game-won");

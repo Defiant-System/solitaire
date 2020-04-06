@@ -12,7 +12,7 @@
 			<Tool name="Spider" click="set-game-engine" arg="spider"/>
 		</Options>
 	</Group>
-	<Group width="21%">
+	<Group width="25%">
 		<Tool symbol="icon-cog" menu="toolbar-settings"/>
 	</Group>
 </CaptionToolBar>

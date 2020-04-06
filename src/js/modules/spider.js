@@ -106,10 +106,10 @@ let spider = {
 						cards: cards.map(card => card.getAttribute("data-id")),
 						from: event.pile.data("id"),
 						to: self.layout.find(".hole:empty").get(0).data("id"),
-						flip: last.hasClass("card-back") ? last.data("id") : false,
+						flip: last.length && last.hasClass("card-back") ? last.data("id") : false,
 						dropped: event.dropped,
 						droppedFrom: event.from.data("id"),
-						droppedLast: event.last.hasClass("card-back") ? event.last.data("id") : false,
+						droppedLast: event.last.length && event.last.hasClass("card-back") ? event.last.data("id") : false,
 					});
 					return true;
 				}
