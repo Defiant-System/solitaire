@@ -89,10 +89,6 @@ const app = {
 				self.board.data({"card-back": event.arg});
 				break;
 			case "game-won":
-				// toolbar active item
-				//el = window.find(`div.tool-active_[data-click="set-game-engine"]`);
-				//el.removeClass("tool-active_");
-
 				// update toolbar buttons
 				self.btnPrev.addClass("tool-disabled_");
 				self.btnNext.addClass("tool-disabled_");
@@ -104,7 +100,7 @@ const app = {
 				if (window.music.playing) {
 					window.music.pause();
 				} else {
-					window.music.play("~/solitaire/midi/The-Entertainer.mid");
+					window.music.play("~/midi/The-Entertainer.mid");
 				}
 				break;
 			case "game-fail":

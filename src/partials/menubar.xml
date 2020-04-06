@@ -3,8 +3,8 @@
 		<Menu name="About Solitaire"/>
 		<Menu type="divider"/>
 		<Menu name="New Game&#8230;">
-			<Menu name="Freecell" click="set-game-engine" arg="freecell" check-group="game-engine"/>
 			<Menu name="Solitaire" click="set-game-engine" arg="solitaire" check-group="game-engine" is-checked="1"/>
+			<Menu name="Freecell" click="set-game-engine" arg="freecell" check-group="game-engine"/>
 			<Menu name="Spider" click="set-game-engine" arg="spider" check-group="game-engine"/>
 		</Menu>
 		<Menu type="divider"/>
@@ -21,8 +21,6 @@
 		<Menu name="Deal" click="trigger-spider-deal-cards" show-if-group="game-engine" is="spider"/>
 		<!-- optional menus end -->
 		<Menu name="Auto Complete" click="auto-complete" disable-if="game-engine" is="spider"/>
-		<Menu type="divider"/>
-		<Menu name="Music" click="toggle-music" check-group="toggle-music"/>
 		<Menu type="divider"/>
 		<Menu name="Background&#8230;">
 			<Menu name="Casino" click="set-game-theme" arg="casino" check-group="game-theme" is-checked="1"/>
@@ -54,7 +52,7 @@
 <Menu for="toolbar-settings">
 	<Menu name="New Game" click="new-game"/>
 	<Menu type="divider"/>
-	<Menu name="Music" click="toggle-music" check-group="toggle-music"/>
+	<Menu name="Play Music" click="toggle-music" check-group="toggle-music"/>
 	<!-- Conditional menu options START -->
 	<Menu name="Settings&#8230;" show-if-group="game-engine" is="freecell">
 		<Menu name="Settings for Freecell&#8230;"/>
