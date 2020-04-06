@@ -42,9 +42,6 @@ let freecell = {
 
 		switch (event.type) {
 			case "new-game":
-				// reset undo-stack
-				UNDO_STACK;
-
 				// show deck before dealing
 				self.deck.cssSequence("show", "transitionend", deck => self.start());
 				break;

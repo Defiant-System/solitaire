@@ -1,7 +1,7 @@
 
 let APP,
 	AUTO_COMPLETE,
-	UNDO_STACK = [],
+	UNDO_STACK,
 	LEVEL = 1,
 	SUITS = {
 		1: ["club"],
@@ -20,6 +20,8 @@ let spider = {
 		CARD_DECK = card_deck;
 		SUIT_DICT = suit_dict;
 		NUMB_DICT = numb_dict;
+		// prepare History
+		UNDO_STACK = app.UNDO_STACK;
 
 		// fast references
 		this.board = window.find(".board");
@@ -48,9 +50,6 @@ let spider = {
 
 		switch (event.type) {
 			case "new-game":
-				// reset undo-stack
-				UNDO_STACK = [];
-
 				setTimeout(() => this.start(), 350);
 				break;
 			case "spider-set-level":
@@ -271,6 +270,12 @@ let spider = {
 				cardDistance = parseInt(self.piles.get(0).cssProp("--card-distance"), 10);
 				cards = self.deck.find(".card:nth-last-child(-n+10)");
 
+				// push move to undo stack
+				UNDO_STACK.push({
+					cards: cards.map(card => card.getAttribute("data-id")),
+					from: self.deck.data("id"),
+				});
+				/*
 				cards.map((c, i) => {
 					// land and flip cards sequence
 					self.piles.get(i).append(c)
@@ -287,10 +292,10 @@ let spider = {
 								cards.removeClass("card-flip card-back landing landed").removeAttr("style");
 
 								// push move to undo stack
-								UNDO_STACK.push({
-									cards: cards.map(card => card.getAttribute("data-id")),
-									from: "deck",
-								});
+							//	UNDO_STACK.push({
+							//		cards: cards.map(card => card.getAttribute("data-id")),
+							//		from: "deck",
+							//	});
 							})
 						})
 						.css({
@@ -308,6 +313,7 @@ let spider = {
 						cards.get(i).css({ top: top +"px", left: "0px" });
 					});
 				}, 60);
+				*/
 
 				break;
 			case "check-sibling-sequence":
@@ -369,14 +375,14 @@ let spider = {
 											
 											// push move to undo stack
 											cards = cards.map(card => card.getAttribute("data-id"));
-											UNDO_STACK.push({
-												dropped: event.dropped,
-												droppedFrom: event.from.data("id"),
-												droppedLast: event.last.data("id"),
-												collapsed: cards,
-												collapsedFrom: event.pile.data("id"),
-												last: last.hasClass("card-back") ? last.data("id") : false,
-											});
+										//	UNDO_STACK.push({
+										//		dropped: event.dropped,
+										//		droppedFrom: event.from.data("id"),
+										//		droppedLast: event.last.data("id"),
+										//		collapsed: cards,
+										//		collapsedFrom: event.pile.data("id"),
+										//		last: last.hasClass("card-back") ? last.data("id") : false,
+										//	});
 
 											// check if game is complete
 											self.dispatch({type: "check-game-won"})
@@ -451,7 +457,8 @@ let spider = {
 								UNDO_STACK.push({
 									cards: event.el.map(card => card.getAttribute("data-id")),
 									from: from.data("id"),
-									last: last.hasClass("card-back") ? last.data("id") : false
+									to: event.target.data("id"),
+									flip: last.hasClass("card-back") ? last.data("id") : false,
 								});
 							})
 							.css({
@@ -546,9 +553,110 @@ let spider = {
 					left: (deckOffset.left - pile.left) +"px",
 				});
 		});
+		
+		// reset undo-stack
+		UNDO_STACK.reset(this.setState);
 
 		// trigger animation
 		setTimeout(() => this.layout.find(".card").removeClass("in-deck").css({ top: "", left: "", }), 60);
+	},
+	setState(redo, data) {
+		let self = spider,
+			selector = data.cards.map(id => `.card[data-id="${id}"]`),
+			cards = self.layout.find(selector.join(",")),
+			fromEl,
+			toEl,
+			fromOffset,
+			toOffset,
+			targetCards,
+			cardRect,
+			cardDistance,
+			offset,
+			el,
+			time = 50;
+
+		// update toolbar buttons
+		APP.btnPrev.toggleClass("tool-disabled_", UNDO_STACK.canUndo);
+		APP.btnNext.toggleClass("tool-disabled_", UNDO_STACK.canRedo);
+		// reset drop zones
+		self.layout.find(".no-drag-hover").removeClass("no-drag-hover");
+
+		// animation "playbacks"
+		switch (data.animation) {
+			case "deal-cards":
+				
+				break;
+			case "card-move":
+				if (redo) {
+					fromEl = self.layout.find(`[data-id="${data.from}"]`);
+					toEl = self.layout.find(`[data-id="${data.to}"]`);
+				} else {
+					fromEl = self.layout.find(`[data-id="${data.to}"]`);
+					toEl = self.layout.find(`[data-id="${data.from}"]`);
+
+					if (data.flip && toEl.hasClass("pile")) {
+						let flipCard = toEl.find(`.card[data-id="${data.flip}"]`);
+						// adding "flipping-card" to get "3d-perspective"
+						toEl.addClass("flipping-card undo-card");
+						// flip last card from source pile
+						flipCard.cssSequence("card-flip-back", "animationend", fEl =>
+							fEl.removeClass("card-flip-back").addClass("card-back")
+								.parent()
+								.removeClass("flipping-card undo-card"));
+						time = 350;
+					}
+				}
+				// animation calculation
+				fromOffset = toEl[0].getBoundingClientRect();
+				toOffset = toEl[0].getBoundingClientRect();
+				cardRect = cards[0].getBoundingClientRect();
+				targetCards = toEl.find(".card");
+				cardDistance = parseInt(toEl.cssProp("--card-distance"), 10) || 0;
+				offset = cards.map(card => {
+					let rect = card.getBoundingClientRect();
+					return {
+						top: rect.top - toOffset.top,
+						left: rect.left - toOffset.left,
+					};
+				});
+
+				// prepare animation
+				el = toEl.append(cards);
+				el.map((item, i) => {
+					el.get(i)
+						.cssSequence("landing", "transitionend", lEl => {
+							// reset element
+							lEl.removeClass("landing");
+
+							if (redo && data.flip && fromEl.hasClass("pile")) {
+								let flipCard = self.layout.find(`.card[data-id="${data.flip}"]`);
+								// adding "flipping-card" to get "3d-perspective"
+								fromEl.addClass("flipping-card");
+								// flip last card from source pile
+								flipCard.cssSequence("card-flip", "animationend", fEl =>
+									fEl.removeClass("card-flip card-back")
+										.parent()
+										.removeClass("flipping-card"));
+							}
+						})
+						.css({
+							top: offset[i].top +"px",
+							left: offset[i].left +"px",
+						});
+				});
+				// trigger animation
+				setTimeout(() => 
+					el.map((item, i) => {
+						let cardsMargin = parseInt(toEl.cssProp("--card-margin"), 10) || 0,
+							top = toEl.hasClass("pile") ? cardDistance * (targetCards.length + i) : 0;
+						el.get(i).css({
+							top: top +"px",
+							left: "0px"
+						})
+					}), time);
+			default:
+				data.animation = "card-move";
+		}
 	}
 };
 

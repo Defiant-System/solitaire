@@ -10,7 +10,7 @@ import spider from "./modules/spider"
 
 // constants
 let ENGINES = { freecell, solitaire, spider },
-	ACTIVE = "freecell",
+	ACTIVE = "spider",
 	GAME_OVER = true;
 
 const app = {
