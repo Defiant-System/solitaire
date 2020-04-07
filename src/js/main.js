@@ -1,4 +1,7 @@
 
+// undo stack
+import History from "./modules/history"
+
 // engines
 import freecell from "./modules/freecell"
 import solitaire from "./modules/solitaire"
@@ -14,6 +17,9 @@ const app = {
 	init() {
 		// fast references
 		this.board = window.find(".board");
+		this.btnPrev = window.find("[data-click='history-go-prev']");
+		this.btnNext = window.find("[data-click='history-go-next']");
+		this.UNDO_STACK = new History;
 
 		// initiate engines
 		for (let key in ENGINES) {
@@ -23,6 +29,8 @@ const app = {
 		// temp
 		if (this.board.hasClass("playing")) {
 			this.activeEngine = ENGINES[ACTIVE];
+			// set state function
+			this.UNDO_STACK.reset(this.activeEngine.setState);
 		} else {
 			setTimeout(() => this.dispatch({type: "new-game"}), 100);
 		}
@@ -81,9 +89,9 @@ const app = {
 				self.board.data({"card-back": event.arg});
 				break;
 			case "game-won":
-				// toolbar active item
-				el = window.find(`div.tool-active_[data-click="set-game-engine"]`);
-				el.removeClass("tool-active_");
+				// update toolbar buttons
+				self.btnPrev.addClass("tool-disabled_");
+				self.btnNext.addClass("tool-disabled_");
 
 				GAME_OVER = true;
 				self.board.removeClass("playing").addClass("game-won");
@@ -92,12 +100,18 @@ const app = {
 				if (window.music.playing) {
 					window.music.pause();
 				} else {
-					window.music.play("/app/ant/solitaire/midi/The-Entertainer.mid");
+					window.music.play("~/midi/The-Entertainer.mid");
 				}
 				break;
 			case "game-fail":
 				GAME_OVER = true;
 				self.board.removeClass("playing").addClass("game-fail");
+				break;
+			case "history-go-prev":
+				self.UNDO_STACK.undo();
+				break;
+			case "history-go-next":
+				self.UNDO_STACK.redo();
 				break;
 			case "close-failure":
 			case "close-congratulations":

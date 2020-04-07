@@ -1,7 +1,7 @@
 
 let APP,
 	AUTO_COMPLETE,
-	UNDO_STACK = [],
+	UNDO_STACK,
 	LEVEL = 1,
 	SUITS = {
 		1: ["club"],
@@ -20,6 +20,8 @@ let spider = {
 		CARD_DECK = card_deck;
 		SUIT_DICT = suit_dict;
 		NUMB_DICT = numb_dict;
+		// prepare History
+		UNDO_STACK = app.UNDO_STACK;
 
 		// fast references
 		this.board = window.find(".board");
@@ -29,28 +31,20 @@ let spider = {
 	},
 	dispatch(event) {
 		let self = spider,
-			deckOffset,
 			draggedFirst,
 			from,
-			fromOffset,
 			cardDistance,
 			targetCards,
-			sourceCards,
 			dropable,
 			dragable,
 			isLastCard,
 			last,
 			cards,
 			check,
-			piles,
-			pile,
 			el;
 
 		switch (event.type) {
 			case "new-game":
-				// reset undo-stack
-				UNDO_STACK = [];
-
 				setTimeout(() => this.start(), 350);
 				break;
 			case "spider-set-level":
@@ -73,192 +67,6 @@ let spider = {
 					APP.dispatch({type: "game-fail"});
 				}
 				break;
-			case "undo-move":
-				// nothing to undo
-				if (!UNDO_STACK.length) return;
-
-				let undoStep = UNDO_STACK.pop(),
-					selector,
-					offset;
-
-				if (undoStep.last) {
-					last = self.layout.find(`.card[data-id="${undoStep.last}"]`);
-					last.cssSequence("card-flip-back", "animationend", fEl =>
-							fEl.addClass("card-back").removeClass("card-flip-back")
-								.parent().removeClass("flipping-card undo-card"))
-						.parent().addClass("flipping-card undo-card");
-				}
-
-				// ----- deck deal playback START -------------
-				if (undoStep.from === "deck") {
-					selector = undoStep.cards.map(id => `.card[data-id="${id}"]`);
-					cards = self.layout.find(selector.join(", "));
-
-					offset = cards.map((c, i) => c.getBoundingClientRect());
-					deckOffset = self.deck.addClass("undo-collect")[0].getBoundingClientRect();
-					
-					// prepare for animation
-					self.piles.addClass("re-flipping-cards");
-					cards.cssSequence("card-flip-back", "animationend", fEl => {
-						if (fEl[0] !== cards[0]) return;
-						
-						cards.removeClass("card-flip-back").addClass("card-back");
-
-						cards.map((c, i) => {
-							self.deck.append(c)
-								.cssSequence("landing", "transitionend", lEl => {
-									if (lEl[0] !== cards[0]) return;
-									// reset cards
-									cards.removeClass("landing").removeAttr("style");
-									// reset piles
-									self.piles.removeClass("re-flipping-cards");
-									// reset deck
-									self.deck.removeClass("undo-collect");
-								})
-								.css({
-									top: (offset[i].top - deckOffset.top) +"px",
-									left: (offset[i].left - deckOffset.left) +"px",
-								});
-						});
-
-						setTimeout(() => {
-							cards.map((c, i) => {
-								cards.get(i)
-									.css({ top: "0px", left: "0px" });
-								});
-						});
-					});
-					return;
-				}
-				// ----- deck deal playback END -------------------
-
-				// ----- collapse playback START ------------------
-				if (undoStep.droppedLast) {
-					selector = undoStep.collapsed.map(id => `.card[data-id="${id}"]`);
-					cards = self.layout.find(selector.join(", "));
-					from = self.layout.find(`.pile[data-id="${undoStep.collapsedFrom}"]`);
-					fromOffset = from[0].getBoundingClientRect();
-					offset = cards[0].getBoundingClientRect();
-
-					// append card elements in original pile
-					cards = from.addClass("undo-collapsing")
-								.append(cards).addClass("expanding").css({
-									top: (offset.top - fromOffset.top) +"px",
-									left: (offset.left - fromOffset.left) +"px",
-								});
-
-					// number of cards in from element
-					targetCards = from.find(".card").length - cards.length;
-					cardDistance = parseInt(from.cssProp("--card-distance"), 10);
-
-					setTimeout(() => 
-						cards
-							.cssSequence("landing", "transitionend", lEl => {
-								lEl.removeClass("landing");
-								if (lEl[0] !== cards[cards.length-1]) return;
-
-								cards.map((card, i) => {
-									cards.get(i)
-										.cssSequence("landing", "transitionend", l => {
-											if (l[0] !== cards[cards.length - 2]) return;
-											// reset cards
-											cards.removeClass("landing expanding").removeAttr("style");
-											// reset expanded cards pile
-											lEl.parent().removeClass("undo-collapsing");
-
-											{ // *** last-stage -- START
-												self.layout.find(`.card[data-id="${undoStep.droppedLast}"]`)
-													.cssSequence("card-flip-back", "animationend", pfEl => {
-														// reset flipping card
-														pfEl.addClass("card-back").removeClass("card-flip-back");
-													})
-													.parent().addClass("flipping-card undo-card");
-
-												// finally put back original card that triggered collapse
-												let selector = undoStep.dropped.map(id => `.card[data-id="${id}"]`),
-													cards = self.layout.find(selector.join(", ")),
-													droppedFrom = self.layout.find(`.pile[data-id="${undoStep.droppedFrom}"]`),
-													targetCards = droppedFrom.find(".card").length,
-													from = droppedFrom[0].getBoundingClientRect(),
-													offset = cards.map(card => {
-														let cardRect = card.getBoundingClientRect();
-														return {
-															top: cardRect.top - from.top,
-															left: cardRect.left - from.left,
-														};
-													});
-
-												el = droppedFrom.append(cards);
-												el.map((item, i) => {
-													el.get(i)
-														.cssSequence("landing", "transitionend", lEl => {
-															lEl.removeClass("landing").removeAttr("style");
-															droppedFrom.removeClass("flipping-card undo-card");
-														})
-														.css({
-															top: offset[i].top +"px",
-															left: offset[i].left +"px",
-														});
-												});
-
-												// trigger final animation
-												setTimeout(() => 
-													el.map((item, i) => {
-														el.get(i).css({
-															top: (cardDistance * (targetCards + i)) +"px",
-															left: "0px"
-														})
-													}), 100);
-											} // *** last-stage -- END
-
-										})
-										.css({ top: (cardDistance * (targetCards + i)) +"px" });
-								});
-							})
-							.css({
-								top: (cardDistance * targetCards) +"px",
-								left: "0"
-							}));
-					return;
-				}
-				// ----- collapse playback END -------------------
-
-				selector = undoStep.cards.map(id => `.card[data-id="${id}"]`);
-				cards = self.layout.find(selector.join(", "));
-
-				from = self.layout.find(`.pile[data-id="${undoStep.from}"]`);
-				fromOffset = from[0].getBoundingClientRect();
-				offset = cards.map(card => {
-					let rect = card.getBoundingClientRect();
-					return {
-						top: rect.top - fromOffset.top,
-						left: rect.left - fromOffset.left,
-					};
-				});
-
-				// number of cards in from element
-				targetCards = from.find(".card");
-				cardDistance = parseInt(from.cssProp("--card-distance"), 10);
-
-				el = from.append(cards);
-				el.map((item, i) => {
-					el.get(i)
-						.cssSequence("landing", "transitionend", lEl =>
-							lEl.removeClass("landing").removeAttr("style"))
-						.css({
-							top: offset[i].top +"px",
-							left: offset[i].left +"px",
-						});
-				});
-
-				setTimeout(() => 
-					el.map((item, i) => {
-						el.get(i).css({
-							top: (cardDistance * (targetCards.length + i)) +"px",
-							left: "0px"
-						})
-					}), 100);
-				break;
 			case "spider-deal-cards":
 				let empty = self.layout.find(".pile:empty");
 				if (empty.length) {
@@ -266,49 +74,16 @@ let spider = {
 					return empty.cssSequence("no-deal", "animationend", el => el.removeClass("no-deal"));
 				}
 
-				let pilesOffset = self.piles.addClass("dealing-cards").map((p, i) => self.piles.get(i).offset());
-				deckOffset = self.deck.offset();
+				let pilesOffset = self.piles.addClass("dealing-cards").map((p, i) => self.piles.get(i).offset()),
+					deckOffset = self.deck.offset();
 				cardDistance = parseInt(self.piles.get(0).cssProp("--card-distance"), 10);
 				cards = self.deck.find(".card:nth-last-child(-n+10)");
 
-				cards.map((c, i) => {
-					// land and flip cards sequence
-					self.piles.get(i).append(c)
-						.cssSequence("landing", "transitionend", lEl => {
-							lEl.addClass("landed");
-
-							if (!lEl.parent().hasClass("pile-10")) return;
-
-							self.piles.addClass("flipping-cards");
-							cards.cssSequence("card-flip", "animationend", fEl => {
-								if (!fEl.parent().hasClass("pile-10")) return;
-								// reset nodes
-								self.piles.removeClass("dealing-cards flipping-cards");
-								cards.removeClass("card-flip card-back landing landed").removeAttr("style");
-
-								// push move to undo stack
-								UNDO_STACK.push({
-									cards: cards.map(card => card.getAttribute("data-id")),
-									from: "deck",
-								});
-							})
-						})
-						.css({
-							top: (deckOffset.top - pilesOffset[i].top) +"px",
-							left: (deckOffset.left - pilesOffset[i].left) +"px",
-						});
+				// push move to undo stack
+				UNDO_STACK.push({
+					animation: "deal-cards",
+					cards: cards.map(card => card.getAttribute("data-id")),
 				});
-				
-				// trigger animation
-				setTimeout(() => {
-					cards.map((card, i) => {
-						let pile = self.piles.get(i),
-							top = cardDistance * (pile.find(".card").length - 1);
-
-						cards.get(i).css({ top: top +"px", left: "0px" });
-					});
-				}, 60);
-
 				break;
 			case "check-sibling-sequence":
 				cards = event.pile.find(".card:nth-last-child(-n+13)");
@@ -324,69 +99,18 @@ let spider = {
 					});
 				
 				if (cards.length === 13) {
-					// find empty slot
-					let target = self.layout.find(".hole:empty").get(0),
-						targetRect = target[0].getBoundingClientRect(),
-						cardRects = cards.map(card => {
-							let cardRect = card.getBoundingClientRect();
-							return {
-								top: cardRect.top - targetRect.top,
-								left: cardRect.left - targetRect.left,
-							}
-						});
-
-					el = cards.map((card, i) => target.append(card).css({
-						top: cardRects[i].top +"px",
-						left: cardRects[i].left +"px",
-					}));
-
-					// trigger collapse animation
-					setTimeout(() =>
-						el.map((item, i) => 
-							item.cssSequence("collapse", "transitionend", card => {
-								if (card.data("numb") !== "A") return;
-
-								el.map((item, j) => {
-									item
-										.cssSequence("landing", "transitionend", c => {
-											if (c.data("numb") !== "A") return;
-
-											// land set into empty hole and reset Node
-											cards.removeClass("landing collapse")
-												.removeAttr("style");
-
-											last = event.pile.find(".card:last-child");
-											if (last.hasClass("card-back")) {
-												// adding "flipping-card" to get "3d-perspective"
-												event.pile.toggleClass("flipping-card", !last.length);
-
-												// flip last card from source pile
-												last.cssSequence("card-flip", "animationend", fEl =>
-													fEl.removeClass("card-flip card-back")
-														.parent()
-														.removeClass("flipping-card"));
-											}
-											
-											// push move to undo stack
-											cards = cards.map(card => card.getAttribute("data-id"));
-											UNDO_STACK.push({
-												dropped: event.dropped,
-												droppedFrom: event.from.data("id"),
-												droppedLast: event.last.data("id"),
-												collapsed: cards,
-												collapsedFrom: event.pile.data("id"),
-												last: last.hasClass("card-back") ? last.data("id") : false,
-											});
-
-											// check if game is complete
-											self.dispatch({type: "check-game-won"})
-										})
-										.css({ top: "0px", left: "0px" });
-								});
-							})
-							.css({ top: cardRects[0].top +"px" })
-					));
-
+					last = event.pile.find(".card:nth-last-child(14)");
+					// push move to undo stack
+					UNDO_STACK.push({
+						animation: "collapse-cards",
+						cards: cards.map(card => card.getAttribute("data-id")),
+						from: event.pile.data("id"),
+						to: self.layout.find(".hole:empty").get(0).data("id"),
+						flip: last.length && last.hasClass("card-back") ? last.data("id") : false,
+						dropped: event.dropped,
+						droppedFrom: event.from.data("id"),
+						droppedLast: event.last.length && event.last.hasClass("card-back") ? event.last.data("id") : false,
+					});
 					return true;
 				}
 				break;
@@ -397,9 +121,9 @@ let spider = {
 			case "check-pile-drop":
 				draggedFirst = event.el.get(0);
 				from = draggedFirst.parent().removeClass("no-drag-hover");
-				zoneLastCard = event.target.find(".card:last");
-				zoneLastSuit = zoneLastCard.data("suit");
-				zoneLastNumb = zoneLastCard.data("numb");
+				let zoneLastCard = event.target.find(".card:last"),
+					zoneLastSuit = zoneLastCard.data("suit"),
+					zoneLastNumb = zoneLastCard.data("numb");
 				
 				// number of cards in dropZone
 				targetCards = event.target.find(".card");
@@ -451,7 +175,8 @@ let spider = {
 								UNDO_STACK.push({
 									cards: event.el.map(card => card.getAttribute("data-id")),
 									from: from.data("id"),
-									last: last.hasClass("card-back") ? last.data("id") : false
+									to: event.target.data("id"),
+									flip: last.hasClass("card-back") ? last.data("id") : false,
 								});
 							})
 							.css({
@@ -546,9 +271,344 @@ let spider = {
 					left: (deckOffset.left - pile.left) +"px",
 				});
 		});
+		
+		// reset undo-stack
+		UNDO_STACK.reset(this.setState);
 
 		// trigger animation
 		setTimeout(() => this.layout.find(".card").removeClass("in-deck").css({ top: "", left: "", }), 60);
+	},
+	setState(redo, data) {
+		let self = spider,
+			selector = data.cards.map(id => `.card[data-id="${id}"]`),
+			cards = self.layout.find(selector.join(",")),
+			fromEl,
+			toEl,
+			fromOffset,
+			toOffset,
+			targetCards,
+			targetRect,
+			cardRect,
+			cardDistance,
+			offset,
+			el,
+			time = 50;
+
+		// update toolbar buttons
+		APP.btnPrev.toggleClass("tool-disabled_", UNDO_STACK.canUndo);
+		APP.btnNext.toggleClass("tool-disabled_", UNDO_STACK.canRedo);
+		// reset drop zones
+		self.layout.find(".no-drag-hover").removeClass("no-drag-hover");
+
+		// animation "playbacks"
+		switch (data.animation) {
+			case "collapse-cards":
+				if (redo) {
+					// calcaultions
+					fromEl = self.layout.find(`[data-id="${data.from}"]`);
+					toEl = self.layout.find(`[data-id="${data.to}"]`);
+
+					let droppedSelector = data.dropped.map(id => `.card[data-id="${id}"]`),
+						droppedCards = self.layout.find(droppedSelector.join(","));
+					if (fromEl[0] !== droppedCards.parent()[0]) {
+						self.setState(true, {
+								animation: "card-move",
+								cards: data.dropped,
+								from: data.droppedFrom,
+								to: data.from,
+								flip: data.droppedLast,
+							});
+						time = 350;
+					}
+					// wait if there is a "pre-animation"
+					setTimeout(() => {
+						cards = self.layout.find(selector.join(","))
+						targetRect = toEl[0].getBoundingClientRect();
+						cardRect = cards.map(card => {
+							let cardRect = card.getBoundingClientRect();
+							return {
+								top: cardRect.top - targetRect.top,
+								left: cardRect.left - targetRect.left,
+							}
+						});
+						el = cards.map((card, i) => toEl.append(card).css({
+							top: cardRect[i].top +"px",
+							left: cardRect[i].left +"px",
+						}));
+					}, time - 50);
+					// trigger animation
+					setTimeout(() =>
+						el.map((item, i) => 
+							item.cssSequence("collapse", "transitionend", card => {
+								if (card.data("numb") !== "A") return;
+								el.map((item, j) => {
+									item.cssSequence("landing", "transitionend", c => {
+										if (c.data("numb") !== "A") return;
+
+										// land set into empty hole and reset Node
+										cards.removeClass("landing collapse").removeAttr("style");
+
+										let flipCard = fromEl.find(".card:last-child");
+										if (flipCard.hasClass("card-back")) {
+											// adding "flipping-card" to get "3d-perspective"
+											fromEl.toggleClass("flipping-card", !flipCard.length);
+
+											// flip last card from source pile
+											flipCard.cssSequence("card-flip", "animationend", fEl =>
+												fEl.removeClass("card-flip card-back")
+													.parent().removeClass("flipping-card"));
+										}
+										// check if game is complete
+										self.dispatch({type: "check-game-won"})
+									})
+									.css({ top: "0px", left: "0px" });
+								});
+							})
+							.css({ top: cardRect[0].top +"px" })), time);
+				} else {
+					// calcaultions
+					fromEl = self.layout.find(`[data-id="${data.to}"]`);
+					toEl = self.layout.find(`[data-id="${data.from}"]`);
+					fromOffset = fromEl[0].getBoundingClientRect();
+					toOffset = toEl[0].getBoundingClientRect();
+
+					if (data.flip) {
+						let flipCard = toEl.find(`[data-id="${data.flip}"]`);
+						// adding "flipping-card" to get "3d-perspective"
+						toEl.addClass("flipping-card");
+						// flip last card from source pile
+						flipCard.cssSequence("card-flip-back", "animationend", fEl =>
+							fEl.removeClass("card-flip-back").addClass("card-back")
+								.parent()
+								.removeClass("flipping-card"));
+						time = 350;
+					}
+
+					// append card elements in original pile
+					cards = toEl.addClass("undo-collapsing")
+								.append(cards).addClass("expanding").css({
+									top: (fromOffset.top - toOffset.top) +"px",
+									left: (fromOffset.left - toOffset.left) +"px",
+								});
+
+					// number of cards in from element
+					targetCards = toEl.find(".card").length - cards.length;
+					cardDistance = parseInt(toEl.cssProp("--card-distance"), 10);
+
+					setTimeout(() => 
+						cards
+							.cssSequence("landing", "transitionend", lEl => {
+								lEl.removeClass("landing");
+								if (lEl[0] !== cards[cards.length-1]) return;
+
+								cards.map((card, i) => {
+									cards.get(i)
+										.cssSequence("landing", "transitionend", l => {
+											if (l[0] !== cards[cards.length - 2]) return;
+											// reset cards
+											cards.removeClass("landing expanding").removeAttr("style");
+											// reset expanded cards pile
+											lEl.parent().removeClass("undo-collapsing");
+
+											{ // *** last-stage -- START
+												self.layout.find(`.card[data-id="${data.droppedLast}"]`)
+													.cssSequence("card-flip-back", "animationend", pfEl => {
+														// reset flipping card
+														pfEl.addClass("card-back").removeClass("card-flip-back");
+													})
+													.parent().addClass("flipping-card undo-card");
+
+												// finally put back original card that triggered collapse
+												let selector = data.dropped.map(id => `.card[data-id="${id}"]`),
+													cards = self.layout.find(selector.join(",")),
+													droppedFrom = self.layout.find(`.pile[data-id="${data.droppedFrom}"]`),
+													targetCards = droppedFrom.find(".card").length,
+													fromEl = droppedFrom[0].getBoundingClientRect(),
+													offset = cards.map(card => {
+														let cardRect = card.getBoundingClientRect();
+														return {
+															top: cardRect.top - fromEl.top,
+															left: cardRect.left - fromEl.left,
+														};
+													});
+
+												el = droppedFrom.append(cards);
+												el.map((item, i) => {
+													el.get(i)
+														.cssSequence("landing", "transitionend", lEl => {
+															lEl.removeClass("landing").removeAttr("style");
+															droppedFrom.removeClass("flipping-card undo-card");
+														})
+														.css({
+															top: offset[i].top +"px",
+															left: offset[i].left +"px",
+														});
+												});
+
+												// trigger final animation
+												setTimeout(() => 
+													el.map((item, i) => {
+														el.get(i).css({
+															top: (cardDistance * (targetCards + i)) +"px",
+															left: "0px"
+														})
+													}), 100);
+											} // *** last-stage -- END
+
+										})
+										.css({ top: (cardDistance * (targetCards + i)) +"px" });
+								});
+							})
+							.css({top: (cardDistance * targetCards) +"px", left: "0"}), time);
+				}
+				break;
+			case "deal-cards":
+				if (redo) {
+					// calcaultions
+					toEl = self.piles;
+					toOffset = toEl.addClass("dealing-cards").map((pile, i) => toEl.get(i).offset());
+					fromOffset = self.deck.offset();
+					cardDistance = parseInt(toEl.get(0).cssProp("--card-distance"), 10) || 0;
+
+					// prepare animation
+					cards.map((card, i) => {
+						// land and flip cards sequence
+						toEl.get(i).append(card)
+							.cssSequence("landing", "transitionend", lEl => {
+								lEl.addClass("landed");
+
+								if (!lEl.parent().hasClass("pile-10")) return;
+
+								toEl.addClass("flipping-cards");
+								cards.cssSequence("card-flip", "animationend", fEl => {
+									if (!fEl.parent().hasClass("pile-10")) return;
+									// reset nodes
+									toEl.removeClass("dealing-cards flipping-cards");
+									cards.removeClass("card-flip card-back landing landed").removeAttr("style");
+								})
+							})
+							.css({
+								top: (fromOffset.top - toOffset[i].top) +"px",
+								left: (fromOffset.left - toOffset[i].left) +"px",
+							});
+					});
+					// trigger animation
+					setTimeout(() => {
+						cards.map((card, i) => {
+							let pile = toEl.get(i),
+								top = cardDistance * (pile.find(".card").length - 1);
+							cards.get(i).css({ top: top +"px", left: "0px" });
+						});
+					}, time);
+				} else {
+					// calcaultions
+					toEl = self.deck;
+					toOffset = toEl.addClass("undo-collect")[0].getBoundingClientRect();
+					offset = cards.map((c, i) => c.getBoundingClientRect());
+					
+					// adding "flipping-card" to get "3d-perspective"
+					self.piles.addClass("re-flipping-cards");
+					// prepare for animation
+					cards.cssSequence("card-flip-back", "animationend", fEl => {
+						if (fEl[0] !== cards[0]) return;
+						// reset flipping cards
+						cards.removeClass("card-flip-back").addClass("card-back");
+						// prepare animation
+						cards.map((c, i) => {
+							toEl.append(c)
+								.cssSequence("landing", "transitionend", lEl => {
+									if (lEl[0] !== cards[0]) return;
+									// reset cards
+									cards.removeClass("landing").removeAttr("style");
+									// reset piles
+									self.piles.removeClass("re-flipping-cards");
+									// reset deck
+									toEl.removeClass("undo-collect");
+								})
+								.css({
+									top: (offset[i].top - toOffset.top) +"px",
+									left: (offset[i].left - toOffset.left) +"px",
+								});
+						});
+						// trigger animation
+						setTimeout(() =>
+							cards.map((c, i) =>
+								cards.get(i).css({ top: "0px", left: "0px" })), time);
+					});
+				}
+				break;
+			case "card-move":
+				if (redo) {
+					fromEl = self.layout.find(`[data-id="${data.from}"]`);
+					toEl = self.layout.find(`[data-id="${data.to}"]`).addClass("undo-collapsing");
+				} else {
+					fromEl = self.layout.find(`[data-id="${data.to}"]`);
+					toEl = self.layout.find(`[data-id="${data.from}"]`);
+
+					if (data.flip && toEl.hasClass("pile")) {
+						let flipCard = toEl.find(`.card[data-id="${data.flip}"]`);
+						// adding "flipping-card" to get "3d-perspective"
+						toEl.addClass("flipping-card undo-card");
+						// flip last card from source pile
+						flipCard.cssSequence("card-flip-back", "animationend", fEl =>
+							fEl.removeClass("card-flip-back").addClass("card-back")
+								.parent()
+								.removeClass("flipping-card undo-card"));
+						time = 350;
+					}
+				}
+				// animation calculation
+				fromOffset = toEl[0].getBoundingClientRect();
+				toOffset = toEl[0].getBoundingClientRect();
+				cardRect = cards[0].getBoundingClientRect();
+				targetCards = toEl.find(".card");
+				cardDistance = parseInt(toEl.cssProp("--card-distance"), 10) || 0;
+				offset = cards.map(card => {
+					let rect = card.getBoundingClientRect();
+					return {
+						top: rect.top - toOffset.top,
+						left: rect.left - toOffset.left,
+					};
+				});
+
+				// prepare animation
+				el = toEl.append(cards);
+				el.map((item, i) => {
+					el.get(i)
+						.cssSequence("landing", "transitionend", lEl => {
+							// reset element
+							lEl.removeClass("landing");
+							toEl.removeClass("undo-collapsing");
+
+							if (redo && data.flip && fromEl.hasClass("pile")) {
+								let flipCard = self.layout.find(`.card[data-id="${data.flip}"]`);
+								// adding "flipping-card" to get "3d-perspective"
+								fromEl.addClass("flipping-card");
+								// flip last card from source pile
+								flipCard.cssSequence("card-flip", "animationend", fEl =>
+									fEl.removeClass("card-flip card-back")
+										.parent()
+										.removeClass("flipping-card"));
+							}
+						})
+						.css({
+							top: offset[i].top +"px",
+							left: offset[i].left +"px",
+						});
+				});
+				// trigger animation
+				setTimeout(() => 
+					el.map((item, i) => {
+						let cardsMargin = parseInt(toEl.cssProp("--card-margin"), 10) || 0,
+							top = toEl.hasClass("pile") ? cardDistance * (targetCards.length + i) : 0;
+						el.get(i).css({
+							top: top +"px",
+							left: "0px"
+						})
+					}), time);
+			default:
+				data.animation = "card-move";
+		}
 	}
 };
 

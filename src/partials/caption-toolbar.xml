@@ -1,10 +1,9 @@
 <CaptionToolBar>
 	<Group width="17%">
 		<Options>
-			<Tool symbol="icon-undo" state="disabled"/>
-			<Tool symbol="icon-redo" state="disabled"/>
+			<Tool symbol="icon-undo" state="disabled" click="history-go-prev"/>
+			<Tool symbol="icon-redo" state="disabled" click="history-go-next"/>
 		</Options>
-		<Tool symbol="icon-new" click="new-game"/>
 	</Group>
 	<Group>
 		<Options>
@@ -13,7 +12,7 @@
 			<Tool name="Spider" click="set-game-engine" arg="spider"/>
 		</Options>
 	</Group>
-	<Group width="21%">
-		<Tool symbol="icon-cog"/>
+	<Group width="25%">
+		<Tool symbol="icon-cog" menu="toolbar-settings"/>
 	</Group>
 </CaptionToolBar>
