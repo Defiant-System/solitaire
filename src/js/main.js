@@ -70,6 +70,19 @@ const app = {
 					.removeClass("layout-freecell layout-solitaire layout-spider playing")
 					.addClass("layout-"+ ACTIVE);
 
+				// update menus
+				window.bluePrint
+					.selectSingleNode(`//Menu[@check-group="game-engine"][@is-checked="1"]`)
+					.removeAttribute("is-checked");
+				window.bluePrint
+					.selectSingleNode(`//Menu[@check-group="game-engine"][@arg="${ACTIVE}"]`)
+					.setAttribute("is-checked", "1");
+
+				// update toolbar
+				window.find(`.tool-active_[data-click="set-game-engine"]`).removeClass("tool-active_");
+				window.find(`[data-click="set-game-engine"][data-arg="${ACTIVE}"]`).addClass("tool-active_");
+
+				// resize window
 				window.body.css({
 					width: self.board.cssProp("--layout-width"),
 					height: self.board.cssProp("--layout-height"),
