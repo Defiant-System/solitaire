@@ -56,7 +56,7 @@ let freecell = {
 					if (this.isCardFoundationDropable(el, target)) dropable = target;
 				});
 				
-				if (dropable.length) {
+				if (dropable && dropable.length) {
 					draggedParent = el.parents(".pile");
 
 					// push move to undo stack

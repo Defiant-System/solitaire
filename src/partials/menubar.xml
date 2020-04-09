@@ -15,19 +15,16 @@
 		<Menu name="Quit Solitaire" shell="win -c"/>
 	</Menu>
 	<Menu name="Game" for="game-board">
-		<Menu name="Undo" click="undo-move" hotkey="alt+z"/>
 		<!-- optional menus depending on game engine -->
 		<Menu name="Deal" click="trigger-solitaire-cycle-flip-cards" show-if-group="game-engine" is="solitaire"/>
 		<Menu name="Deal" click="trigger-spider-deal-cards" show-if-group="game-engine" is="spider"/>
-		<!-- optional menus end -->
-		<Menu name="Auto Complete" click="auto-complete" disable-if="game-engine" is="spider"/>
 		<Menu type="divider"/>
-		<Menu name="Background&#8230;">
+		<Menu name="Background&#8230;" for="game-background">
 			<Menu name="Casino" click="set-game-theme" arg="casino" check-group="game-theme" is-checked="1"/>
 			<Menu name="Classic" click="set-game-theme" arg="classic" check-group="game-theme"/>
 			<Menu name="Desert" click="set-game-theme" arg="desert" check-group="game-theme"/>
 		</Menu>
-		<Menu name="Card Backs&#8230;">
+		<Menu name="Card Backs&#8230;" for="game-card-back">
 			<Menu name="Classic Red" click="set-card-back" arg="red" check-group="card-back" is-checked="1"/>
 			<Menu name="Classic Blue" click="set-card-back" arg="blue" check-group="card-back"/>
 			<Menu name="Green" click="set-card-back" arg="green" check-group="card-back"/>
@@ -53,6 +50,11 @@
 	<Menu name="New Game" click="new-game"/>
 	<Menu type="divider"/>
 	<Menu name="Play Music" click="toggle-music" check-group="toggle-music"/>
+	<!-- optional menus end -->
+	<Menu name="Auto Complete" click="auto-complete" disable-if="game-engine" is="spider"/>
+	<Menu type="divider"/>
+	<Menu name="Background&#8230;" invoke="game-background"/>
+	<Menu name="Card Backs&#8230;" invoke="game-card-back"/>
 	<!-- Conditional menu options START -->
 	<Menu name="Settings&#8230;" show-if-group="game-engine" is="freecell">
 		<Menu name="Settings for Freecell&#8230;"/>
