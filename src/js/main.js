@@ -32,7 +32,7 @@ const app = {
 			// set state function
 			this.UNDO_STACK.reset(this.activeEngine.setState);
 		} else {
-			setTimeout(() => this.dispatch({type: "new-game"}), 100);
+			setTimeout(() => this.dispatch({type: "new-game"}), 300);
 		}
 	},
 	dispatch(event) {

@@ -312,6 +312,9 @@ let freecell = {
 		
 		// reset undo-stack
 		UNDO_STACK.reset(this.setState);
+		// update toolbar buttons
+		APP.btnPrev.addClass("tool-disabled_");
+		APP.btnNext.addClass("tool-disabled_");
 
 		// trigger animation
 		setTimeout(() => this.layout.find(".card").removeClass("in-deck").css({ top: "", left: "", }), 60);

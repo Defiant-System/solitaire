@@ -15,6 +15,7 @@
 		<Menu name="Quit Solitaire" shell="win -c"/>
 	</Menu>
 	<Menu name="Game" for="game-board">
+		<Menu name="Auto Complete" click="auto-complete" disable-if="game-engine" is="spider"/>
 		<!-- optional menus depending on game engine -->
 		<Menu name="Deal" click="trigger-solitaire-cycle-flip-cards" show-if-group="game-engine" is="solitaire"/>
 		<Menu name="Deal" click="trigger-spider-deal-cards" show-if-group="game-engine" is="spider"/>
