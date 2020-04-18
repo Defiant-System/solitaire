@@ -10,8 +10,7 @@ import spider from "./modules/spider"
 
 // constants
 let ENGINES = { freecell, solitaire, spider },
-	ACTIVE = "solitaire",
-	GAME_OVER = true;
+	ACTIVE = "solitaire";
 
 const app = {
 	init() {
@@ -54,9 +53,6 @@ const app = {
 					self.dispatch({type: "set-game-engine", init: true});
 				}
 				self.activeEngine.dispatch(event);
-
-				// game started
-				GAME_OVER = false;
 				break;
 			case "set-game-engine":
 				// set global variable
@@ -106,7 +102,6 @@ const app = {
 				self.btnPrev.addClass("tool-disabled_");
 				self.btnNext.addClass("tool-disabled_");
 
-				GAME_OVER = true;
 				self.board.removeClass("playing").addClass("game-won");
 				break;
 			case "toggle-music":
@@ -117,7 +112,6 @@ const app = {
 				}
 				break;
 			case "game-fail":
-				GAME_OVER = true;
 				self.board.removeClass("playing").addClass("game-fail");
 				break;
 			case "history-go-prev":
