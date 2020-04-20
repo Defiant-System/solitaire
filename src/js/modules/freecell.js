@@ -44,6 +44,7 @@ let freecell = {
 			case "new-game":
 				// show deck before dealing
 				self.deck.cssSequence("show", "transitionend", deck => self.start());
+				AUTO_COMPLETE = false;
 				break;
 			case "game-double-click":
 				el = $(event.target);

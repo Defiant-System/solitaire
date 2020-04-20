@@ -52,6 +52,7 @@ let solitaire = {
 
 		switch (event.type) {
 			case "new-game":
+				AUTO_COMPLETE = false;
 				self.start();
 				break;
 			case "game-double-click":

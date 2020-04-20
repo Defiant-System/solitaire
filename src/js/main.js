@@ -31,7 +31,7 @@ const app = {
 			// set state function
 			this.UNDO_STACK.reset(this.activeEngine.setState);
 		} else {
-			setTimeout(() => this.dispatch({type: "new-game"}), 300);
+			this.dispatch({type: "new-game"});
 		}
 	},
 	dispatch(event) {
@@ -52,14 +52,15 @@ const app = {
 				if (!self.activeEngine) {
 					self.dispatch({type: "set-game-engine", init: true});
 				}
-				self.activeEngine.dispatch(event);
+				setTimeout(() => self.activeEngine.dispatch(event), 500);
 				break;
 			case "set-game-engine":
 				// set global variable
 				ACTIVE = event.arg || ACTIVE;
-
+				console.log("ACTIVE", ACTIVE);
 				// set default game engine
 				self.activeEngine = ENGINES[ACTIVE]
+				console.log("activeEngine", self.activeEngine);
 
 				// set board layout
 				self.board
@@ -85,7 +86,7 @@ const app = {
 				});
 
 				// set window title
-				window.title = "Solitaire - "+ self.activeEngine.name;
+			//	window.title = "Solitaire - "+ self.activeEngine.name;
 
 				if (!event.init) {
 					self.dispatch({type: "new-game"});
