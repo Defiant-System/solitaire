@@ -57,10 +57,9 @@ const app = {
 			case "set-game-engine":
 				// set global variable
 				ACTIVE = event.arg || ACTIVE;
-				console.log("ACTIVE", ACTIVE);
+				
 				// set default game engine
 				self.activeEngine = ENGINES[ACTIVE]
-				console.log("activeEngine", self.activeEngine);
 
 				// set board layout
 				self.board
