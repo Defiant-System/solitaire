@@ -51,11 +51,11 @@ let freecell = {
 				el = $(event.target);
 				if (!el.hasClass("card") || el.hasClass("card-back")) return;
 				
-				check = this.layout.find(".hole.fndtn");
+				check = self.layout.find(".hole.fndtn");
 				check.filter((fnd, i) => {
 					if (dropable) return;
 					let target = check.get(i);
-					if (this.isCardFoundationDropable(el, target)) dropable = target;
+					if (self.isCardFoundationDropable(el, target)) dropable = target;
 				});
 				
 				if (dropable && dropable.length) {
@@ -71,7 +71,7 @@ let freecell = {
 				}
 				break;
 			case "check-game-won":
-				if (this.layout.find(".hole .card").length === 104) {
+				if (self.layout.find(".hole .card").length === 104) {
 					APP.dispatch({type: "game-won"});
 				}
 				break;
@@ -79,8 +79,9 @@ let freecell = {
 				AUTO_COMPLETE = true;
 				dropable = true;
 
-				check = this.layout.find(".hole.fndtn");
-				cards = this.layout.find(".pile .card:last-child, .slot .card:last-child")
+				self.layout.find(".drag-return-to-origin").removeClass("drag-return-to-origin");
+				check = self.layout.find(".hole.fndtn");
+				cards = self.layout.find(".pile .card:last-child, .slot .card:last-child")
 							.toArray()
 							.sort((a, b) => CARD_DECK.values[a.dataset.numb] - CARD_DECK.values[b.dataset.numb]);
 
@@ -91,7 +92,7 @@ let freecell = {
 					check.map((fnd, i) => {
 						let target = check.get(i);
 
-						if (dropable && this.isCardFoundationDropable(el, target)) {
+						if (dropable && self.isCardFoundationDropable(el, target)) {
 							let eRect = el[0].getBoundingClientRect(),
 								tRect = target[0].getBoundingClientRect(),
 								targetOffset = [{
@@ -123,7 +124,7 @@ let freecell = {
 				// number of cards in dropZone
 				draggedFirst = event.el.get(0);
 				from = draggedFirst.parent().removeClass("no-drag-hover");
-				dropable = event.el.length  === 1 && this.isCardFoundationDropable(draggedFirst, event.target);
+				dropable = event.el.length  === 1 && self.isCardFoundationDropable(draggedFirst, event.target);
 
 				if (dropable) {
 					// for seamless transition - position dragged el where dropped
@@ -255,7 +256,7 @@ let freecell = {
 					dragable = cards.length === check.length ? cards : false;
 				}
 				// ensure enough free slots existing to handle number of cards being dragged
-				if (dragable.length - 1 > (4 - this.layout.find(".slot .card").length) && el.nextAll(".card").length) {
+				if (dragable.length - 1 > (4 - self.layout.find(".slot .card").length) && el.nextAll(".card").length) {
 					dragable = false;
 				}
 
