@@ -633,6 +633,7 @@ transition: width 200ms ease-out,
 		&.hole-8 { left: 918px; }
 
 		.card.collapse {
+			z-index: 43;
 			transition: top 200ms ease-in-out,
 						left 200ms ease-in-out;
 
@@ -808,7 +809,7 @@ transition: width 200ms ease-out,
 		border-radius: 9px;
 	}
 
-	.card {
+	.card:not(.landing) {
 		z-index: 2;
 		box-shadow: 0 0 0;
 	}
