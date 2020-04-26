@@ -809,9 +809,12 @@ transition: width 200ms ease-out,
 		border-radius: 9px;
 	}
 
-	.card:not(.landing) {
+	.card {
 		z-index: 2;
-		box-shadow: 0 0 0;
+		
+		&:not(:first-child) {
+			box-shadow: 0 0 0;
+		}
 	}
 }
 

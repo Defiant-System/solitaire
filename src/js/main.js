@@ -52,7 +52,7 @@ const app = {
 				if (!self.activeEngine) {
 					self.dispatch({type: "set-game-engine", init: true});
 				}
-				setTimeout(() => self.activeEngine.dispatch(event), 500);
+				setTimeout(() => self.activeEngine.dispatch(event), 250);
 				break;
 			case "set-game-engine":
 				// set global variable
