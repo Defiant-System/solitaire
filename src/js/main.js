@@ -17,20 +17,7 @@ let SOUNDS = {
 let ENGINES = { freecell, solitaire, spider },
 	ACTIVE = "solitaire";
 
-let pgn = `Solitaire
-201:hKH,c8H,d3H,d6H,d9H,cJH,d4H,sKH,dJH,s10H,c3H,s4H,dQH,d8H,s3H,h4H,d5H,h10H,h8H,d2H,h9H,c2H,cKH,s5H
-202:
-211:
-212:
-213:
-214:
-221:d10S
-222:sJH,d7S
-223:s7H,hJH,c9S
-224:s9H,h3H,h5H,h6S
-225:h2H,s2H,s8H,s6H,c6S
-226:c10H,h7H,c5H,cQH,c4H,dAS
-227:dKH,hQH,sQH,hAH,sAH,c7H,cAS`;
+let pgn = ``;
 
 const app = {
 	init() {
@@ -56,10 +43,11 @@ const app = {
 			this.UNDO_STACK.reset(this.activeEngine.setState);
 
 			//this.dispatch({ type: "output-pgn-string" });
-		} else if (pgn) {
+		} else if (pgn !== "") {
 			// set active engine
 			ACTIVE = pgn.split("\n")[0].toLowerCase();
-			this.activeEngine = ENGINES[ACTIVE];
+			//this.activeEngine = ENGINES[ACTIVE];
+			this.dispatch({ type: "set-game-engine", init: true });
 			// trigger event
 			this.dispatch({ type: "game-from-pgn", pgn });
 		} else {
@@ -82,7 +70,36 @@ const app = {
 				console.log(str);
 				break;
 			case "game-from-pgn":
-				self.activeEngine.dispatch(event);
+				layout = self.activeEngine.layout;
+				str = event.pgn.split("\n");
+
+				let ui = str[1].split(",");
+				self.board.data({"theme": ui[0]});
+				self.board.data({"card-back": ui[1]});
+
+				if (str[0] === "Solitaire" && ui[2]) {
+					self.activeEngine.dispatch({ type: "solitaire-set-waste", arg: +ui[2] })
+				}
+
+				str.slice(2).map(p => {
+					let parts = p.split(":");
+					if (!parts[1]) return;
+					let pEl = layout.find(`[data-id="${parts[0]}"]`),
+						cards = parts[1].split(",");
+					
+					cards = cards.map(c => {
+						let info = c.split("-"),
+							suit = info[0].slice(0, 1),
+							numb = info[0].slice(1),
+							suitName = CARD_DECK.getSuitByChar(suit),
+							cardBack = info[1].slice(0, 1) === "H" ? "card-back" : "";
+						return `<div class="card ${suit}${numb} ${cardBack}" data-id="${info[1].slice(1)}" data-numb="${numb}" data-suit="${suitName}" data-ondrag="check-card-drag"></div>`;
+					});
+					// append cards to parent element
+					pEl.html(cards.join(""));
+				});
+				// resets game engine
+				self.activeEngine.dispatch({ type: "reset-game-board" });
 				break;
 			case "new-game":
 				// clear all cards
@@ -190,6 +207,7 @@ const app = {
 };
 
 let CARD_DECK = {
+		getSuitByChar: (c) => CARD_DECK.suits.find(suit => suit.name.startsWith(c)).name,
 		suits: [
 			{ name: "club" },
 			{ name: "diamond" },

@@ -58,28 +58,19 @@ let solitaire = {
 				self.layout.find("> *").map(el => {
 					let pId = el.getAttribute("data-id"),
 						cards = $(".card", el).map(c =>
-							c.dataset.suit.slice(0,1) + c.dataset.numb + (~c.className.indexOf("card-back") ? "H" : "S"));
+							c.dataset.suit.slice(0,1) +
+							c.dataset.numb +"-"+
+							(~c.className.indexOf("card-back") ? "H" : "S") + c.dataset.id);
 					str.push(pId +":"+ cards.join(","))
 				});
 				// return to app
 				return str.join("\n");
-			case "game-from-pgn":
-				str = event.pgn.split("\n").slice(1);
-				str.map(p => {
-					let parts = p.split(":");
-					if (!parts[1]) return;
-					let pEl = self.layout.find(`[data-id="${parts[0]}"]`),
-						cards = parts[1].split(",");
-					
-					cards = cards.map(c => {
-						let suit = c.slice(0, 1),
-							numb = c.slice(1,-1),
-							cardBack = c.slice(-1) === "H" ? "card-back" : "";
-						return `<div class="card ${suit}${numb} ${cardBack}" data-id="33" data-numb="${suit}" data-suit="${suit}" data-ondrag="check-card-drag"></div>`;
-					});
-
-					pEl.html(cards.join(""));
-				});
+			case "reset-game-board":
+				// reset undo-stack + auto-complete
+				UNDO_STACK.reset(self.setState);
+				AUTO_COMPLETE = false;
+				// set board in "playing" mode
+				self.board.addClass("playing")
 				break;
 
 			case "new-game":

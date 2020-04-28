@@ -43,8 +43,26 @@ let freecell = {
 
 		switch (event.type) {
 			case "output-pgn-string":
-				str = self.name;
-				return str;
+				str = [self.name];
+				// collect layout info + data
+				self.layout.find("> *").map(el => {
+					let pId = el.getAttribute("data-id"),
+						cards = $(".card", el).map(c =>
+							c.dataset.suit.slice(0,1) +
+							c.dataset.numb +"-"+
+							(~c.className.indexOf("card-back") ? "H" : "S") + c.dataset.id);
+					if (!pId) return;
+					str.push(pId +":"+ cards.join(","))
+				});
+				// return to app
+				return str.join("\n");
+			case "reset-game-board":
+				// reset undo-stack + auto-complete
+				UNDO_STACK.reset(self.setState);
+				AUTO_COMPLETE = false;
+				// set board in "playing" mode
+				self.board.addClass("playing")
+				break;
 
 			case "new-game":
 				// show deck before dealing
