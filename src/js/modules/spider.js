@@ -124,6 +124,9 @@ let spider = {
 				let zoneLastCard = event.target.find(".card:last"),
 					zoneLastSuit = zoneLastCard.data("suit"),
 					zoneLastNumb = zoneLastCard.data("numb");
+
+				// play sound
+				APP.AUDIO.play("card");
 				
 				// number of cards in dropZone
 				targetCards = event.target.find(".card");
@@ -147,10 +150,14 @@ let spider = {
 						from.toggleClass("flipping-card", !last.length);
 
 						// flip last card from source pile
-						last.cssSequence("card-flip", "animationend", fEl =>
+						last.cssSequence("card-flip", "animationend", fEl => {
+							// play sound
+							APP.AUDIO.play("cardFlip");
+
 							fEl.removeClass("card-flip card-back")
 								.parent()
-								.removeClass("flipping-card"));
+								.removeClass("flipping-card")
+						});
 					}
 
 					cardDistance = parseInt(event.target.cssProp("--card-distance"), 10);
@@ -310,7 +317,7 @@ let spider = {
 
 					let droppedSelector = data.dropped.map(id => `.card[data-id="${id}"]`),
 						droppedCards = self.layout.find(droppedSelector.join(","));
-					if (fromEl[0] !== droppedCards.parent()[0]) {
+					if (droppedCards.length && fromEl[0] !== droppedCards.parent()[0]) {
 						self.setState(true, {
 								animation: "card-move",
 								cards: data.dropped,
@@ -322,7 +329,7 @@ let spider = {
 					}
 					// wait if there is a "pre-animation"
 					setTimeout(() => {
-						cards = self.layout.find(selector.join(","))
+						cards = self.layout.find(selector.join(","));
 						targetRect = toEl[0].getBoundingClientRect();
 						cardRect = cards.map(card => {
 							let cardRect = card.getBoundingClientRect();
@@ -421,7 +428,7 @@ let spider = {
 												// finally put back original card that triggered collapse
 												let selector = data.dropped.map(id => `.card[data-id="${id}"]`),
 													cards = self.layout.find(selector.join(",")),
-													droppedFrom = self.layout.find(`.pile[data-id="${data.droppedFrom}"]`),
+													droppedFrom = self.layout.find(`[data-id="${data.droppedFrom}"]`),
 													targetCards = droppedFrom.find(".card").length,
 													fromEl = droppedFrom[0].getBoundingClientRect(),
 													offset = cards.map(card => {
@@ -431,6 +438,17 @@ let spider = {
 															left: cardRect.left - fromEl.left,
 														};
 													});
+
+												if (self.deck[0] === droppedFrom[0]) {
+													// re-assemble to deck
+													cards = self.layout.find(".pile .card:last-child");
+													
+													self.setState(false, {
+														animation: "deal-cards",
+														cards: cards.map(card => card.getAttribute("data-id")),
+													});
+													return;
+												}
 
 												el = droppedFrom.append(cards);
 												el.map((item, i) => {
@@ -485,6 +503,19 @@ let spider = {
 									// reset nodes
 									toEl.removeClass("dealing-cards flipping-cards");
 									cards.removeClass("card-flip card-back landing landed").removeAttr("style");
+
+									// check if cards are collapsable
+									toEl.map(pEl => {
+										let pile = $(pEl);
+										
+										self.dispatch({
+											type: "check-sibling-sequence",
+											dropped: pile.find(".card:last"),
+											from: self.deck,
+											last: false,
+											pile,
+										});
+									});
 								})
 							})
 							.css({

@@ -2,6 +2,9 @@
 // undo stack
 import History from "./modules/history"
 
+// sound fx
+import Audio from "./modules/audio"
+
 // engines
 import freecell from "./modules/freecell"
 import solitaire from "./modules/solitaire"
@@ -19,6 +22,10 @@ const app = {
 		this.btnPrev = window.find("[data-click='history-go-prev']");
 		this.btnNext = window.find("[data-click='history-go-next']");
 		this.UNDO_STACK = new History;
+		this.AUDIO = new Audio;
+
+		// initiate sound fx
+		//Audio.init();
 
 		// initiate engines
 		for (let key in ENGINES) {
