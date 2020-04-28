@@ -11,6 +11,7 @@ import spider from "./modules/spider"
 let SOUNDS = {
 	"put-card": { url: "~/sound/card-put.mp3" },
 	"flip-card": { url: "~/sound/card-flip.mp3" },
+	"shove-card": { url: "~/sound/card-shove.mp3" },
 };
 
 // constants
@@ -18,20 +19,20 @@ let ENGINES = { freecell, solitaire, spider },
 	ACTIVE = "solitaire";
 
 let pgn = `Solitaire
-classic,green,1
-201:h10-H35,c2-H1
-202:d9-S21,d8-S20,dQ-S24,s8-S46,c9-S8,s10-S48,c5-S4,s2-S40,d3-S15,cJ-S10,d7-S19,c8-S7,d5-S17
-211:hA-S26,h2-S27,h3-S28
-212:dA-S13,d2-S14
-213:cA-S0
-214:
-221:hK-S38,sQ-S50,dJ-S23
-222:c10-H9,h7-S32,s6-S44
-223:cK-S12,hQ-S37,sJ-S49,d10-S22,s9-S47,h8-S33,c7-S6,d6-S18,s5-S43,d4-S16,c3-S2
-224:h4-H29,c6-H5,s3-S41
-225:dK-S25
-226:sK-H51,h9-H34,sA-H39,h5-S30,c4-S3
-227:s7-H45,h6-H31,s4-H42,cQ-S11,hJ-S36`;
+casino,red,1
+201:
+202:
+211:hA-S26,h2-S27,h3-S28,h4-S29,h5-S30,h6-S31,h7-S32
+212:dA-S13,d2-S14,d3-S15,d4-S16,d5-S17,d6-S18,d7-S19
+213:cA-S0,c2-S1,c3-S2,c4-S3,c5-S4,c6-S5
+214:sA-S39,s2-S40,s3-S41,s4-S42,s5-S43,s6-S44,s7-S45,s8-S46
+221:hK-S38,sQ-S50,dJ-S23,c10-S9,h9-S34,c8-S7
+222:
+223:cK-S12,hQ-S37,sJ-S49,d10-S22,s9-S47,h8-S33,c7-S6
+224:
+225:dK-S25,cQ-S11,hJ-S36,s10-S48,d9-S21
+226:sK-S51,dQ-S24,cJ-S10,h10-S35,c9-S8,d8-S20
+227:`;
 
 const app = {
 	init() {

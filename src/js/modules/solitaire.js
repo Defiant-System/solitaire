@@ -435,6 +435,9 @@ let solitaire = {
 		// animation "playbacks"
 		switch (data.animation) {
 			case "waste-to-deck":
+				// play sound
+				window.audio.play("flip-card");
+
 				if (redo) {
 					fromEl = self.layout.find(`[data-id="${data.from}"]`);
 					toEl = self.layout.find(`[data-id="${data.to}"]`);
@@ -514,6 +517,9 @@ let solitaire = {
 				}
 				break;
 			case "cycle-flip":
+				// play sound
+				window.audio.play("flip-card");
+
 				if (redo) {
 					fromEl = self.layout.find(`[data-id="${data.from}"]`);
 					toEl = self.layout.find(`[data-id="${data.to}"]`);
@@ -521,9 +527,6 @@ let solitaire = {
 					fromEl = self.layout.find(`[data-id="${data.to}"]`);
 					toEl = self.layout.find(`[data-id="${data.from}"]`);
 				}
-
-				// play sound
-				window.audio.play("flip-card");
 
 				// prepare calculation
 				fromElOffset = fromEl[0].getBoundingClientRect();
@@ -617,6 +620,9 @@ let solitaire = {
 								fEl.removeClass("card-flip-back").addClass("card-back")
 									.parent()
 									.removeClass("flipping-card undo-card");
+
+								// play sound
+								window.audio.play("flip-card");
 							});
 						time = 350;
 					}
