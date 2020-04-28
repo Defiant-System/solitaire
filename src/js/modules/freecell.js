@@ -44,6 +44,10 @@ let freecell = {
 		switch (event.type) {
 			case "output-pgn-string":
 				str = [self.name];
+				str.push(
+					(self.board.attr("data-theme") || "casino") +","+
+					(self.board.attr("data-card-back") || "red")
+				);
 				// collect layout info + data
 				self.layout.find("> *").map(el => {
 					let pId = el.getAttribute("data-id"),
