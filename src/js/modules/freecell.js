@@ -172,8 +172,7 @@ let freecell = {
 								self.dispatch({type: "auto-complete"});
 							}
 						})
-						.css({top: "0px", left: "0px"})
-					);
+						.css({top: "0px", left: "0px"}), 60);
 
 					// push move to undo stack
 					UNDO_STACK.push({
@@ -184,6 +183,9 @@ let freecell = {
 
 					// check if game is complete
 					self.dispatch({type: "check-game-won"})
+				} else {
+					// play sound
+					window.audio.play("put-card");
 				}
 				return dropable;
 			case "check-slot-drop":
@@ -213,6 +215,10 @@ let freecell = {
 						from: from.data("id"),
 						to: event.target.data("id"),
 					});
+				}
+				if (!dropable) {
+					// play sound
+					window.audio.play("put-card");
 				}
 				return dropable;
 			case "check-pile-drop":
@@ -256,6 +262,10 @@ let freecell = {
 						from: from.data("id"),
 						to: event.target.data("id"),
 					});
+				}
+				if (!dropable) {
+					// play sound
+					window.audio.play("put-card");
 				}
 				return dropable;
 			case "check-card-drag":
@@ -379,6 +389,10 @@ let freecell = {
 					fromEl = self.layout.find(`[data-id="${data.to}"]`);
 					toEl = self.layout.find(`[data-id="${data.from}"]`);
 				}
+
+				// play sound
+				window.audio.play("put-card");
+
 				// animation calculation
 				fromOffset = toEl[0].getBoundingClientRect();
 				toOffset = toEl[0].getBoundingClientRect();
@@ -418,6 +432,9 @@ let freecell = {
 					}), 100);
 				break;
 			default:
+				// play sound
+				window.audio.play("put-card");
+
 				data.animation = "card-move";
 		}
 	}

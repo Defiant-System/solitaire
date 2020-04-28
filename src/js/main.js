@@ -9,7 +9,7 @@ import spider from "./modules/spider"
 
 // sounds fx
 let SOUNDS = {
-	"put-card": { url: "~/sound/card.m4a" },
+	"put-card": { url: "~/sound/card-put.mp3" },
 	"flip-card": { url: "~/sound/card-flip.mp3" },
 };
 
@@ -17,24 +17,21 @@ let SOUNDS = {
 let ENGINES = { freecell, solitaire, spider },
 	ACTIVE = "solitaire";
 
-let pgn = `Freecell
-casino,red
-401:
-402:
-403:
-404:
-411:
-412:
-413:
-414:
-421:h3-S28,c9-S8,hQ-S37,c2-S1,h5-S30,d10-S22,sA-S39
-422:h6-S31,s8-S46,h7-S32,dJ-S23,dQ-S24,d7-S19,c5-S4
-423:hJ-S36,s3-S41,d6-S18,d5-S17,s2-S40,s9-S47,sJ-S49
-424:h2-S27,h4-S29,c7-S6,cA-S0,c6-S5,d4-S16,c10-S9
-425:s5-S43,s7-S45,sQ-S50,d8-S20,h9-S34,hA-S26
-426:s6-S44,dK-S25,hK-S38,cK-S12,cJ-S10,d9-S21
-427:sK-S51,d3-S15,c4-S3,cQ-S11,c3-S2,h10-S35
-428:c8-S7,s4-S42,s10-S48,h8-S33,d2-S14,dA-S13`;
+let pgn = `Solitaire
+classic,green,1
+201:h10-H35,c2-H1
+202:d9-S21,d8-S20,dQ-S24,s8-S46,c9-S8,s10-S48,c5-S4,s2-S40,d3-S15,cJ-S10,d7-S19,c8-S7,d5-S17
+211:hA-S26,h2-S27,h3-S28
+212:dA-S13,d2-S14
+213:cA-S0
+214:
+221:hK-S38,sQ-S50,dJ-S23
+222:c10-H9,h7-S32,s6-S44
+223:cK-S12,hQ-S37,sJ-S49,d10-S22,s9-S47,h8-S33,c7-S6,d6-S18,s5-S43,d4-S16,c3-S2
+224:h4-H29,c6-H5,s3-S41
+225:dK-S25
+226:sK-H51,h9-H34,sA-H39,h5-S30,c4-S3
+227:s7-H45,h6-H31,s4-H42,cQ-S11,hJ-S36`;
 
 const app = {
 	init() {

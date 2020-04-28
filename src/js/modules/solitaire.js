@@ -101,6 +101,9 @@ let solitaire = {
 					last = fromEl.hasClass("pile") && fromEl.find(".card-back:nth-last-child(2)").length
 						? fromEl.find(".card-back:nth-last-child(2)") : false;
 
+					// play sound
+					window.audio.play("put-card");
+
 					UNDO_STACK.push({
 							animation: "card-move",
 							cards: [el.data("id")],
@@ -519,6 +522,9 @@ let solitaire = {
 					toEl = self.layout.find(`[data-id="${data.from}"]`);
 				}
 
+				// play sound
+				window.audio.play("flip-card");
+
 				// prepare calculation
 				fromElOffset = fromEl[0].getBoundingClientRect();
 				toElOffset = toEl[0].getBoundingClientRect();
@@ -607,10 +613,11 @@ let solitaire = {
 						// adding "flipping-card" to get "3d-perspective"
 						toEl.addClass("flipping-card undo-card");
 						// flip last card from source pile
-						flipCard.cssSequence("card-flip-back", "animationend", fEl =>
-							fEl.removeClass("card-flip-back").addClass("card-back")
-								.parent()
-								.removeClass("flipping-card undo-card"));
+						flipCard.cssSequence("card-flip-back", "animationend", fEl => {
+								fEl.removeClass("card-flip-back").addClass("card-back")
+									.parent()
+									.removeClass("flipping-card undo-card");
+							});
 						time = 350;
 					}
 				}
@@ -639,10 +646,14 @@ let solitaire = {
 								// adding "flipping-card" to get "3d-perspective"
 								fromEl.addClass("flipping-card");
 								// flip last card from source pile
-								flipCard.cssSequence("card-flip", "animationend", fEl =>
-									fEl.removeClass("card-flip card-back")
-										.parent()
-										.removeClass("flipping-card"));
+								flipCard.cssSequence("card-flip", "animationend", fEl => {
+										fEl.removeClass("card-flip card-back")
+											.parent()
+											.removeClass("flipping-card");
+
+										// play sound
+										window.audio.play("flip-card");
+									});
 							}
 						})
 						.css({
@@ -664,6 +675,9 @@ let solitaire = {
 					}), time);
 				break;
 			default:
+				// play sound
+				window.audio.play("put-card");
+
 				data.animation = "card-move";
 		}
 	}
