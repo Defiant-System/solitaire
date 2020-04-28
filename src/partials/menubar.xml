@@ -71,5 +71,7 @@
 	</Menu>
 	<!-- Conditional menu options END -->
 	<Menu type="divider"/>
+	<Menu name="Output PGN String" click="output-pgn-string"/>
+	<Menu type="divider"/>
 	<Menu name="How To Play"/>
 </Menu>

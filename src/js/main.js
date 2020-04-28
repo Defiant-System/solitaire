@@ -2,18 +2,35 @@
 // undo stack
 import History from "./modules/history"
 
-// sound fx
-import Audio from "./modules/audio"
-
 // engines
 import freecell from "./modules/freecell"
 import solitaire from "./modules/solitaire"
 import spider from "./modules/spider"
 
+// sounds fx
+let SOUNDS = {
+	"put-card": { url: "~/sound/card.m4a" },
+	"flip-card": { url: "~/sound/card-flip.mp3" },
+};
 
 // constants
 let ENGINES = { freecell, solitaire, spider },
 	ACTIVE = "solitaire";
+
+let pgn = `Solitaire
+201:hKH,c8H,d3H,d6H,d9H,cJH,d4H,sKH,dJH,s10H,c3H,s4H,dQH,d8H,s3H,h4H,d5H,h10H,h8H,d2H,h9H,c2H,cKH,s5H
+202:
+211:
+212:
+213:
+214:
+221:d10S
+222:sJH,d7S
+223:s7H,hJH,c9S
+224:s9H,h3H,h5H,h6S
+225:h2H,s2H,s8H,s6H,c6S
+226:c10H,h7H,c5H,cQH,c4H,dAS
+227:dKH,hQH,sQH,hAH,sAH,c7H,cAS`;
 
 const app = {
 	init() {
@@ -22,10 +39,9 @@ const app = {
 		this.btnPrev = window.find("[data-click='history-go-prev']");
 		this.btnNext = window.find("[data-click='history-go-next']");
 		this.UNDO_STACK = new History;
-		this.AUDIO = new Audio;
 
 		// initiate sound fx
-		//Audio.init();
+		window.audio(SOUNDS);
 
 		// initiate engines
 		for (let key in ENGINES) {
@@ -34,9 +50,18 @@ const app = {
 
 		// temp
 		if (this.board.hasClass("playing")) {
+			// set active engine
 			this.activeEngine = ENGINES[ACTIVE];
 			// set state function
 			this.UNDO_STACK.reset(this.activeEngine.setState);
+
+			//this.dispatch({ type: "output-pgn-string" });
+		} else if (pgn) {
+			// set active engine
+			ACTIVE = pgn.split("\n")[0].toLowerCase();
+			this.activeEngine = ENGINES[ACTIVE];
+			// trigger event
+			this.dispatch({ type: "game-from-pgn", pgn });
 		} else {
 			this.dispatch({type: "new-game"});
 		}
@@ -46,10 +71,19 @@ const app = {
 			cardDistance,
 			targetCards,
 			layout,
+			pgn,
 			el;
 
 		switch (event.type) {
 			// custom events
+			case "output-pgn-string":
+				// custom portable game notation
+				str = self.activeEngine.dispatch(event);
+				console.log(str);
+				break;
+			case "game-from-pgn":
+				self.activeEngine.dispatch(event);
+				break;
 			case "new-game":
 				// clear all cards
 				window.find(".card").remove();
@@ -112,10 +146,10 @@ const app = {
 				self.board.removeClass("playing").addClass("game-won");
 				break;
 			case "toggle-music":
-				if (window.music.playing) {
-					window.music.pause();
+				if (window.midi.playing) {
+					window.midi.pause();
 				} else {
-					window.music.play("~/midi/The-Entertainer.mid");
+					window.midi.play("~/midi/The-Entertainer.mid");
 				}
 				break;
 			case "game-fail":

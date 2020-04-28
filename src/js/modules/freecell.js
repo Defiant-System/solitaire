@@ -38,9 +38,14 @@ let freecell = {
 			dragable,
 			cards,
 			check,
+			str,
 			el;
 
 		switch (event.type) {
+			case "output-pgn-string":
+				str = self.name;
+				return str;
+
 			case "new-game":
 				// show deck before dealing
 				AUTO_COMPLETE = false;

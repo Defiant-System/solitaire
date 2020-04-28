@@ -17,7 +17,7 @@ let APP,
 	NUMB_DICT;
 
 let solitaire = {
-	name: "Classic",
+	name: "Solitaire",
 	init(app, card_deck, suit_dict, numb_dict) {
 		// reference to app
 		APP = app;
@@ -48,9 +48,40 @@ let solitaire = {
 			last,
 			cards,
 			check,
+			str,
 			el;
 
 		switch (event.type) {
+			case "output-pgn-string":
+				str = [self.name];
+				// collect layout info + data
+				self.layout.find("> *").map(el => {
+					let pId = el.getAttribute("data-id"),
+						cards = $(".card", el).map(c =>
+							c.dataset.suit.slice(0,1) + c.dataset.numb + (~c.className.indexOf("card-back") ? "H" : "S"));
+					str.push(pId +":"+ cards.join(","))
+				});
+				// return to app
+				return str.join("\n");
+			case "game-from-pgn":
+				str = event.pgn.split("\n").slice(1);
+				str.map(p => {
+					let parts = p.split(":");
+					if (!parts[1]) return;
+					let pEl = self.layout.find(`[data-id="${parts[0]}"]`),
+						cards = parts[1].split(",");
+					
+					cards = cards.map(c => {
+						let suit = c.slice(0, 1),
+							numb = c.slice(1,-1),
+							cardBack = c.slice(-1) === "H" ? "card-back" : "";
+						return `<div class="card ${suit}${numb} ${cardBack}" data-id="33" data-numb="${suit}" data-suit="${suit}" data-ondrag="check-card-drag"></div>`;
+					});
+
+					pEl.html(cards.join(""));
+				});
+				break;
+
 			case "new-game":
 				AUTO_COMPLETE = false;
 				self.start();
@@ -232,6 +263,9 @@ let solitaire = {
 
 				if (!check) {
 					dropable = true;
+
+					// play sound
+				//	window.audio.play("put-card");
 
 					// for seamless transition - position dragged el where dropped
 					el = event.el.map((item, i) =>

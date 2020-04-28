@@ -41,9 +41,14 @@ let spider = {
 			last,
 			cards,
 			check,
+			str,
 			el;
 
 		switch (event.type) {
+			case "output-pgn-string":
+				str = self.name;
+				return str;
+
 			case "new-game":
 				setTimeout(() => this.start(), 350);
 				break;
@@ -124,9 +129,6 @@ let spider = {
 				let zoneLastCard = event.target.find(".card:last"),
 					zoneLastSuit = zoneLastCard.data("suit"),
 					zoneLastNumb = zoneLastCard.data("numb");
-
-				// play sound
-				APP.AUDIO.play("card");
 				
 				// number of cards in dropZone
 				targetCards = event.target.find(".card");
@@ -151,9 +153,6 @@ let spider = {
 
 						// flip last card from source pile
 						last.cssSequence("card-flip", "animationend", fEl => {
-							// play sound
-							APP.AUDIO.play("cardFlip");
-
 							fEl.removeClass("card-flip card-back")
 								.parent()
 								.removeClass("flipping-card")
