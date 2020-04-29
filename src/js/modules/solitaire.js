@@ -102,7 +102,7 @@ let solitaire = {
 						? fromEl.find(".card-back:nth-last-child(2)") : false;
 
 					// play sound
-					window.audio.play("put-card");
+					window.audio.play("shove-card");
 
 					UNDO_STACK.push({
 							animation: "card-move",
@@ -129,6 +129,7 @@ let solitaire = {
 				AUTO_COMPLETE = true;
 				dropable = true;
 
+				self.layout.find(".drag-return-to-origin").removeClass("drag-return-to-origin");
 				check = self.layout.find(".hole.fndtn");
 				cards = self.layout.find(".pile .card:last-child, .waste .card:last-child")
 							.toArray()
@@ -237,8 +238,7 @@ let solitaire = {
 									flip: last && last.hasClass("card-back") ? last.data("id") : false
 								});
 						})
-						.css({top: "0px", left: "0px"})
-					);
+						.css({top: "0px", left: "0px"}), 20);
 				}
 
 				return dropable;
@@ -282,10 +282,14 @@ let solitaire = {
 							draggedParent.toggleClass("flipping-card", !last.length);
 
 							// flip last card from source pile
-							last.cssSequence("card-flip", "animationend", fEl =>
+							last.cssSequence("card-flip", "animationend", fEl => {
 								fEl.removeClass("card-flip card-back")
 									.parent()
-									.removeClass("flipping-card"));
+									.removeClass("flipping-card");
+
+								// play sound
+								setTimeout(() => window.audio.play("flip-card"), 20);
+							});
 						}
 					} else if (draggedParent.hasClass("waste")) {
 						draggedParent.data({cardsLeft: draggedParent.find(".card").length});
@@ -383,9 +387,15 @@ let solitaire = {
 			// starting point for animation
 			card.data({pos: i})
 				.cssSequence("moving", "transitionend", el => {
-					el.addClass("landed");
+					let pos = +el.data("pos");
 
-					if (+el.data("pos") === 27) {
+					el.addClass("landed");
+					
+					if (pos < 26) {
+						// play sound
+						window.audio.play("shove-card");
+					}
+					if (pos === 27) {
 						// flips last cards in each pile
 						self.piles.find(".card:last-child")
 							.cssSequence("card-flip", "animationend", flipEl => {
@@ -393,10 +403,15 @@ let solitaire = {
 								flipEl.removeClass("card-flip card-back");
 
 								// if last element is turned
-								if (el[0] !== flipEl[0]) return;
+								if (el[0] !== flipEl[0]) {
+									// play sound
+									return window.audio.play("shove-card");
+								}
 
 								// set board in "playing" mode
-								self.board.addClass("playing").find(".solitaire .card").removeAttr("data-pos").removeClass("landing landed moving");
+								self.board.addClass("playing").find(".solitaire .card")
+									.removeAttr("data-pos")
+									.removeClass("landing landed moving");
 							});
 					}
 				})
@@ -408,11 +423,14 @@ let solitaire = {
 		
 		// reset undo-stack
 		UNDO_STACK.reset(this.setState);
+					
+		// play sound
+		window.audio.play("shove-card");
 
 		// trigger animation
 		setTimeout(() =>
-				this.layout.find(".card")
-					.css({ top: "", left: "", }), 60);
+				self.layout.find(".card")
+					.css({ top: "", left: "", }), 100);
 	},
 	setState(redo, data) {
 		let self = solitaire,
@@ -620,9 +638,6 @@ let solitaire = {
 								fEl.removeClass("card-flip-back").addClass("card-back")
 									.parent()
 									.removeClass("flipping-card undo-card");
-
-								// play sound
-								window.audio.play("flip-card");
 							});
 						time = 350;
 					}
@@ -656,7 +671,6 @@ let solitaire = {
 										fEl.removeClass("card-flip card-back")
 											.parent()
 											.removeClass("flipping-card");
-
 										// play sound
 										window.audio.play("flip-card");
 									});
@@ -682,7 +696,7 @@ let solitaire = {
 				break;
 			default:
 				// play sound
-				window.audio.play("put-card");
+				window.audio.play(AUTO_COMPLETE ? "shove-card" : "put-card");
 
 				data.animation = "card-move";
 		}

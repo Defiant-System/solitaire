@@ -12,27 +12,13 @@ let SOUNDS = {
 	"put-card": { url: "~/sound/card-put.mp3" },
 	"flip-card": { url: "~/sound/card-flip.mp3" },
 	"shove-card": { url: "~/sound/card-shove.mp3" },
+	"you-win": { url: "~/sound/you-win.mp3" },
 };
 
 // constants
 let ENGINES = { freecell, solitaire, spider },
-	ACTIVE = "solitaire";
-
-let pgn = `Solitaire
-casino,red,1
-201:
-202:
-211:hA-S26,h2-S27,h3-S28,h4-S29,h5-S30,h6-S31,h7-S32
-212:dA-S13,d2-S14,d3-S15,d4-S16,d5-S17,d6-S18,d7-S19
-213:cA-S0,c2-S1,c3-S2,c4-S3,c5-S4,c6-S5
-214:sA-S39,s2-S40,s3-S41,s4-S42,s5-S43,s6-S44,s7-S45,s8-S46
-221:hK-S38,sQ-S50,dJ-S23,c10-S9,h9-S34,c8-S7
-222:
-223:cK-S12,hQ-S37,sJ-S49,d10-S22,s9-S47,h8-S33,c7-S6
-224:
-225:dK-S25,cQ-S11,hJ-S36,s10-S48,d9-S21
-226:sK-S51,dQ-S24,cJ-S10,h10-S35,c9-S8,d8-S20
-227:`;
+	ACTIVE = "solitaire",
+	pgn = ``;
 
 const app = {
 	init() {
@@ -125,7 +111,8 @@ const app = {
 				if (!self.activeEngine) {
 					self.dispatch({type: "set-game-engine", init: true});
 				}
-				setTimeout(() => self.activeEngine.dispatch(event), 250);
+				//setTimeout(() => self.activeEngine.dispatch(event), 250);
+				self.activeEngine.dispatch(event);
 				break;
 			case "set-game-engine":
 				// set global variable
@@ -176,6 +163,9 @@ const app = {
 				self.btnNext.addClass("tool-disabled_");
 
 				self.board.removeClass("playing").addClass("game-won");
+
+				// play sound
+				window.audio.play("you-win");
 				break;
 			case "toggle-music":
 				if (window.midi.playing) {

@@ -175,9 +175,12 @@ let spider = {
 
 						// flip last card from source pile
 						last.cssSequence("card-flip", "animationend", fEl => {
+							// play sound
+							window.audio.play("flip-card");
+
 							fEl.removeClass("card-flip card-back")
 								.parent()
-								.removeClass("flipping-card")
+								.removeClass("flipping-card");
 						});
 					}
 
@@ -332,6 +335,9 @@ let spider = {
 		switch (data.animation) {
 			case "collapse-cards":
 				if (redo) {
+					// play sound
+					window.audio.play("shove-card");
+
 					// calcaultions
 					fromEl = self.layout.find(`[data-id="${data.from}"]`);
 					toEl = self.layout.find(`[data-id="${data.to}"]`);
@@ -372,6 +378,9 @@ let spider = {
 								el.map((item, j) => {
 									item.cssSequence("landing", "transitionend", c => {
 										if (c.data("numb") !== "A") return;
+										
+										// play sound
+										window.audio.play("shove-card");
 
 										// land set into empty hole and reset Node
 										cards.removeClass("landing collapse").removeAttr("style");
@@ -516,10 +525,16 @@ let spider = {
 							.cssSequence("landing", "transitionend", lEl => {
 								lEl.addClass("landed");
 
+								// play sound
+								window.audio.play("shove-card");
+
 								if (!lEl.parent().hasClass("pile-10")) return;
 
 								toEl.addClass("flipping-cards");
 								cards.cssSequence("card-flip", "animationend", fEl => {
+									// play sound
+									window.audio.play("shove-card");
+
 									if (!fEl.parent().hasClass("pile-10")) return;
 									// reset nodes
 									toEl.removeClass("dealing-cards flipping-cards");
@@ -659,6 +674,9 @@ let spider = {
 						})
 					}), time);
 			default:
+				// play sound
+				window.audio.play("put-card");
+
 				data.animation = "card-move";
 		}
 	}

@@ -172,7 +172,7 @@ let freecell = {
 								self.dispatch({type: "auto-complete"});
 							}
 						})
-						.css({top: "0px", left: "0px"}), 60);
+						.css({top: "0px", left: "0px"}), 10);
 
 					// push move to undo stack
 					UNDO_STACK.push({
@@ -183,9 +183,6 @@ let freecell = {
 
 					// check if game is complete
 					self.dispatch({type: "check-game-won"})
-				} else {
-					// play sound
-					window.audio.play("put-card");
 				}
 				return dropable;
 			case "check-slot-drop":
@@ -215,10 +212,6 @@ let freecell = {
 						from: from.data("id"),
 						to: event.target.data("id"),
 					});
-				}
-				if (!dropable) {
-					// play sound
-					window.audio.play("put-card");
 				}
 				return dropable;
 			case "check-pile-drop":
@@ -263,10 +256,10 @@ let freecell = {
 						to: event.target.data("id"),
 					});
 				}
-				if (!dropable) {
-					// play sound
-					window.audio.play("put-card");
-				}
+				// if (!dropable) {
+				// 	// play sound
+				// 	window.audio.play("put-card");
+				// }
 				return dropable;
 			case "check-card-drag":
 				if (AUTO_COMPLETE) return;
@@ -335,9 +328,15 @@ let freecell = {
 
 			card.data({pos: i})
 				.cssSequence("moving", "transitionend", el => {
+					let pos = +el.data("pos");
+
 					el.addClass("landed");
 
-					if (+el.data("pos") === 51) {
+					if (pos < 50) {
+						// play sound
+						window.audio.play("shove-card");
+					}
+					if (pos === 51) {
 						// hide the deck
 						self.deck.removeClass("show");
 						// set board in "playing" mode
@@ -357,7 +356,7 @@ let freecell = {
 		APP.btnNext.addClass("tool-disabled_");
 
 		// trigger animation
-		setTimeout(() => this.layout.find(".card").removeClass("in-deck").css({ top: "", left: "", }), 60);
+		setTimeout(() => this.layout.find(".card").removeClass("in-deck").css({ top: "", left: "", }), 1);
 	},
 	setState(redo, data) {
 		let self = freecell,
@@ -391,7 +390,7 @@ let freecell = {
 				}
 
 				// play sound
-				window.audio.play("put-card");
+				window.audio.play("shove-card");
 
 				// animation calculation
 				fromOffset = toEl[0].getBoundingClientRect();
@@ -433,7 +432,7 @@ let freecell = {
 				break;
 			default:
 				// play sound
-				window.audio.play("put-card");
+				window.audio.play(AUTO_COMPLETE ? "shove-card" : "put-card");
 
 				data.animation = "card-move";
 		}
