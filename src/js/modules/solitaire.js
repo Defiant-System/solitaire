@@ -451,8 +451,8 @@ let solitaire = {
 			el,
 			time = 50;
 		// update toolbar buttons
-		APP.btnPrev.toggleClass("tool-disabled_", UNDO_STACK.canUndo);
-		APP.btnNext.toggleClass("tool-disabled_", UNDO_STACK.canRedo);
+		APP.btnPrev.removeClass("tool-active_").toggleClass("tool-disabled_", UNDO_STACK.canUndo);
+		APP.btnNext.removeClass("tool-active_").toggleClass("tool-disabled_", UNDO_STACK.canRedo);
 		// animation "playbacks"
 		switch (data.animation) {
 			case "waste-to-deck":

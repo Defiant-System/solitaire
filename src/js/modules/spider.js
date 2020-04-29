@@ -339,8 +339,8 @@ let spider = {
 			time = 50;
 
 		// update toolbar buttons
-		APP.btnPrev.toggleClass("tool-disabled_", UNDO_STACK.canUndo);
-		APP.btnNext.toggleClass("tool-disabled_", UNDO_STACK.canRedo);
+		APP.btnPrev.removeClass("tool-active_").toggleClass("tool-disabled_", UNDO_STACK.canUndo);
+		APP.btnNext.removeClass("tool-active_").toggleClass("tool-disabled_", UNDO_STACK.canRedo);
 		// reset drop zones
 		self.layout.find(".no-drag-hover").removeClass("no-drag-hover");
 

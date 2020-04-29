@@ -7,14 +7,6 @@ import freecell from "./modules/freecell"
 import solitaire from "./modules/solitaire"
 import spider from "./modules/spider"
 
-// sounds fx
-let SOUNDS = {
-	"put-card": { url: "~/sound/card-put.mp3" },
-	"flip-card": { url: "~/sound/card-flip.mp3" },
-	"shove-card": { url: "~/sound/card-shove.mp3" },
-	"you-win": { url: "~/sound/you-win.mp3" },
-};
-
 // constants
 let ENGINES = { freecell, solitaire, spider },
 	ACTIVE = "solitaire",
@@ -28,9 +20,6 @@ const app = {
 		this.btnPrev = window.find("[data-click='history-go-prev']");
 		this.btnNext = window.find("[data-click='history-go-next']");
 		this.UNDO_STACK = new History;
-
-		// initiate sound fx
-		window.audio(SOUNDS);
 
 		// initiate engines
 		for (let key in ENGINES) {

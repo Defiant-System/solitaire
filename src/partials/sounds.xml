@@ -1,0 +1,6 @@
+<Sounds>
+	<i id="put-card" url="~/sound/card-put.mp3"/>
+	<i id="flip-card" url="~/sound/card-flip.mp3"/>
+	<i id="shove-card" url="~/sound/card-shove.mp3"/>
+	<i id="you-win" url="~/sound/you-win.mp3"/>
+</Sounds>

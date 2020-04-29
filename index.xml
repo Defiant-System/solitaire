@@ -20,5 +20,6 @@
 
 		@import "src/partials/caption-toolbar.xml"
 		@import "src/partials/menubar.xml"
+		@import "src/partials/sounds.xml"
 	</Head>
 </Application>
