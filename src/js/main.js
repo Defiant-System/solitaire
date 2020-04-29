@@ -18,6 +18,7 @@ let SOUNDS = {
 // constants
 let ENGINES = { freecell, solitaire, spider },
 	ACTIVE = "solitaire",
+	// for dev purposes
 	pgn = ``;
 
 const app = {

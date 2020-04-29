@@ -280,17 +280,27 @@ let spider = {
 
 			card.data({pos: i})
 				.cssSequence("moving", "transitionend", el => {
+					let pos = +el.data("pos");
+
 					el.addClass("landed");
 
-					if (+el.data("pos") === 53) {
+					if (pos < 52) {
+						// play sound
+						window.audio.play("shove-card");
+					}
+
+					if (pos === 53) {
 						// flips last cards in each pile
 						self.piles.find(".card:last-child")
 							.cssSequence("card-flip", "animationend", flipEl => {
 								// remove class of "card-back"
 								flipEl.removeClass("card-flip card-back");
 
-								// if last element is turned
-								if (!flipEl.parent().hasClass("pile-10")) return;
+								// if last element is not turned
+								if (!flipEl.parent().hasClass("pile-10")) {
+									// play sound
+									return window.audio.play("shove-card");
+								}
 
 								// set board in "playing" mode
 								self.board.addClass("playing").find(".spider .card").removeAttr("data-pos").removeClass("landing moving landed");
@@ -305,6 +315,9 @@ let spider = {
 		
 		// reset undo-stack
 		UNDO_STACK.reset(this.setState);
+		// update toolbar buttons
+		APP.btnPrev.addClass("tool-disabled_");
+		APP.btnNext.addClass("tool-disabled_");
 
 		// trigger animation
 		setTimeout(() => this.layout.find(".card").removeClass("in-deck").css({ top: "", left: "", }), 60);
@@ -378,7 +391,7 @@ let spider = {
 								el.map((item, j) => {
 									item.cssSequence("landing", "transitionend", c => {
 										if (c.data("numb") !== "A") return;
-										
+
 										// play sound
 										window.audio.play("shove-card");
 
@@ -391,9 +404,13 @@ let spider = {
 											fromEl.toggleClass("flipping-card", !flipCard.length);
 
 											// flip last card from source pile
-											flipCard.cssSequence("card-flip", "animationend", fEl =>
+											flipCard.cssSequence("card-flip", "animationend", fEl => {
+												// play sound
+												window.audio.play("flip-card");
+												
 												fEl.removeClass("card-flip card-back")
-													.parent().removeClass("flipping-card"));
+													.parent().removeClass("flipping-card");
+											});
 										}
 										// check if game is complete
 										self.dispatch({type: "check-game-won"})

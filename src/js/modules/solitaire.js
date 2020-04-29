@@ -423,6 +423,9 @@ let solitaire = {
 		
 		// reset undo-stack
 		UNDO_STACK.reset(this.setState);
+		// update toolbar buttons
+		APP.btnPrev.addClass("tool-disabled_");
+		APP.btnNext.addClass("tool-disabled_");
 					
 		// play sound
 		window.audio.play("shove-card");
