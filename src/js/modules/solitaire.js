@@ -126,6 +126,7 @@ let solitaire = {
 				}
 				break;
 			case "auto-complete":
+				if (AUTO_COMPLETE) return;
 				AUTO_COMPLETE = true;
 				dropable = true;
 
