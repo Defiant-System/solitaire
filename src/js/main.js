@@ -101,8 +101,8 @@ const app = {
 				if (!self.activeEngine) {
 					self.dispatch({type: "set-game-engine", init: true});
 				}
-				//setTimeout(() => self.activeEngine.dispatch(event), 250);
-				self.activeEngine.dispatch(event);
+				setTimeout(() => self.activeEngine.dispatch(event), 350);
+				//self.activeEngine.dispatch(event);
 				break;
 			case "set-game-engine":
 				// set global variable
@@ -133,9 +133,6 @@ const app = {
 					width: self.board.cssProp("--layout-width"),
 					height: self.board.cssProp("--layout-height"),
 				});
-
-				// set window title
-			//	window.title = "Solitaire - "+ self.activeEngine.name;
 
 				if (!event.init) {
 					self.dispatch({type: "new-game"});

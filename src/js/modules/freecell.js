@@ -103,7 +103,7 @@ let freecell = {
 				}
 				break;
 			case "auto-complete":
-				if (AUTO_COMPLETE) return;
+				//if (AUTO_COMPLETE) return;
 				AUTO_COMPLETE = true;
 				dropable = true;
 
