@@ -98,7 +98,7 @@ let freecell = {
 				}
 				break;
 			case "check-game-won":
-				if (self.layout.find(".hole .card").length === 104) {
+				if (self.layout.find(".hole .card").length === 52) {
 					APP.dispatch({type: "game-won"});
 				}
 				break;
@@ -181,9 +181,6 @@ let freecell = {
 						from: from.data("id"),
 						to: event.target.data("id"),
 					});
-
-					// check if game is complete
-					self.dispatch({type: "check-game-won"})
 				}
 				return dropable;
 			case "check-slot-drop":
@@ -414,6 +411,11 @@ let freecell = {
 						.cssSequence("landing", "transitionend", lEl => {
 							// reset element
 							lEl.removeClass("landing");
+
+							if (redo) {
+								// check if game is complete
+								self.dispatch({type: "check-game-won"});
+							}
 						})
 						.css({
 							top: offset[i].top +"px",
