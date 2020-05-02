@@ -88,6 +88,9 @@ let freecell = {
 				if (dropable && dropable.length) {
 					draggedParent = el.parents(".pile");
 
+					// play sound
+				 	window.audio.play("put-card");
+
 					// push move to undo stack
 					UNDO_STACK.push({
 						animation: "card-move",
