@@ -106,7 +106,7 @@ let freecell = {
 				}
 				break;
 			case "auto-complete":
-				//if (AUTO_COMPLETE) return;
+				if (AUTO_COMPLETE && !event.next) return;
 				AUTO_COMPLETE = true;
 				dropable = true;
 
@@ -173,7 +173,7 @@ let freecell = {
 								return APP.dispatch({type: "game-won"});
 							}
 							if (AUTO_COMPLETE) {
-								self.dispatch({type: "auto-complete"});
+								self.dispatch({type: "auto-complete", next: true});
 							}
 						})
 						.css({top: "0px", left: "0px"}), 10);

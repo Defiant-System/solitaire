@@ -126,7 +126,7 @@ let solitaire = {
 				}
 				break;
 			case "auto-complete":
-				//if (AUTO_COMPLETE) return;
+				if (AUTO_COMPLETE && !event.next) return;
 				AUTO_COMPLETE = true;
 				dropable = true;
 
@@ -229,7 +229,7 @@ let solitaire = {
 								return APP.dispatch({type: "game-won"});
 							}
 							if (AUTO_COMPLETE) {
-								self.dispatch({type: "auto-complete"});
+								self.dispatch({type: "auto-complete", next: true});
 							}
 							// push move to undo stack
 							UNDO_STACK.push({
