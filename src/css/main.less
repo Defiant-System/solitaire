@@ -632,6 +632,11 @@ transition: width 100ms,
 		&.hole-7 { left: 810px; }
 		&.hole-8 { left: 918px; }
 
+		.card:not(.collapse):not(.landing):not(:last-child) {
+			animation: hideCards 10ms forwards;
+			animation-delay: 300ms;
+		}
+
 		.card.collapse {
 			z-index: 43;
 			transition: top 200ms ease-in-out,
@@ -1240,12 +1245,14 @@ transition: width 100ms,
 					79px -216.6666666667px #ff00d9;
 	}
 }
+
 @keyframes gravity {
 	to {
 		transform: translateY(200px);
 		opacity: 0;
 	}
 }
+
 @keyframes position {
 	0%,
 	19.9% {
@@ -1271,6 +1278,12 @@ transition: width 100ms,
 	99.9% {
 		margin-top: 30%;
 		margin-left: 80%;
+	}
+}
+
+@keyframes hideCards {
+	to {
+		opacity: 0;
 	}
 }
 
