@@ -39,6 +39,19 @@ let yukon = {
 	},
 	dispatch(event) {
 		let self = yukon,
+			draggedFirst,
+			draggedParent,
+			cardDistance,
+			targetCards,
+			dropable,
+			dragable,
+			fromEl,
+			toEl,
+			isLastCard,
+			last,
+			cards,
+			check,
+			str,
 			el;
 
 		switch (event.type) {
@@ -55,16 +68,152 @@ let yukon = {
 							c.dataset.suit.slice(0,1) +
 							c.dataset.numb +"-"+
 							(~c.className.indexOf("card-back") ? "H" : "S") + c.dataset.id);
+					if (!pId) return;
 					str.push(pId +":"+ cards.join(","))
 				});
 				// return to app
 				return str.join("\n");
+			case "reset-game-board":
+				// reset undo-stack + auto-complete
+				UNDO_STACK.reset(self.setState);
+				AUTO_COMPLETE = false;
+				// set board in "playing" mode
+				self.board.addClass("playing")
+				break;
 
 			case "new-game":
 				AUTO_COMPLETE = false;
 				self.start();
 				break;
+			case "game-double-click":
+				el = $(event.target);
+				if (!el.hasClass("card") || el.hasClass("card-back")) return;
+				
+				fromEl = el.parent();
+				check = self.layout.find(".hole.fndtn");
+				check.filter((fnd, i) => {
+					if (toEl) return;
+					let target = check.get(i);
+					if (self.isCardFoundationDropable(el, target)) toEl = target;
+				});
+				
+				// reset drop zones
+				self.layout.find(".no-drag-hover").removeClass("no-drag-hover");
+				
+				if (toEl && toEl.length) {
+					last = fromEl.hasClass("pile") && fromEl.find(".card-back:nth-last-child(2)").length
+						? fromEl.find(".card-back:nth-last-child(2)") : false;
+
+					// play sound
+					window.audio.play("shove-card");
+
+					UNDO_STACK.push({
+							animation: "card-move",
+							cards: [el.data("id")],
+							from: fromEl.data("id"),
+							to: toEl.data("id"),
+							flip: last ? last.data("id") : false
+						});
+				}
+				break;
+			case "check-void-drop":
+				draggedFirst = event.el.get(0);
+				draggedParent = draggedFirst.parent().removeClass("no-drag-hover");
+				break;
+			case "check-foundation-drop":
+				break;
+			case "check-pile-drop":
+				// reset drop zones
+				self.layout.find(".no-drag-hover").removeClass("no-drag-hover");
+
+				draggedFirst = event.el.get(0);
+				draggedParent = draggedFirst.parent();
+				zoneLastCard = event.target.find(".card:last");
+				zoneLastSuit = zoneLastCard.data("suit");
+				zoneLastNumb = zoneLastCard.data("numb");
+
+				// number of cards in dropZone
+				targetCards = event.target.find(".card");
+
+				check = zoneLastCard.length
+							&& (SUIT_DICT[zoneLastSuit].accepts.indexOf(draggedFirst.data("suit")) < 0
+							|| NUMB_DICT[zoneLastNumb].cascDrop !== draggedFirst.data("numb"));
+
+				if (!check) {
+					dropable = true;
+
+					// for seamless transition - position dragged el where dropped
+					el = event.el.map((item, i) =>
+						event.target.append(item).css({
+							top: event.targetOffset[i].top +"px",
+							left: event.targetOffset[i].left +"px",
+						})
+					);
+					
+					// auto-flip last card in source pile
+					if (draggedParent.hasClass("pile")) {
+						last = draggedParent.find(".card:last-child");
+						if (last.hasClass("card-back")) {
+							// adding "flipping-card" to get "3d-perspective"
+							draggedParent.toggleClass("flipping-card", !last.length);
+
+							// flip last card from source pile
+							last.cssSequence("card-flip", "animationend", fEl => {
+								fEl.removeClass("card-flip card-back")
+									.parent()
+									.removeClass("flipping-card");
+
+								// play sound
+								setTimeout(() => window.audio.play("flip-card"), 20);
+							});
+						}
+					}
+
+					cardDistance = parseInt(event.target.cssProp("--card-distance"), 10);
+					setTimeout(() => 
+						el.map((item, i) => item
+							.cssSequence("landing", "transitionend", el => el.removeClass("landing").removeAttr("style"))
+							.css({
+								top: (cardDistance * (targetCards.length + i)) +"px",
+								left: "0px"
+							})
+						));
+
+					// push move to undo stack
+					UNDO_STACK.push({
+						cards: event.el.map(card => card.getAttribute("data-id")),
+						from: draggedParent.data("id"),
+						to: event.target.data("id"),
+						flip: last && last.hasClass("card-back") ? last.data("id") : false
+					});
+				}
+				return dropable;
+			case "check-card-drag":
+				el = $(event.target);
+				draggedParent = el.parents(".pile, .deck, .waste");
+
+				if (el.hasClass("card-back")) {
+					dragable = false;
+				} else {
+					dragable = el.nextAll(".card", true);
+				}
+
+				// dont show drag-hover on origin-pile
+				draggedParent.toggleClass("no-drag-hover", !dragable);
+
+				return dragable;
 		}
+	},
+	isCardFoundationDropable(card, foundation) {
+		let cardSuit = card.data("suit"),
+			cardNumb = card.data("numb"),
+			fndCards = foundation.find(".card"),
+			fndLastCard = foundation.find(".card:last"),
+			fndLastSuit = fndLastCard.data("suit"),
+			fndLastNumb = fndLastCard.data("numb");
+
+		return (!fndLastCard.length && cardNumb === "A")
+				|| (cardSuit === fndLastSuit && NUMB_DICT[fndLastNumb].founDrop === cardNumb);
 	},
 	start() {
 		let self = yukon,
@@ -103,6 +252,11 @@ let yukon = {
 
 					el.addClass("landed");
 
+					if (pos < 151) {
+						// play sound
+						window.audio.play("shove-card");
+					}
+
 					// deck flip time
 					if (pos === 20) {
 						self.deckCard
@@ -128,13 +282,14 @@ let yukon = {
 				});
 		});
 
-		/*
 		// reset undo-stack
 		UNDO_STACK.reset(this.setState);
 		// update toolbar buttons
 		APP.btnPrev.addClass("tool-disabled_");
 		APP.btnNext.addClass("tool-disabled_");
-		*/
+		
+		// play sound
+		window.audio.play("shove-card");
 
 		// trigger animation
 		setTimeout(() =>
@@ -142,7 +297,112 @@ let yukon = {
 					.css({ top: "", left: "" }), 100);
 	},
 	setState(redo, data) {
+		let self = yukon,
+			selector = data.cards.map(id => `.card[data-id="${id}"]`),
+			cards = self.layout.find(selector.join(",")),
+			fromEl,
+			fromElOffset,
+			toEl,
+			toElOffset,
+			offset,
+			targetCards,
+			targetRect,
+			cardDistance,
+			cardRect,
+			el,
+			time = 50;
+		// update toolbar buttons
+		APP.btnPrev.removeClass("tool-active_").toggleClass("tool-disabled_", UNDO_STACK.canUndo);
+		APP.btnNext.removeClass("tool-active_").toggleClass("tool-disabled_", UNDO_STACK.canRedo);
+		// animation "playbacks"
+		switch (data.animation) {
+			case "card-move":
+				if (redo) {
+					fromEl = self.layout.find(`[data-id="${data.from}"]`);
+					toEl = self.layout.find(`[data-id="${data.to}"]`);
 
+					if (fromEl.hasClass("waste")) {
+						fromEl.data({"cardsLeft": +fromEl.data("cardsLeft") - 1});
+					}
+				} else {
+					fromEl = self.layout.find(`[data-id="${data.to}"]`);
+					toEl = self.layout.find(`[data-id="${data.from}"]`);
+
+					if (toEl.hasClass("waste")) {
+						toEl.data({"cardsLeft": +toEl.data("cardsLeft") + 1});
+					}
+
+					if (data.flip && toEl.hasClass("pile")) {
+						let flipCard = toEl.find(`.card[data-id="${data.flip}"]`);
+						// adding "flipping-card" to get "3d-perspective"
+						toEl.addClass("flipping-card undo-card");
+						// flip last card from source pile
+						flipCard.cssSequence("card-flip-back", "animationend", fEl => {
+								fEl.removeClass("card-flip-back").addClass("card-back")
+									.parent()
+									.removeClass("flipping-card undo-card");
+							});
+						time = 350;
+					}
+				}
+				// prepare animation
+				fromElOffset = fromEl[0].getBoundingClientRect();
+				toElOffset = toEl[0].getBoundingClientRect();
+				offset = cards.map(card => {
+					let rect = card.getBoundingClientRect();
+					return {
+						top: rect.top - toElOffset.top,
+						left: rect.left - toElOffset.left,
+					};
+				});
+
+				// number of cards in from element
+				targetCards = toEl.find(".card");
+				cardDistance = toEl.hasClass("waste") ? 0 : parseInt(toEl.cssProp("--card-distance"), 10) || 0;
+				el = toEl.append(cards);
+				el.map((item, i) => {
+					el.get(i)
+						.cssSequence("landing", "transitionend", lEl => {
+							lEl.removeClass("landing").removeAttr("style");
+
+							if (redo && data.flip && fromEl.hasClass("pile")) {
+								let flipCard = self.layout.find(`.card[data-id="${data.flip}"]`);
+								// adding "flipping-card" to get "3d-perspective"
+								fromEl.addClass("flipping-card");
+								// flip last card from source pile
+								flipCard.cssSequence("card-flip", "animationend", fEl => {
+										fEl.removeClass("card-flip card-back")
+											.parent()
+											.removeClass("flipping-card");
+										// play sound
+										window.audio.play("flip-card");
+									});
+							}
+						})
+						.css({
+							top: offset[i].top +"px",
+							left: offset[i].left +"px",
+						});
+				});
+				// trigger animation
+				setTimeout(() => 
+					el.map((item, i) => {
+						let cardsMargin = parseInt(toEl.cssProp("--card-margin"), 10) || 0,
+							left = !self.layout.hasClass("waste-single") && toEl.hasClass("waste")
+								? Math.min(+toEl.data("cardsLeft") - 1, 3) * cardsMargin : 0,
+							top = cardDistance * (targetCards.length + i);
+						el.get(i).css({
+							top: top +"px",
+							left: left +"px"
+						})
+					}), time);
+				break;
+			default:
+				// play sound
+				window.audio.play(AUTO_COMPLETE ? "shove-card" : "put-card");
+
+				data.animation = "card-move";
+		}
 	}
 };
 

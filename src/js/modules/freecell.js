@@ -257,10 +257,6 @@ let freecell = {
 						to: event.target.data("id"),
 					});
 				}
-				// if (!dropable) {
-				// 	// play sound
-				// 	window.audio.play("put-card");
-				// }
 				return dropable;
 			case "check-card-drag":
 				if (AUTO_COMPLETE) return;

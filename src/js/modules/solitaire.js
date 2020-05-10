@@ -87,11 +87,11 @@ let solitaire = {
 				if (!el.hasClass("card") || el.hasClass("card-back")) return;
 				
 				fromEl = el.parent();
-				check = this.layout.find(".hole.fndtn");
+				check = self.layout.find(".hole.fndtn");
 				check.filter((fnd, i) => {
 					if (toEl) return;
 					let target = check.get(i);
-					if (this.isCardFoundationDropable(el, target)) toEl = target;
+					if (self.isCardFoundationDropable(el, target)) toEl = target;
 				});
 				
 				// reset drop zones
@@ -263,9 +263,6 @@ let solitaire = {
 
 				if (!check) {
 					dropable = true;
-
-					// play sound
-				//	window.audio.play("put-card");
 
 					// for seamless transition - position dragged el where dropped
 					el = event.el.map((item, i) =>
