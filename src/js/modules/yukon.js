@@ -116,12 +116,91 @@ let yukon = {
 						});
 				}
 				break;
+			case "auto-complete":
+				if (AUTO_COMPLETE && !event.next) return;
+				AUTO_COMPLETE = true;
+				dropable = true;
+
+				self.layout.find(".drag-return-to-origin").removeClass("drag-return-to-origin");
+				check = self.layout.find(".hole.fndtn");
+				cards = self.layout.find(".pile .card:last-child, .waste .card:last-child")
+							.toArray()
+							.sort((a, b) => CARD_DECK.values[a.dataset.numb] - CARD_DECK.values[b.dataset.numb]);
+
+				cards.map(el => {
+					if (!dropable) return;
+					el = $(el);
+
+					check.map((fnd, i) => {
+						let target = check.get(i);
+						
+						if (dropable && self.isCardFoundationDropable(el, target)) {
+							let eRect = el[0].getBoundingClientRect(),
+								tRect = target[0].getBoundingClientRect(),
+								targetOffset = [{
+									top: eRect.top - tRect.top,
+									left:  eRect.left - tRect.left
+								}];
+							// trigger animation
+							self.dispatch({
+								type: "check-foundation-drop",
+								targetOffset,
+								target,
+								el,
+							});
+							// prevent further checks
+							dropable = false;
+						}
+					});
+				});
+				if (!cards.length || dropable) {
+					AUTO_COMPLETE = false;
+				}
+				break;
+			case "check-game-won":
+				if (self.layout.find(".hole .card").length === 52) {
+					APP.dispatch({type: "game-won"});
+				}
+				break;
 			case "check-void-drop":
 				draggedFirst = event.el.get(0);
 				draggedParent = draggedFirst.parent().removeClass("no-drag-hover");
 				break;
 			case "check-foundation-drop":
-				break;
+				// number of cards in dropZone
+				draggedFirst = event.el.get(0);
+				from = draggedFirst.parent().removeClass("no-drag-hover");
+				dropable = event.el.length  === 1 && self.isCardFoundationDropable(draggedFirst, event.target);
+
+				if (dropable) {
+					// for seamless transition - position dragged el where dropped
+					el = event.el.map((item, i) =>
+						event.target.append(item).css({
+							top: event.targetOffset[i].top +"px",
+							left: event.targetOffset[i].left +"px",
+						})
+					);
+					// landing position
+					setTimeout(() => el[0]
+						.cssSequence("landing", "transitionend", el => {
+							el.removeClass("landing").removeAttr("style");
+							
+							if (self.dispatch({type: "check-game-won"})) return;
+
+							if (AUTO_COMPLETE) {
+								self.dispatch({type: "auto-complete", next: true});
+							}
+						})
+						.css({top: "0px", left: "0px"}), 10);
+
+					// push move to undo stack
+					UNDO_STACK.push({
+						cards: event.el.map(card => card.getAttribute("data-id")),
+						from: from.data("id"),
+						to: event.target.data("id"),
+					});
+				}
+				return dropable;
 			case "check-pile-drop":
 				// reset drop zones
 				self.layout.find(".no-drag-hover").removeClass("no-drag-hover");
@@ -149,7 +228,7 @@ let yukon = {
 							left: event.targetOffset[i].left +"px",
 						})
 					);
-					
+
 					// auto-flip last card in source pile
 					if (draggedParent.hasClass("pile")) {
 						last = draggedParent.find(".card:last-child");
@@ -364,6 +443,8 @@ let yukon = {
 					el.get(i)
 						.cssSequence("landing", "transitionend", lEl => {
 							lEl.removeClass("landing").removeAttr("style");
+
+							if (redo && self.dispatch({type: "check-game-won"})) return;
 
 							if (redo && data.flip && fromEl.hasClass("pile")) {
 								let flipCard = self.layout.find(`.card[data-id="${data.flip}"]`);

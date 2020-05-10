@@ -786,7 +786,7 @@ transition: width 100ms,
 
 .layout-yukon {
 	--layout-width: 883px;
-	--layout-height: 570px;
+	--layout-height: 561px;
 	width: var(--layout-width);
 	height: var(--layout-height);
 
@@ -824,9 +824,15 @@ transition: width 100ms,
 		}
 
 		&.foundation-1 { top: 13px; }
-		&.foundation-2 { top: 153px; }
-		&.foundation-3 { top: 293px; }
-		&.foundation-4 { top: 433px; }
+		&.foundation-2 { top: 149px; }
+		&.foundation-3 { top: 286px; }
+		&.foundation-4 { top: 423px; }
+
+		&.drag-hover:not(.no-drag-hover) {
+			&:before {
+				opacity: 1;
+			}
+		}
 	}
 
 	.deck {

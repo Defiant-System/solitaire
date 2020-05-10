@@ -2,7 +2,7 @@
 let APP,
 	AUTO_COMPLETE,
 	UNDO_STACK,
-	WASTE_TURN = 1,
+	WASTE_TURN = 3,
 	PILES = [
 		1, 2, 3, 4, 5, 6, 7,
 		2, 3, 4, 5, 6, 7,
@@ -120,11 +120,6 @@ let solitaire = {
 			case "trigger-solitaire-cycle-flip-cards":
 				self.layout.find(".deck").trigger("click");
 				break;
-			case "check-game-won":
-				if (self.layout.find(".hole .card").length === 104) {
-					APP.dispatch({type: "game-won"});
-				}
-				break;
 			case "auto-complete":
 				if (AUTO_COMPLETE && !event.next) return;
 				AUTO_COMPLETE = true;
@@ -164,6 +159,11 @@ let solitaire = {
 				});
 				if (!cards.length || dropable) {
 					AUTO_COMPLETE = false;
+				}
+				break;
+			case "check-game-won":
+				if (self.layout.find(".hole .card").length === 52) {
+					APP.dispatch({type: "game-won"});
 				}
 				break;
 			case "cycle-flip-cards":
@@ -225,9 +225,8 @@ let solitaire = {
 						.cssSequence("landing", "transitionend", el => {
 							el.removeClass("landing").removeAttr("style");
 
-							if (self.layout.find(".fndtn .card").length === 52) {
-								return APP.dispatch({type: "game-won"});
-							}
+							if (self.dispatch({type: "check-game-won"})) return;
+							
 							if (AUTO_COMPLETE) {
 								self.dispatch({type: "auto-complete", next: true});
 							}
@@ -664,6 +663,8 @@ let solitaire = {
 					el.get(i)
 						.cssSequence("landing", "transitionend", lEl => {
 							lEl.removeClass("landing").removeAttr("style");
+
+							if (redo && self.dispatch({type: "check-game-won"})) return;
 
 							if (redo && data.flip && fromEl.hasClass("pile")) {
 								let flipCard = self.layout.find(`.card[data-id="${data.flip}"]`);
