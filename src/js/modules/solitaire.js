@@ -257,8 +257,8 @@ let solitaire = {
 
 				check = (zoneLastCard.length
 							&& (SUIT_DICT[zoneLastSuit].accepts.indexOf(draggedFirst.data("suit")) < 0
-								|| NUMB_DICT[zoneLastNumb].cascDrop !== draggedFirst.data("numb")))
-							|| (!zoneLastCard.length && draggedFirst.data("numb") !== "K");
+								|| NUMB_DICT[zoneLastNumb].cascDrop !== draggedFirst.data("numb")));
+						//	|| (!zoneLastCard.length && draggedFirst.data("numb") !== "K");
 
 				if (!check) {
 					dropable = true;
