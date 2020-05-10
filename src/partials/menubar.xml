@@ -6,6 +6,7 @@
 			<Menu name="Solitaire" click="set-game-engine" arg="solitaire" check-group="game-engine" is-checked="1"/>
 			<Menu name="Freecell" click="set-game-engine" arg="freecell" check-group="game-engine"/>
 			<Menu name="Spider" click="set-game-engine" arg="spider" check-group="game-engine"/>
+			<Menu name="Yukon" click="set-game-engine" arg="yukon" check-group="game-engine"/>
 		</Menu>
 		<Menu type="divider"/>
 		<Menu name="Hide Solitaire"/>

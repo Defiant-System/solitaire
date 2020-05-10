@@ -410,7 +410,9 @@ let solitaire = {
 								}
 
 								// set board in "playing" mode
-								self.board.addClass("playing").find(".solitaire .card")
+								self.board.addClass("playing");
+								// reset cards
+								self.layout.find(".card")
 									.removeAttr("data-pos")
 									.removeClass("landing landed moving");
 							});
@@ -427,14 +429,14 @@ let solitaire = {
 		// update toolbar buttons
 		APP.btnPrev.addClass("tool-disabled_");
 		APP.btnNext.addClass("tool-disabled_");
-					
+		
 		// play sound
 		window.audio.play("shove-card");
 
 		// trigger animation
 		setTimeout(() =>
 				self.layout.find(".card")
-					.css({ top: "", left: "", }), 100);
+					.css({ top: "", left: "" }), 100);
 	},
 	setState(redo, data) {
 		let self = solitaire,

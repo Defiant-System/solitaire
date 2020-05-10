@@ -6,10 +6,11 @@ import History from "./modules/history"
 import freecell from "./modules/freecell"
 import solitaire from "./modules/solitaire"
 import spider from "./modules/spider"
+import yukon from "./modules/yukon"
 
 // constants
-let ENGINES = { freecell, solitaire, spider },
-	ACTIVE = "solitaire",
+let ENGINES = { freecell, solitaire, spider, yukon },
+	ACTIVE = "yukon",
 	// for dev purposes
 	pgn = ``;
 
@@ -113,7 +114,7 @@ const app = {
 
 				// set board layout
 				self.board
-					.removeClass("layout-freecell layout-solitaire layout-spider playing")
+					.removeClass("layout-freecell layout-solitaire layout-spider layout-yukon playing")
 					.addClass("layout-"+ ACTIVE);
 
 				// update menus

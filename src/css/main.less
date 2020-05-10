@@ -28,7 +28,8 @@ transition: width 100ms,
 
 	&.layout-freecell > .freecell,
 	&.layout-solitaire > .solitaire,
-	&.layout-spider > .spider{
+	&.layout-spider > .spider,
+	&.layout-yukon > .yukon {
 		display: block;
 		width: 100%;
 		height: 100%;
@@ -36,7 +37,8 @@ transition: width 100ms,
 
 	> .freecell,
 	> .solitaire,
-	> .spider { display: none; }
+	> .spider,
+	> .yukon { display: none; }
 
 	&[data-card-back = "blue"] {
 		&.layout-freecell .deck,
@@ -292,7 +294,7 @@ transition: width 100ms,
 		}
 	}
 	.hole {
-		background: linear-gradient(to bottom, rgba(0,0,40,0.2), rgba(0,0,0,0));
+		background: linear-gradient(to bottom, rgba(0,0,40,0.125), rgba(0,0,0,0));
 		color: rgba(0,0,50,.15);
 
 		&:before {
@@ -419,7 +421,7 @@ transition: width 100ms,
 		margin-left: -33px;
 		border-radius: 5px;
 		z-index: 55;
-		transition: bottom 250ms ease-in-out;
+		transition: bottom 200ms ease-in-out;
 
 		&.show {
 			bottom: 13px;
@@ -782,6 +784,74 @@ transition: width 100ms,
 	}
 }
 
+.layout-yukon {
+	--layout-width: 884px;
+	--layout-height: 570px;
+	width: var(--layout-width);
+	height: var(--layout-height);
+
+	.dealing div[class*="pile-"] {
+		z-index: initial;
+	}
+
+	.pile {
+		top: 13px;
+		--card-distance: 17px;
+
+		&.pile-1 { left: 13px; }
+		&.pile-2 { left: 120px; }
+		&.pile-3 { left: 227px; }
+		&.pile-4 { left: 334px; }
+		&.pile-5 { left: 441px; }
+		&.pile-6 { left: 548px; }
+		&.pile-7 { left: 655px; }
+	}
+	
+	.hole {
+		left: 779px;
+
+		&.foundation-1,
+		&.foundation-2,
+		&.foundation-3,
+		&.foundation-4 {
+			&:after {
+				content: "A";
+				text-align: center;
+				font-family: Arial;
+				font-size: 73px;
+				line-height: 131px;
+			}
+		}
+
+		&.foundation-1 { top: 13px; }
+		&.foundation-2 { top: 153px; }
+		&.foundation-3 { top: 293px; }
+		&.foundation-4 { top: 433px; }
+	}
+
+	.deck {
+		//background: url(~/img/new-cards.webp) -90px -484px no-repeat;
+		position: absolute;
+		width: 90px;
+		height: 121px;
+		bottom: 13px;
+		left: 50%;
+		perspective: 800px;
+		margin-left: -33px;
+		border-radius: 5px;
+		z-index: 55;
+		transition: bottom 200ms ease-in-out;
+
+		.card {
+			z-index: 22;
+		}
+	}
+
+	.card.hidden {
+		opacity: 0;
+	}
+}
+
 .hole {
 	position: absolute;
 	width: 90px;
@@ -1095,6 +1165,40 @@ transition: width 100ms,
 	&[data-pos="51"] { transition-delay: 5200ms; z-index: 52; }
 	&[data-pos="52"] { transition-delay: 5300ms; z-index: 53; }
 	&[data-pos="53"] { transition-delay: 5400ms; z-index: 54; }
+
+	&[data-pos="121"] { transition-delay: 2800ms; z-index: 54; }
+	&[data-pos="122"] { transition-delay: 2900ms; z-index: 53; }
+	&[data-pos="123"] { transition-delay: 3000ms; z-index: 52; }
+	&[data-pos="124"] { transition-delay: 3100ms; z-index: 51; }
+	&[data-pos="125"] { transition-delay: 3200ms; z-index: 50; }
+	&[data-pos="126"] { transition-delay: 3300ms; z-index: 49; }
+	&[data-pos="127"] { transition-delay: 3400ms; z-index: 48; }
+	&[data-pos="128"] { transition-delay: 3500ms; z-index: 47; }
+	&[data-pos="129"] { transition-delay: 3600ms; z-index: 46; }
+	&[data-pos="130"] { transition-delay: 3700ms; z-index: 45; }
+	&[data-pos="131"] { transition-delay: 3800ms; z-index: 44; }
+	&[data-pos="132"] { transition-delay: 3900ms; z-index: 43; }
+	&[data-pos="133"] { transition-delay: 4000ms; z-index: 42; }
+	&[data-pos="134"] { transition-delay: 4100ms; z-index: 41; }
+	&[data-pos="135"] { transition-delay: 4200ms; z-index: 40; }
+	&[data-pos="136"] { transition-delay: 4300ms; z-index: 39; }
+	&[data-pos="137"] { transition-delay: 4400ms; z-index: 38; }
+	&[data-pos="138"] { transition-delay: 4500ms; z-index: 37; }
+	&[data-pos="139"] { transition-delay: 4600ms; z-index: 36; }
+	&[data-pos="140"] { transition-delay: 4700ms; z-index: 35; }
+	&[data-pos="141"] { transition-delay: 4800ms; z-index: 34; }
+	&[data-pos="142"] { transition-delay: 4900ms; z-index: 33; }
+	&[data-pos="143"] { transition-delay: 5000ms; z-index: 32; }
+	&[data-pos="144"] { transition-delay: 5100ms; z-index: 31; }
+	&[data-pos="145"] { transition-delay: 5200ms; z-index: 30; }
+	&[data-pos="146"] { transition-delay: 5300ms; z-index: 29; }
+	&[data-pos="147"] { transition-delay: 5400ms; z-index: 28; }
+	&[data-pos="148"] { transition-delay: 5500ms; z-index: 27; }
+	&[data-pos="149"] { transition-delay: 5600ms; z-index: 26; }
+	&[data-pos="150"] { transition-delay: 5700ms; z-index: 25; }
+	&[data-pos="151"] { transition-delay: 5800ms; z-index: 24; }
+	&[data-pos="152"] { transition-delay: 5900ms; z-index: 23; }
+	&[data-pos="153"] { transition-delay: 6000ms; z-index: 22; }
 
 	&.sA	{ background-position: 0px 0px; }
 	&.s2	{ background-position: -90px 0px; }
