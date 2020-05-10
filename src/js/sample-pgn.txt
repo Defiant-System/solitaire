@@ -71,8 +71,23 @@ casino,red
 
 
 
-for auto-complete:
+Game play:
+Yukon
+casino,red
+501:hQ-S37,sJ-S49,h10-S35,s9-S47,c5-S4,d4-S16,hJ-S36
+502:hA-H26,dJ-S23,d7-S19,dA-S13,d6-S18
+503:c6-H5,s6-H44,h2-S27,cJ-S10,s4-S42
+504:h4-H29,dQ-H24,d5-H17,c8-S7,d10-S22,s3-S41,s7-S45,cQ-S11
+505:c2-H1,h7-H32,hK-H38,sA-H39,c4-S3,h3-S28,c9-S8
+506:s8-H46,s5-H43,d3-H15,h6-H31,d9-H21,sQ-S50,h5-S30,sK-S51,d2-S14
+507:s2-H40,c3-H2,dK-H25,s10-H48,d8-H20,c7-H6,cK-S12,c10-S9,h8-S33,h9-S34
+511:cA-S0
+512:
+513:
+514:
 
+
+Auto-complete:
 Yukon
 casino,red
 501:sK-S51,dQ-S24,cJ-S10,d10-S22,c9-S8,h8-S33,c7-S6,d6-S18,s5-S43,h4-S29
