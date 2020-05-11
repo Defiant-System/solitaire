@@ -1,12 +1,12 @@
 <Application>
 	<Head>
 		<meta name="id" value="solitaire"/>
-		<meta name="title" value="Solitaire" version="1.6"/>
+		<meta name="title" value="Solitaire" version="1.7"/>
 		<meta name="author" value="Hakan Bilgin" namespace="ant"/>
 		<meta name="license" value="AGPL-3.0-or-later"/>
-		<meta name="width" value="883"/>
+		<meta name="width" value="758"/>
 		<!-- 1025 881 758 883 -->
-		<meta name="height" value="561"/>
+		<meta name="height" value="550"/>
 		<!-- 600 580 550 561 -->
 		<meta name="top" value="50"/>
 		<meta name="left" value="70"/>
