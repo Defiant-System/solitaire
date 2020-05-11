@@ -14,19 +14,19 @@ let ENGINES = { freecell, solitaire, spider, yukon },
 	// for dev purposes
 	pgn = `Solitaire
 casino,red,3
-201:cK-H12,dA-H13,h3-H28,sA-H39,hQ-H37,dJ-H23,c3-H2,d5-H17,sK-H51,hA-H26,hK-H38,h2-H27,s10-H48,sJ-H49,s3-H41,c4-H3,c9-H8,s7-H45,dK-H25,d2-H14,h6-H31,dQ-H24,d10-H22,c10-H9
-202:
+201:
+202:cK-S12,sA-S39,hQ-S37,d5-S17,sK-S51,hK-S38,h2-S27,s10-S48,sJ-S49,s3-S41,c4-S3,c9-S8,dK-S25,d2-S14,dQ-S24,d10-S22
 211:cA-S0
-212:
-213:
+212:hA-S26
+213:dA-S13
 214:
-221:
-222:c8-S7,h7-S32
-223:h5-H30,d7-H19,s5-S43
-224:d9-H21,d4-H16,h4-H29,s4-S42,d3-S15,s2-S40
-225:h9-H34,s8-H46,sQ-S50
-226:s6-H44,s9-H47,cJ-H10,d6-H18,c2-H1,d8-S20
-227:hJ-H36,h10-H35,cQ-H11,c7-H6,c6-H5,h8-H33,c5-S4`;
+221:sQ-S50,dJ-S23,c10-S9,h9-S34,c8-S7,h7-S32
+222:d8-S20,s7-S45,h6-S31,s5-S43,h4-S29,c3-S2
+223:h5-S30,s4-S42,d3-S15,s2-S40
+224:d9-S21,s8-S46,d7-S19
+225:h3-S28,c2-S1
+226:s6-H44,s9-H47,cJ-H10,d6-S18,c5-S4,d4-S16
+227:hJ-H36,h10-H35,cQ-H11,c7-H6,c6-H5,h8-S33`;
 
 const app = {
 	init() {
