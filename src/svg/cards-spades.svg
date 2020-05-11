@@ -3,7 +3,7 @@
 	<filter x="-10%" y="-10%" width="120%" height="120%" filterUnits="objectBoundingBox" id="ds">
 		<feOffset dx="0" dy="2" in="SourceAlpha" result="shadowOffsetOuter2"/>
 		<feGaussianBlur stdDeviation="1.5" in="shadowOffsetOuter2" result="shadowBlurOuter2"/>
-		<feColorMatrix values="0.2 0 0 0 0 0 0.2 0 0 0 0 0 0.2 0 0 0 0 0 0.75 0" type="matrix" in="shadowBlurOuter2" result="shadowMatrixOuter2"/>
+		<feColorMatrix values="0.2 0 0 0 0 0 0.2 0 0 0 0 0 0.2 0 0 0 0 0 0.5 0" type="matrix" in="shadowBlurOuter2" result="shadowMatrixOuter2"/>
 		<feMerge>
 			<feMergeNode in="shadowMatrixOuter2"/>
 			<feMergeNode in="SourceGraphic"/>
