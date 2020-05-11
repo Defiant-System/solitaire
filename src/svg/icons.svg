@@ -4,5 +4,9 @@
 	@import "icon-redo.svg"
 	@import "icon-cog.svg"
 
+	@import "cards-clubs.svg"
+	@import "cards-diamonds.svg"
+	@import "cards-hearts.svg"
+	@import "cards-spades.svg"
 
 </svg>
