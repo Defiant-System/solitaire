@@ -419,7 +419,7 @@ transition: width 100ms,
 		//bottom: 13px;
 		left: 50%;
 		margin-left: -33px;
-		border-radius: 5px;
+		border-radius: 7px;
 		z-index: 55;
 		transition: bottom 200ms ease-in-out;
 
@@ -579,7 +579,7 @@ transition: width 100ms,
 			right: 0;
 			height: 123px;
 			opacity: 0.5;
-			border-radius: 5px;
+			border-radius: 7px;
 			pointer-events: none;
 		}
 
@@ -755,11 +755,15 @@ transition: width 100ms,
 			right: 0;
 			height: 123px;
 			opacity: 0.5;
-			border-radius: 5px;
+			border-radius: 7px;
 		}
 
 		.card {
 			box-shadow: 0 0 0;
+
+			&:not(:last-child) {
+				display: none;
+			}
 		}
 	}
 
@@ -1099,7 +1103,7 @@ transition: width 100ms,
 			left: 0;
 			right: 0;
 			bottom: 0;
-			border-radius: 5px;
+			border-radius: 7px;
 			transform: rotateY(180deg);
 		}
 	}
