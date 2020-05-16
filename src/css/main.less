@@ -760,10 +760,10 @@ transition: width 100ms,
 
 		.card {
 			box-shadow: 0 0 0;
+		}
 
-			&:not(:last-child) {
-				display: none;
-			}
+		&:not(.undo-collect) .card:not(:last-child) {
+			display: none;
 		}
 	}
 
