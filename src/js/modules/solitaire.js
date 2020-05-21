@@ -492,7 +492,7 @@ let solitaire = {
 									cards.cssSequence("landing", "transitionend", lEl => {
 											if (lEl[0] !== cards[0]) return;
 											// reset cards
-											cards.removeClass("landing");
+											cards.removeClass("landing").removeAttr("style");
 											// reset elements
 											toEl.removeClass("deck-fill");
 											fromEl.removeClass("flipping-card unfan-cards");

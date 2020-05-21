@@ -452,7 +452,7 @@ let spider = {
 					setTimeout(() => 
 						cards
 							.cssSequence("landing", "transitionend", lEl => {
-								lEl.removeClass("landing");
+								lEl.removeClass("landing").removeAttr("style");
 								if (lEl[0] !== cards[cards.length-1]) return;
 
 								cards.map((card, i) => {
@@ -661,7 +661,7 @@ let spider = {
 					el.get(i)
 						.cssSequence("landing", "transitionend", lEl => {
 							// reset element
-							lEl.removeClass("landing");
+							lEl.removeClass("landing").removeAttr("style");
 							toEl.removeClass("undo-collapsing");
 
 							if (redo && data.flip && fromEl.hasClass("pile")) {

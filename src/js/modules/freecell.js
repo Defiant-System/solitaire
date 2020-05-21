@@ -409,7 +409,7 @@ let freecell = {
 					el.get(i)
 						.cssSequence("landing", "transitionend", lEl => {
 							// reset element
-							lEl.removeClass("landing");
+							lEl.removeClass("landing").removeAttr("style");
 
 							if (redo) {
 								// check if game is complete
