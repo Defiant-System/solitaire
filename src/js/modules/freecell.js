@@ -145,6 +145,9 @@ let freecell = {
 
 				if (!cards.length || dropable) {
 					AUTO_COMPLETE = false;
+					// show alert dialog
+					window.dialog.alert("Can't autocomplete more&hellip; <test>");
+					//window.dialog.alert("Can't autocomplete more&#8230;");
 				}
 				break;
 			case "check-void-drop":

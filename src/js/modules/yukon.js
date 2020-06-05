@@ -180,6 +180,21 @@ let yukon = {
 							left: event.targetOffset[i].left +"px",
 						})
 					);
+					// auto-flip last card
+					if (from.hasClass("pile")) {
+						last = from.find(".card:last-child");
+						
+						if (last.hasClass("card-back")) {
+							// adding "flipping-card" to get "3d-perspective"
+							from.toggleClass("flipping-card", !last.length);
+
+							// flip last card from source pile
+							last.cssSequence("card-flip", "animationend", fEl =>
+								fEl.removeClass("card-flip card-back")
+									.parent()
+									.removeClass("flipping-card"));
+						}
+					}
 					// landing position
 					setTimeout(() => el[0]
 						.cssSequence("landing", "transitionend", el => {
@@ -198,6 +213,7 @@ let yukon = {
 						cards: event.el.map(card => card.getAttribute("data-id")),
 						from: from.data("id"),
 						to: event.target.data("id"),
+						flip: last && last.hasClass("card-back") ? last.data("id") : false
 					});
 				}
 				return dropable;
