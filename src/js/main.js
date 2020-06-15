@@ -97,7 +97,7 @@ const app = {
 				// clear all cards
 				window.find(".card").remove();
 				// reset board
-				self.board.removeClass("playing game-won game-fail");
+				self.board.removeClass("playing game-won");
 
 				if (!self.activeEngine) {
 					self.dispatch({type: "set-game-engine", init: true});
@@ -162,18 +162,14 @@ const app = {
 					window.midi.play("~/midi/The-Entertainer.mid");
 				}
 				break;
-			case "game-fail":
-				self.board.removeClass("playing").addClass("game-fail");
-				break;
 			case "history-go-prev":
 				self.UNDO_STACK.undo();
 				break;
 			case "history-go-next":
 				self.UNDO_STACK.redo();
 				break;
-			case "close-failure":
 			case "close-congratulations":
-				self.board.removeClass("game-won game-fail");
+				self.board.removeClass("game-won");
 				self.dispatch({type: "new-game"});
 				break;
 			// solitaire specific events

@@ -91,7 +91,10 @@ let spider = {
 				if (this.layout.find(".hole .card").length === 104) {
 					APP.dispatch({type: "game-won"});
 				} else if (this.layout.find(".pile .card").length < 10) {
-					APP.dispatch({type: "game-fail"});
+					window.dialog.alert({
+						message: "No more possible moves - there is not enough cards to cover empty holes.\nPress 'OK' to start again.",
+						onOk: () => APP.dispatch({ type: "new-game" })
+					});
 				}
 				break;
 			case "spider-deal-cards":

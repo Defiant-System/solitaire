@@ -141,45 +141,6 @@ transition: width 100ms,
 		}
 	}
 
-	&.game-fail {
-		.failaure {
-			opacity: 1;
-			visibility: visible;
-		}
-	}
-
-	.failaure {
-		opacity: 0;
-		visibility: hidden;
-		position: absolute;
-		top: 0;
-		left: 0;
-		right: 0;
-		bottom: 0;
-		z-index: 99;
-		background: rgba(0,0,0,0.65);
-
-		.content {
-			position: absolute;
-			top: 35%;
-			width: 100%;
-			transform: translateZ(0);
-			text-align: center;
-			font-family: 'Tangerine', cursive;
-			text-shadow: 0 5px 5px rgba(0,0,0,.5);
-		}
-		h2 {
-			font-size: 61px;
-			font-weight: 100;
-			color: #f44;
-		}
-		h3 {
-			font-size: 37px;
-			font-weight: 100;
-			color: #ddd;
-		}
-	}
-
 	.congratulations {
 		opacity: 0;
 		visibility: hidden;
