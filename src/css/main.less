@@ -47,62 +47,6 @@ transition: width 100ms,
 			background-position: 0 0;
 		}
 	}
-	&[data-card-back = "green"] {
-		&.layout-freecell .deck,
-		.card.card-flip-back:before,
-		.card.card-back:before {
-			background-position: -180px 0;
-		}
-	}
-	&[data-card-back = "purple"] {
-		&.layout-freecell .deck,
-		.card.card-flip-back:before,
-		.card.card-back:before {
-			background-position: -270px 0;
-		}
-	}
-	&[data-card-back = "teal"] {
-		&.layout-freecell .deck,
-		.card.card-flip-back:before,
-		.card.card-back:before {
-			background-position: -360px 0;
-		}
-	}
-	&[data-card-back = "darkGreen"] {
-		&.layout-freecell .deck,
-		.card.card-flip-back:before,
-		.card.card-back:before {
-			background-position: -450px 0;
-		}
-	}
-	&[data-card-back = "checkRed"] {
-		&.layout-freecell .deck,
-		.card.card-flip-back:before,
-		.card.card-back:before {
-			background-position: -540px 0;
-		}
-	}
-	&[data-card-back = "checkBlue"] {
-		&.layout-freecell .deck,
-		.card.card-flip-back:before,
-		.card.card-back:before {
-			background-position: -630px 0;
-		}
-	}
-	&[data-card-back = "barbRed"] {
-		&.layout-freecell .deck,
-		.card.card-flip-back:before,
-		.card.card-back:before {
-			background-position: -720px 0;
-		}
-	}
-	&[data-card-back = "barbBlue"] {
-		&.layout-freecell .deck,
-		.card.card-flip-back:before,
-		.card.card-back:before {
-			background-position: -810px 0;
-		}
-	}
 
 	&.playing {
 		.card:not(.drag-return-to-origin, .landing, .showing, .card-fan) {
@@ -372,7 +316,8 @@ transition: width 100ms,
 	}
 
 	.deck {
-		background: url(~/img/card-backs.webp) -90px 0 no-repeat;
+		background: url(~/icons/card-backs.png) -90px 0 no-repeat;
+		background-size: auto 100%;
 		position: absolute;
 		width: 90px;
 		height: 123px;
@@ -1071,7 +1016,8 @@ transition: width 100ms,
 
 		&:before {
 			content: "";
-			background: url(~/img/card-backs.webp) -90px 0 no-repeat;
+			background: url(~/icons/card-backs.png) -90px 0 no-repeat;
+			background-size: auto 100%;
 			position: absolute;
 			top: 0;
 			left: 0;

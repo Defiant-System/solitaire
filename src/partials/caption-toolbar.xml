@@ -1,9 +1,10 @@
 <CaptionToolBar>
 	<Group width="17%">
 		<Options>
-			<Tool symbol="icon-undo" state="disabled" click="history-go-prev"/>
-			<Tool symbol="icon-redo" state="disabled" click="history-go-next"/>
+			<Tool symbol="icon-undo" state="disabled" click="history-go-prev" title="Undo."/>
+			<Tool symbol="icon-redo" state="disabled" click="history-go-next" title="Redo."/>
 		</Options>
+		<Tool symbol="icon-automatic" state="disabled" title="Autocomplete."/>
 	</Group>
 	<Group>
 		<Options>

@@ -3,6 +3,8 @@
 	@import "icon-undo.svg"
 	@import "icon-redo.svg"
 	@import "icon-cog.svg"
+	@import "icon-automatic.svg"
+	@import "card-backs.svg"
 
 	@import "cards-clubs.svg"
 	@import "cards-diamonds.svg"

@@ -29,14 +29,6 @@
 		<Menu name="Card Backs&#8230;" for="game-card-back">
 			<Menu name="Classic Red" click="set-card-back" arg="red" check-group="card-back" is-checked="1"/>
 			<Menu name="Classic Blue" click="set-card-back" arg="blue" check-group="card-back"/>
-			<Menu name="Green" click="set-card-back" arg="green" check-group="card-back"/>
-			<Menu name="Purple" click="set-card-back" arg="purple" check-group="card-back"/>
-			<Menu name="Teal" click="set-card-back" arg="teal" check-group="card-back"/>
-			<Menu name="Dark Green" click="set-card-back" arg="darkGreen" check-group="card-back"/>
-			<Menu name="Checkered Red" click="set-card-back" arg="checkRed" check-group="card-back"/>
-			<Menu name="Checkered Blue" click="set-card-back" arg="checkBlue" check-group="card-back"/>
-			<Menu name="Barbwire Red" click="set-card-back" arg="barbRed" check-group="card-back"/>
-			<Menu name="Barbwire Blue" click="set-card-back" arg="barbBlue" check-group="card-back"/>
 		</Menu>
 		<Menu type="divider"/>
 		<Menu name="New Game" click="new-game" hotkey="alt+n"/>
