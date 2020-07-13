@@ -12,24 +12,7 @@ import yukon from "./modules/yukon"
 let ENGINES = { freecell, solitaire, spider, yukon },
 	ACTIVE = "solitaire",
 	// for dev purposes
-	pgn = "";`Freecell
-casino,red
-401:sA-S39,s2-S40,s3-S41,s4-S42,s5-S43,s6-S44,s7-S45,s8-S46,s9-S47,s10-S48,sJ-S49,sQ-S50,sK-S51
-402:hA-S26,h2-S27,h3-S28,h4-S29,h5-S30,h6-S31,h7-S32,h8-S33,h9-S34,h10-S35,hJ-S36,hQ-S37,hK-S38
-403:cA-S0,c2-S1,c3-S2,c4-S3,c5-S4,c6-S5,c7-S6,c8-S7,c9-S8,c10-S9,cJ-S10,cQ-S11,cK-S12
-404:dA-S13,d2-S14,d3-S15,d4-S16,d5-S17,d6-S18,d7-S19,d8-S20,d9-S21,d10-S22,dJ-S23,dQ-S24
-411:
-412:
-413:
-414:
-421:
-422:
-423:
-424:
-425:
-426:
-427:dK-S25
-428:`;
+	pgn = ``;
 
 const app = {
 	init() {
@@ -37,6 +20,7 @@ const app = {
 		this.board = window.find(".board");
 		this.btnPrev = window.find("[data-click='history-go-prev']");
 		this.btnNext = window.find("[data-click='history-go-next']");
+		this.btnAuto = window.find("[data-click='auto-complete']");
 		this.UNDO_STACK = new History;
 
 		// initiate engines

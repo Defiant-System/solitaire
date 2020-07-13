@@ -16,7 +16,7 @@
 		<Menu name="Quit Solitaire" shell="win -c"/>
 	</Menu>
 	<Menu name="Game" for="game-board">
-		<Menu name="Auto Complete" click="auto-complete" disable-if="game-engine" is="spider"/>
+		<Menu name="New Game" click="new-game" hotkey="alt+n"/>
 		<!-- optional menus depending on game engine -->
 		<Menu name="Deal" click="trigger-solitaire-cycle-flip-cards" show-if-group="game-engine" is="solitaire"/>
 		<Menu name="Deal" click="trigger-spider-deal-cards" show-if-group="game-engine" is="spider"/>
@@ -30,8 +30,24 @@
 			<Menu name="Classic Red" click="set-card-back" arg="red" check-group="card-back" is-checked="1"/>
 			<Menu name="Classic Blue" click="set-card-back" arg="blue" check-group="card-back"/>
 		</Menu>
+		<!-- Conditional menu options START -->
+		<!--
+		<Menu name="Settings&#8230;" show-if-group="game-engine" is="freecell">
+			<Menu name="Settings for Freecell&#8230;"/>
+		</Menu>
+		-->
+		<Menu name="Settings&#8230;" show-if-group="game-engine" is="solitaire">
+			<Menu name="Turn 1 card" click="solitaire-set-waste" arg="1" check-group="solitaire-waste"/>
+			<Menu name="Turn 3 cards" click="solitaire-set-waste" arg="3" check-group="solitaire-waste" is-checked="1"/>
+		</Menu>
+		<Menu name="Settings&#8230;" show-if-group="game-engine" is="spider">
+			<Menu name="Easy" click="spider-set-level" arg="1" check-group="spider-level" is-checked="1"/>
+			<Menu name="Medium" click="spider-set-level" arg="2" check-group="spider-level"/>
+			<Menu name="Hard" click="spider-set-level" arg="3" check-group="spider-level"/>
+		</Menu>
 		<Menu type="divider"/>
-		<Menu name="New Game" click="new-game" hotkey="alt+n"/>
+		<Menu name="Auto Complete" click="auto-complete" disable-if="game-engine" is="spider"/>
+		<Menu name="Output PGN String" click="output-pgn-string"/>
 	</Menu>
 	<Menu name="Help">
 		<Menu name="How To Play" click="open-help"/>
@@ -39,32 +55,3 @@
 		<Menu name="Source Code"/>
 	</Menu>
 </MenuBar>
-
-<Menu for="toolbar-settings">
-	<Menu name="New Game" click="new-game"/>
-	<Menu type="divider"/>
-	<Menu name="Play Music" click="toggle-music" check-group="toggle-music"/>
-	<!-- optional menus end -->
-	<Menu name="Auto Complete" click="auto-complete" disable-if="game-engine" is="spider"/>
-	<Menu type="divider"/>
-	<Menu name="Background&#8230;" invoke="game-background"/>
-	<Menu name="Card Backs&#8230;" invoke="game-card-back"/>
-	<!-- Conditional menu options START -->
-	<Menu name="Settings&#8230;" show-if-group="game-engine" is="freecell">
-		<Menu name="Settings for Freecell&#8230;"/>
-	</Menu>
-	<Menu name="Settings&#8230;" show-if-group="game-engine" is="solitaire">
-		<Menu name="Turn 1 card" click="solitaire-set-waste" arg="1" check-group="solitaire-waste"/>
-		<Menu name="Turn 3 cards" click="solitaire-set-waste" arg="3" check-group="solitaire-waste" is-checked="1"/>
-	</Menu>
-	<Menu name="Settings&#8230;" show-if-group="game-engine" is="spider">
-		<Menu name="Easy" click="spider-set-level" arg="1" check-group="spider-level" is-checked="1"/>
-		<Menu name="Medium" click="spider-set-level" arg="2" check-group="spider-level"/>
-		<Menu name="Hard" click="spider-set-level" arg="3" check-group="spider-level"/>
-	</Menu>
-	<!-- Conditional menu options END -->
-	<Menu type="divider"/>
-	<Menu name="Output PGN String" click="output-pgn-string"/>
-	<Menu type="divider"/>
-	<Menu name="How To Play"/>
-</Menu>

@@ -120,6 +120,16 @@ let solitaire = {
 			case "trigger-solitaire-cycle-flip-cards":
 				self.layout.find(".deck").trigger("click");
 				break;
+			case "can-auto-complete":
+				dropable = self.layout.find(".hole.fndtn");
+				self.layout.find(".pile .card:last-child").map(c => {
+					let card = $(c);
+					[...Array(4)].map((e, i) => {
+						check = check || self.isCardFoundationDropable(card, dropable.get(i));
+					});
+				});
+				APP.btnAuto.toggleClass("tool-disabled_", check);
+				break;
 			case "auto-complete":
 				if (AUTO_COMPLETE && !event.next) return;
 				AUTO_COMPLETE = true;
@@ -148,6 +158,7 @@ let solitaire = {
 							// trigger animation
 							self.dispatch({
 								type: "check-foundation-drop",
+								silent: event.silent,
 								targetOffset,
 								target,
 								el,
@@ -159,6 +170,10 @@ let solitaire = {
 				});
 				if (!cards.length || dropable) {
 					AUTO_COMPLETE = false;
+					if (!event.silent && !self.board.hasClass("board")) {
+						// show alert dialog
+						window.dialog.alert("Can't autocomplete more&hellip;");
+					}
 				}
 				break;
 			case "check-game-won":
@@ -228,7 +243,9 @@ let solitaire = {
 							if (self.dispatch({type: "check-game-won"})) return;
 							
 							if (AUTO_COMPLETE) {
-								self.dispatch({type: "auto-complete", next: true});
+								last = draggedParent.find(".card:last-child");
+								setTimeout(() =>
+									self.dispatch({type: "auto-complete", silent: event.silent, next: true}), last.hasClass("card-back") ? 500 : 0);
 							}
 							// push move to undo stack
 							UNDO_STACK.push({
@@ -401,6 +418,9 @@ let solitaire = {
 
 								// if last element is turned
 								if (el[0] !== flipEl[0]) {
+									// check if tableau can be auto completed -> toggle toolbar button
+									setTimeout(() =>
+										self.dispatch({ type: "auto-complete", silent: true }), 500);
 									// play sound
 									return window.audio.play("shove-card");
 								}
@@ -704,6 +724,9 @@ let solitaire = {
 
 				data.animation = "card-move";
 		}
+
+		// check if tableau can be auto completed -> toggle toolbar button
+		setTimeout(() => self.dispatch({ type: "can-auto-complete" }), 355);
 	}
 };
 

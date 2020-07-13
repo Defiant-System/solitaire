@@ -105,6 +105,16 @@ let freecell = {
 					APP.dispatch({type: "game-won"});
 				}
 				break;
+			case "can-auto-complete":
+				dropable = self.layout.find(".hole.fndtn");
+				self.layout.find(".pile .card:last-child").map(c => {
+					let card = $(c);
+					[...Array(4)].map((e, i) => {
+						check = check || self.isCardFoundationDropable(card, dropable.get(i));
+					});
+				});
+				APP.btnAuto.toggleClass("tool-disabled_", check);
+				break;
 			case "auto-complete":
 				if (AUTO_COMPLETE && !event.next) return;
 				AUTO_COMPLETE = true;
@@ -133,6 +143,7 @@ let freecell = {
 							// trigger animation
 							self.dispatch({
 								type: "check-foundation-drop",
+								silent: event.silent,
 								targetOffset,
 								target,
 								el,
@@ -145,9 +156,10 @@ let freecell = {
 
 				if (!cards.length || dropable) {
 					AUTO_COMPLETE = false;
-					// show alert dialog
-					window.dialog.alert("Can't autocomplete more&hellip; <test>");
-					//window.dialog.alert("Can't autocomplete more&#8230;");
+					if (!event.silent) {
+						// show alert dialog
+						window.dialog.alert("Can't autocomplete more&hellip;");
+					}
 				}
 				break;
 			case "check-void-drop":
@@ -176,7 +188,7 @@ let freecell = {
 								return APP.dispatch({type: "game-won"});
 							}
 							if (AUTO_COMPLETE) {
-								self.dispatch({type: "auto-complete", next: true});
+								self.dispatch({type: "auto-complete", silent: event.silent, next: true});
 							}
 						})
 						.css({top: "0px", left: "0px"}), 10);
@@ -341,6 +353,8 @@ let freecell = {
 						self.deck.removeClass("show");
 						// set board in "playing" mode
 						self.board.addClass("playing").find(".freecell .card").removeAttr("data-pos").removeClass("moving landed");
+						// check if tableau can be auto completed -> toggle toolbar button
+						self.dispatch({ type: "auto-complete", silent: true })
 					}
 				})
 				.css({
@@ -441,6 +455,8 @@ let freecell = {
 
 				data.animation = "card-move";
 		}
+		// check if tableau can be auto completed -> toggle toolbar button
+		setTimeout(() => self.dispatch({ type: "can-auto-complete" }), 200);
 	}
 };
 

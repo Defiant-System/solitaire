@@ -4,7 +4,8 @@
 	Solitaire
 </h1>
 
-This game has four different setups:
+This application has four different types of solitaire games.
+Read about the rules for each individual game by scrolling down. Enjoy!
 * Solitaire
 * Freecell
 * Spider

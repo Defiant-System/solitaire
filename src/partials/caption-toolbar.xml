@@ -4,7 +4,7 @@
 			<Tool symbol="icon-undo" state="disabled" click="history-go-prev" title="Undo."/>
 			<Tool symbol="icon-redo" state="disabled" click="history-go-next" title="Redo."/>
 		</Options>
-		<Tool symbol="icon-automatic" state="disabled" title="Autocomplete."/>
+		<Tool symbol="icon-automatic" state="disabled" click="auto-complete" title="Autocomplete."/>
 	</Group>
 	<Group>
 		<Options>
@@ -15,6 +15,6 @@
 		</Options>
 	</Group>
 	<Group width="25%">
-		<Tool symbol="icon-cog" menu="toolbar-settings"/>
+		<Tool symbol="icon-cog" menu="game-board"/>
 	</Group>
 </CaptionToolBar>
