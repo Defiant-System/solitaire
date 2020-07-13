@@ -12,27 +12,24 @@ import yukon from "./modules/yukon"
 let ENGINES = { freecell, solitaire, spider, yukon },
 	ACTIVE = "solitaire",
 	// for dev purposes
-	pgn = `Spider
+	pgn = "";`Freecell
 casino,red
-301:cK-H25,c4-H68,c3-H67,c8-H33,c8-H72,c7-H84,c6-H83,c6-H96,cQ-H24,c9-H21,c5-H4,c5-H17,cK-H12,cA-H13,c6-H5,cJ-H49,c7-H32,c5-H82,c2-H27,c10-H22
-311:cK-S103,cQ-S102,cJ-S23,c10-S87,c9-S34,c8-S7,c7-S97,c6-S57,c5-S56,c4-S81,c3-S41,c2-S66,cA-S26
-312:cK-S51,cQ-S11,cJ-S36,c10-S9,c9-S73,c8-S59,c7-S19,c6-S70,c5-S30,c4-S3,c3-S28,c2-S53,cA-S52
-313:cK-S77,cQ-S89,cJ-S75,c10-S48,c9-S86,c8-S98,c7-S71,c6-S18,c5-S69,c4-S55,c3-S80,c2-S40,cA-S91
-314:cK-S90,cQ-S50,cJ-S88,c10-S74,c9-S8,c8-S46,c7-S45,c6-S44,c5-S43,c4-S16,c3-S54,c2-S1,cA-S78
-315:
-316:
-317:
-318:
-321:cK-S64
-322:cQ-S37,cJ-S62,c10-S35,c9-S47,c8-S20,c7-S6
-323:c4-S42,c3-S93,c2-S14,cA-S39
-324:cK-S38,cQ-S76,cJ-S101,c10-S100,c9-S99,c8-S85,c7-S58,c6-S31,c5-S95,c4-S94,c3-S2,c2-S92
-325:cA-S65
-326:cJ-S10
-327:c10-S61
-328:cQ-S63
-329:c9-S60
-330:c4-S29,c3-S15,c2-S79,cA-S0`;
+401:sA-S39,s2-S40,s3-S41,s4-S42,s5-S43,s6-S44,s7-S45,s8-S46,s9-S47,s10-S48,sJ-S49,sQ-S50,sK-S51
+402:hA-S26,h2-S27,h3-S28,h4-S29,h5-S30,h6-S31,h7-S32,h8-S33,h9-S34,h10-S35,hJ-S36,hQ-S37,hK-S38
+403:cA-S0,c2-S1,c3-S2,c4-S3,c5-S4,c6-S5,c7-S6,c8-S7,c9-S8,c10-S9,cJ-S10,cQ-S11,cK-S12
+404:dA-S13,d2-S14,d3-S15,d4-S16,d5-S17,d6-S18,d7-S19,d8-S20,d9-S21,d10-S22,dJ-S23,dQ-S24
+411:
+412:
+413:
+414:
+421:
+422:
+423:
+424:
+425:
+426:
+427:dK-S25
+428:`;
 
 const app = {
 	init() {
@@ -65,8 +62,6 @@ const app = {
 		} else {
 			this.dispatch({type: "new-game"});
 		}
-		// temp
-		this.dispatch({type: "open-help"});
 	},
 	dispatch(event) {
 		let self = app,
