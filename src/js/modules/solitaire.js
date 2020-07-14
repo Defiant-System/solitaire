@@ -170,7 +170,7 @@ let solitaire = {
 				});
 				if (!cards.length || dropable) {
 					AUTO_COMPLETE = false;
-					if (!event.silent && !self.board.hasClass("board")) {
+					if (!event.silent && !self.board.hasClass("game-won")) {
 						// show alert dialog
 						window.dialog.alert("Can't autocomplete more&hellip;");
 					}

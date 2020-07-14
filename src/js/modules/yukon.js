@@ -116,6 +116,16 @@ let yukon = {
 						});
 				}
 				break;
+			case "can-auto-complete":
+				dropable = self.layout.find(".hole.fndtn");
+				self.layout.find(".pile .card:last-child").map(c => {
+					let card = $(c);
+					[...Array(4)].map((e, i) => {
+						check = check || self.isCardFoundationDropable(card, dropable.get(i));
+					});
+				});
+				APP.btnAuto.toggleClass("tool-disabled_", check);
+				break;
 			case "auto-complete":
 				if (AUTO_COMPLETE && !event.next) return;
 				AUTO_COMPLETE = true;
@@ -144,6 +154,7 @@ let yukon = {
 							// trigger animation
 							self.dispatch({
 								type: "check-foundation-drop",
+								silent: event.silent,
 								targetOffset,
 								target,
 								el,
@@ -155,6 +166,10 @@ let yukon = {
 				});
 				if (!cards.length || dropable) {
 					AUTO_COMPLETE = false;
+					if (!event.silent && !self.board.hasClass("game-won")) {
+						// show alert dialog
+						window.dialog.alert("Can't autocomplete more&hellip;");
+					}
 				}
 				break;
 			case "check-game-won":
@@ -203,7 +218,7 @@ let yukon = {
 							if (self.dispatch({type: "check-game-won"})) return;
 
 							if (AUTO_COMPLETE) {
-								self.dispatch({type: "auto-complete", next: true});
+								self.dispatch({type: "auto-complete", silent: event.silent, next: true});
 							}
 						})
 						.css({top: "0px", left: "0px"}), 10);
@@ -364,11 +379,12 @@ let yukon = {
 					// last card
 					if (pos === 151) {
 						// set board in "playing" mode
-						self.board.addClass("playing");
-						// reset cards
-						self.layout.find(".card")
+						self.board.addClass("playing")
+							.find(".yukon .card")
 							.removeAttr("data-pos")
 							.removeClass("landing landed moving");
+						// check if tableau can be auto completed -> toggle toolbar button
+						self.dispatch({ type: "auto-complete", silent: true });
 					}
 				})
 				.css({
@@ -500,6 +516,9 @@ let yukon = {
 
 				data.animation = "card-move";
 		}
+
+		// check if tableau can be auto completed -> toggle toolbar button
+		setTimeout(() => self.dispatch({ type: "can-auto-complete" }), 355);
 	}
 };
 

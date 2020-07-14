@@ -352,7 +352,10 @@ let freecell = {
 						// hide the deck
 						self.deck.removeClass("show");
 						// set board in "playing" mode
-						self.board.addClass("playing").find(".freecell .card").removeAttr("data-pos").removeClass("moving landed");
+						self.board.addClass("playing")
+							.find(".freecell .card")
+							.removeAttr("data-pos")
+							.removeClass("moving landed");
 						// check if tableau can be auto completed -> toggle toolbar button
 						self.dispatch({ type: "auto-complete", silent: true })
 					}
