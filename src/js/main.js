@@ -12,19 +12,7 @@ import yukon from "./modules/yukon"
 let ENGINES = { freecell, solitaire, spider, yukon },
 	ACTIVE = "solitaire",
 	// for dev purposes
-	pgn = `Yukon
-casino,red
-501:c4-S3
-502:h8-H33,hK-S38,sK-S51,s8-S46,sJ-S49,hA-S26
-503:d9-H21,c3-H2,c10-S9,c8-S7,d5-S17,h6-S31,c6-S5
-504:s10-H48,h3-H28,d4-H16,s9-S47,dK-S25,cA-S0,h9-S34,d2-S14
-505:h10-H35,s5-H43,d3-H15,sQ-H50,dQ-S24,d10-S22,hJ-S36,cK-S12,cQ-S11
-506:h2-H27,s7-H45,dA-H13,h4-H29,c9-H8,s3-S41,c2-S1,dJ-S23,d6-S18,hQ-S37
-507:h5-H30,c5-H4,c7-H6,d8-H20,s4-H42,d7-H19,cJ-S10,sA-S39,s2-S40,h7-S32,s6-S44
-511:
-512:
-513:
-514:`;
+	pgn = ``;
 
 const app = {
 	init() {
