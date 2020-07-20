@@ -1196,15 +1196,15 @@ transition: width 100ms,
 }
 
 @keyframes cardFlip {
-	0%   { transform: translateZ(0px) rotateY(180deg); }
-	50%  { transform: translateZ(50px) rotateY(90deg); }
-	100% { transform: translateZ(0px) rotateY(0deg); }
+	0%   { transform: translateY(0px) translateZ(0px) rotateY(180deg); }
+	50%  { transform: translateY(-11px) translateZ(50px) rotateY(90deg); }
+	100% { transform: translateY(0px) translateZ(0px) rotateY(0deg); }
 }
 
 @keyframes cardFlipBack {
-	0%   { transform: translateZ(0px) rotateY(0deg); }
-	50%  { transform: translateZ(50px) rotateY(-90deg); }
-	100% { transform: translateZ(0px) rotateY(-180deg); }
+	0%   { transform: translateY(0px) translateZ(0px) rotateY(0deg); }
+	50%  { transform: translateY(-11px) translateZ(50px) rotateY(-90deg); }
+	100% { transform: translateY(0px) translateZ(0px) rotateY(-180deg); }
 }
 
 @keyframes textBounce {
