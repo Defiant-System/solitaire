@@ -183,6 +183,7 @@ let solitaire = {
 				break;
 			case "cycle-flip-cards":
 				cards = event.el.find(`.card:nth-child(-n+${WASTE_TURN})`);
+
 				if (!cards.length) {
 					UNDO_STACK.push({
 							animation: "waste-to-deck",
@@ -483,7 +484,7 @@ let solitaire = {
 					toEl = self.layout.find(`[data-id="${data.to}"]`);
 
 					// prepare for 3d flip in deck-element
-					fromEl.addClass("flipping-card unfan-cards").data({cardsLeft: ""});
+					fromEl.addClass("flipping-card unfan-cards").data({cardsLeft: cards.length});
 					
 					let fnWasteToDeck = uEl => {
 							if (uEl[0] !== cards[cards.length - 1]) return;
@@ -522,7 +523,8 @@ let solitaire = {
 							});
 						};
 
-					if (WASTE_TURN === 1) {
+					if (WASTE_TURN === 1 || cards.length === 1) {
+						//cards.removeClass("unfan-cards");
 						fnWasteToDeck(cards.get(cards.length - 1));
 					} else {
 						cards.cssSequence("card-unfan", "transitionend", fnWasteToDeck);
@@ -584,16 +586,16 @@ let solitaire = {
 						.cssSequence("card-flip", "animationend", el => {
 							el.removeClass("card-flip card-back showing");
 
-							if (cards.length > 1) {
-								el.cssSequence("card-fan", "transitionend", fEl => {
-									let siblings = fEl.parents().find(".card");
-									if (fEl.index() === siblings.length - 1) return;
-									siblings.removeClass("card-fan");
-									fEl.parents().removeClass("flipping-card");
-								});
-							} else {
+							// if (cards.length > 1) {
+							// 	el.cssSequence("card-fan", "transitionend", fEl => {
+							// 		let siblings = fEl.parents().find(".card");
+							// 		if (fEl.index() === siblings.length - 1) return;
+							// 		siblings.removeClass("card-fan");
+							// 		fEl.parents().removeClass("flipping-card");
+							// 	});
+							// } else {
 								el.parent().removeClass("flipping-card");
-							}
+							// }
 						})
 						.css({
 							top: (cardRect.top - toElOffset.top) +"px",
