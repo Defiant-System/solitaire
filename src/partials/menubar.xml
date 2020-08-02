@@ -1,6 +1,6 @@
 <MenuBar>
 	<Menu name="Solitaire">
-		<Menu name="About Solitaire"/>
+		<Menu name="About Solitaire" shell="win -a"/>
 		<Menu type="divider"/>
 		<Menu name="New Game&#8230;">
 			<Menu name="Solitaire" click="set-game-engine" arg="solitaire" check-group="game-engine" is-checked="1"/>
