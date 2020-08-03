@@ -87,6 +87,8 @@ let solitaire = {
 				if (!el.hasClass("card") || el.hasClass("card-back")) return;
 				
 				fromEl = el.parent();
+				if (el[0] !== fromEl.find(".card:last")[0]) return;
+
 				check = self.layout.find(".hole.fndtn");
 				check.filter((fnd, i) => {
 					if (toEl) return;
