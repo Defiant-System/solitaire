@@ -223,7 +223,7 @@ let spider = {
 				return dropable;
 			case "check-card-drag":
 				el = $(event.target);
-				if (el.hasClass("landing") || el.hasClass("moving")) return;
+				if (el.hasClass("landing") || el.hasClass("moving") || el.hasClass("card-back")) return;
 
 				from = el.parent();
 				isLastCard = el.index() === from.find(".card").length - 1;
