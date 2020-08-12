@@ -191,7 +191,7 @@ let freecell = {
 								self.dispatch({type: "auto-complete", silent: event.silent, next: true});
 							}
 						})
-						.css({top: "0px", left: "0px"}), 10);
+						.css({top: "0px", left: "0px"}), 50);
 
 					// push move to undo stack
 					UNDO_STACK.push({
@@ -459,7 +459,7 @@ let freecell = {
 				data.animation = "card-move";
 		}
 		// check if tableau can be auto completed -> toggle toolbar button
-		setTimeout(() => self.dispatch({ type: "can-auto-complete" }), 200);
+		setTimeout(() => self.dispatch({ type: "can-auto-complete" }), 250);
 	}
 };
 

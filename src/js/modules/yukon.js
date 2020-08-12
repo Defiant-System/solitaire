@@ -221,7 +221,7 @@ let yukon = {
 								self.dispatch({type: "auto-complete", silent: event.silent, next: true});
 							}
 						})
-						.css({top: "0px", left: "0px"}), 10);
+						.css({top: "0px", left: "0px"}), 20);
 
 					// push move to undo stack
 					UNDO_STACK.push({
@@ -518,7 +518,7 @@ let yukon = {
 		}
 
 		// check if tableau can be auto completed -> toggle toolbar button
-		setTimeout(() => self.dispatch({ type: "can-auto-complete" }), 355);
+		setTimeout(() => self.dispatch({ type: "can-auto-complete" }), 420);
 	}
 };
 
