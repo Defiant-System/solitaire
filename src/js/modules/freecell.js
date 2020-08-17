@@ -188,10 +188,11 @@ let freecell = {
 								return APP.dispatch({type: "game-won"});
 							}
 							if (AUTO_COMPLETE) {
-								self.dispatch({type: "auto-complete", silent: event.silent, next: true});
+								setTimeout(() =>
+									self.dispatch({type: "auto-complete", silent: event.silent, next: true}), 10);
 							}
 						})
-						.css({top: "0px", left: "0px"}), 50);
+						.css({top: "0px", left: "0px"}), 25);
 
 					// push move to undo stack
 					UNDO_STACK.push({
@@ -357,7 +358,8 @@ let freecell = {
 							.removeAttr("data-pos")
 							.removeClass("moving landed");
 						// check if tableau can be auto completed -> toggle toolbar button
-						self.dispatch({ type: "auto-complete", silent: true })
+						setTimeout(() =>
+							self.dispatch({ type: "auto-complete", silent: true }), 10);
 					}
 				})
 				.css({
@@ -459,7 +461,7 @@ let freecell = {
 				data.animation = "card-move";
 		}
 		// check if tableau can be auto completed -> toggle toolbar button
-		setTimeout(() => self.dispatch({ type: "can-auto-complete" }), 250);
+		setTimeout(() => self.dispatch({ type: "can-auto-complete" }), 200);
 	}
 };
 

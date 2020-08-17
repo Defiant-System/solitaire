@@ -221,7 +221,7 @@ let yukon = {
 								self.dispatch({type: "auto-complete", silent: event.silent, next: true});
 							}
 						})
-						.css({top: "0px", left: "0px"}), 20);
+						.css({top: "0px", left: "0px"}), 15);
 
 					// push move to undo stack
 					UNDO_STACK.push({
@@ -384,7 +384,8 @@ let yukon = {
 							.removeAttr("data-pos")
 							.removeClass("landing landed moving");
 						// check if tableau can be auto completed -> toggle toolbar button
-						self.dispatch({ type: "auto-complete", silent: true });
+						setTimeout(() =>
+							self.dispatch({ type: "auto-complete", silent: true }), 10);
 					}
 				})
 				.css({
@@ -518,7 +519,7 @@ let yukon = {
 		}
 
 		// check if tableau can be auto completed -> toggle toolbar button
-		setTimeout(() => self.dispatch({ type: "can-auto-complete" }), 420);
+		setTimeout(() => self.dispatch({ type: "can-auto-complete" }), 360);
 	}
 };
 
