@@ -131,6 +131,9 @@ let yukon = {
 				AUTO_COMPLETE = true;
 				dropable = true;
 
+				// clean cards
+				self.layout.find(".card.landing").removeClass("landing");
+
 				self.layout.find(".drag-return-to-origin").removeClass("drag-return-to-origin");
 				check = self.layout.find(".hole.fndtn");
 				cards = self.layout.find(".pile .card:last-child, .waste .card:last-child")
