@@ -1,6 +1,17 @@
-<content class="board layout-solitaire" data-theme="casino" data-context="game-board" data-dbl-click="game-double-click" data-drag-root>
+<content class="board layout-intro" data-theme="casino" data-context="game-board" data-dbl-click="game-double-click" data-drag-root>
+
+	<!-- layout for intro -->
+	<div class="intro">
+		<h1>
+			<span>Please wait...</span>
+			<span>Select above to play</span>
+		</h1>
+		<div class="progress-bar"><span></span></div>
+		<div class="deck-anim"></div>
+	</div>
+
 	<!-- layout for solitaire -->
-	<div class="solitaire waste-single1" data-drop-zone="check-void-drop">
+	<div class="solitaire" data-drop-zone="check-void-drop">
 		<div class="deck" data-id="201" data-click="cycle-flip-cards"></div>
 		<div class="hole waste" data-id="202"></div>
 

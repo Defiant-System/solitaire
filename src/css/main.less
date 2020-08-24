@@ -32,6 +32,7 @@ transition: width 100ms,
 		filter: drop-shadow(0 1px 0 #fff);
 	}
 
+	&.layout-intro > .intro,
 	&.layout-freecell > .freecell,
 	&.layout-solitaire > .solitaire,
 	&.layout-spider > .spider,
@@ -257,6 +258,83 @@ transition: width 100ms,
 		&:after {
 			box-shadow: inset 0 1px 3px rgba(40,0,0,.7),
 					inset 0 -1px 0 rgba(255,200,200,.25);
+		}
+	}
+}
+
+
+.layout-intro {
+	--layout-width: 758px;
+	--layout-height: 550px;
+	width: var(--layout-width);
+	height: var(--layout-height);
+	text-align: center;
+	padding: 20px 30px 0;
+
+	h1 {
+		font-family: 'Tangerine', cursive;
+		font-size: 53px;
+		font-weight: 100;
+		color: #fff;
+		text-shadow: 0 2px 2px rgba(0,0,0,.5);
+		animation: textColors 3500ms infinite;
+
+		span {
+			&:nth-child(1) { display: block; }
+			&:nth-child(2) { display: none; }
+		}
+	}
+
+	.progress-bar {
+		background: rgba(0,0,0,.1);
+		position: relative;
+		width: 233px;
+		height: 23px;
+		padding: 3px;
+		margin: 31px auto 0;
+		text-align: left;
+		border-radius: 21px;
+		box-shadow: inset 0 1px 2px rgba(0,0,0,.2),
+					0 1px 0 rgba(255,255,255,.1);
+		animation: fadeOut 500ms 8s forwards;
+
+		span {
+			position: relative;
+			display: inline-block;
+			height: 17px;
+			width: 0%;
+			overflow: hidden;
+			border-radius: 21px;
+			animation: progress 8s ease-in-out forwards;
+
+			&:after {
+				content: "";
+				position: absolute;
+				top: 0;
+				left: 0;
+				right: 0;
+				bottom: 0;
+				background-image: linear-gradient(45deg, #fff 25%, #69d 25%, #69d 50%, #fff 50%, #fff 75%, #69d 75%, #69d);
+				background-size: 30px 30px;
+				opacity: .35;
+				animation: progressBg 1s infinite linear;
+			}
+		}
+	}
+
+	.deck-anim {
+		position: relative;
+		width: 90px;
+		height: 123px;
+		margin: 160px auto 0;
+		opacity: 0;
+		animation: fadeIn 1s 9s linear forwards;
+
+		.card {
+			position: absolute;
+			animation: hMove 15s ease-in-out infinite,
+						rMove 13s ease-in-out infinite;
+			.cardAnim(52);
 		}
 	}
 }
@@ -1329,4 +1407,43 @@ transition: width 100ms,
 	}
 }
 
+@keyframes fadeIn {
+	0%   { opacity: 0; }
+	100% { opacity: 1; }
+}
+
+@keyframes fadeOut {
+	0%   { opacity: 1; }
+	100% { opacity: 0; }
+}
+
+@keyframes hMove {
+	0%   { left: -300px; }
+	50%  { left: 300px; }
+	100% { left: -300px; }
+}
+
+@keyframes rMove {
+	0%   { transform: translateY(-150px) rotate(360deg); }
+	50%  { transform: translateY(150px) rotate(180deg); }
+	100% { transform: translateY(-150px) rotate(0deg); }
+}
+
+@keyframes progress {
+	0%   { width: 0%; }
+	100% { width: 100%; }
+}
+
+@keyframes progressBg {
+	0%   { background-position: 0 100%; }
+	100% { background-position: 30px 100%; }
+}
+
+.cardAnim(@count) when (@count > 0) {
+	.cardAnim(@count - 1);
+	&:nth-child(@{count}) {
+		animation-delay: (@count * 0.125s), (2s + (@count * 0.125s));
+		z-index: (53 - @count);
+	}
+}
 

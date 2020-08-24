@@ -44,11 +44,26 @@ const app = {
 			// trigger event
 			this.dispatch({ type: "game-from-pgn", pgn });
 		} else {
-			this.dispatch({type: "new-game"});
+			//this.dispatch({type: "new-game"});
+
+			// prepare deck
+			let cards = [];
+			CARD_DECK.suits.map(suit => {
+				CARD_DECK.cards.map(card => {
+					cards.push(`<div class="card ${suit.name.slice(0,1)}${card.numb}"></div>`);
+				});
+			});
+
+			window.find(".deck-anim").append(cards.join(""));
+			window.find(".progress-bar").cssSequence("a", "animationend", el => {
+				if (!el.hasClass("progress-bar")) return;
+				el.remove();
+				window.find(".intro h1 span:first").remove();
+			});
 		}
 	},
 	dispatch(event) {
-		let self = app,
+		let Self = app,
 			cardDistance,
 			targetCards,
 			layout,
@@ -62,19 +77,19 @@ const app = {
 				break;
 			case "output-pgn-string":
 				// custom portable game notation
-				str = self.activeEngine.dispatch(event);
+				str = Self.activeEngine.dispatch(event);
 				console.log(str);
 				break;
 			case "game-from-pgn":
-				layout = self.activeEngine.layout;
+				layout = Self.activeEngine.layout;
 				str = event.pgn.split("\n");
 
 				let ui = str[1].split(",");
-				self.board.data({"theme": ui[0]});
-				self.board.data({"card-back": ui[1]});
+				Self.board.data({"theme": ui[0]});
+				Self.board.data({"card-back": ui[1]});
 
 				if (str[0] === "Solitaire" && ui[2]) {
-					self.activeEngine.dispatch({ type: "solitaire-set-waste", arg: +ui[2] })
+					Self.activeEngine.dispatch({ type: "solitaire-set-waste", arg: +ui[2] })
 				}
 
 				str.slice(2).map(p => {
@@ -95,31 +110,34 @@ const app = {
 					pEl.html(cards.join(""));
 				});
 				// resets game engine
-				self.activeEngine.dispatch({ type: "reset-game-board" });
+				Self.activeEngine.dispatch({ type: "reset-game-board" });
 				break;
 			case "new-game":
 				// clear all cards
 				window.find(".card").remove();
 				// reset board
-				self.board.removeClass("playing game-won");
+				Self.board.removeClass("playing game-won");
 
-				if (!self.activeEngine) {
-					self.dispatch({type: "set-game-engine", init: true});
+				if (!Self.activeEngine) {
+					Self.dispatch({type: "set-game-engine", init: true});
 				}
-				setTimeout(() => self.activeEngine.dispatch(event), 350);
-				//self.activeEngine.dispatch(event);
+				setTimeout(() => Self.activeEngine.dispatch(event), 350);
+				//Self.activeEngine.dispatch(event);
 				break;
 			case "set-game-engine":
 				// set global variable
 				ACTIVE = event.arg || ACTIVE;
 				
 				// set default game engine
-				self.activeEngine = ENGINES[ACTIVE]
+				Self.activeEngine = ENGINES[ACTIVE]
 
 				// set board layout
-				self.board
-					.removeClass("layout-freecell layout-solitaire layout-spider layout-yukon playing")
+				Self.board
+					.removeClass("layout-intro layout-freecell layout-solitaire layout-spider layout-yukon playing")
 					.addClass("layout-"+ ACTIVE);
+
+				// remove intro scen
+				Self.board.find(".intro").remove();
 
 				// update menus
 				window.bluePrint
@@ -135,26 +153,26 @@ const app = {
 
 				// resize window
 				window.body.css({
-					width: self.board.cssProp("--layout-width"),
-					height: self.board.cssProp("--layout-height"),
+					width: Self.board.cssProp("--layout-width"),
+					height: Self.board.cssProp("--layout-height"),
 				});
 
 				if (!event.init) {
-					self.dispatch({type: "new-game"});
+					Self.dispatch({type: "new-game"});
 				}
 				return true;
 			case "set-game-theme":
-				self.board.data({"theme": event.arg});
+				Self.board.data({"theme": event.arg});
 				break;
 			case "set-card-back":
-				self.board.data({"card-back": event.arg});
+				Self.board.data({"card-back": event.arg});
 				break;
 			case "game-won":
 				// update toolbar buttons
-				self.btnPrev.addClass("tool-disabled_");
-				self.btnNext.addClass("tool-disabled_");
+				Self.btnPrev.addClass("tool-disabled_");
+				Self.btnNext.addClass("tool-disabled_");
 
-				self.board.removeClass("playing").addClass("game-won");
+				Self.board.removeClass("playing").addClass("game-won");
 
 				// play sound
 				window.audio.play("you-win");
@@ -167,14 +185,14 @@ const app = {
 				}
 				break;
 			case "history-go-prev":
-				self.UNDO_STACK.undo();
+				Self.UNDO_STACK.undo();
 				break;
 			case "history-go-next":
-				self.UNDO_STACK.redo();
+				Self.UNDO_STACK.redo();
 				break;
 			case "close-congratulations":
-				self.board.removeClass("game-won");
-				self.dispatch({type: "new-game"});
+				Self.board.removeClass("game-won");
+				Self.dispatch({type: "new-game"});
 				break;
 			// solitaire specific events
 			case "solitaire-set-waste":
@@ -194,7 +212,7 @@ const app = {
 			case "check-pile-drop":
 			case "check-card-drag":
 			case "auto-complete":
-				return self.activeEngine.dispatch(event);
+				return Self.activeEngine.dispatch(event);
 		}
 	}
 };
@@ -202,9 +220,9 @@ const app = {
 let CARD_DECK = {
 		getSuitByChar: (c) => CARD_DECK.suits.find(suit => suit.name.startsWith(c)).name,
 		suits: [
+			{ name: "heart" },
 			{ name: "club" },
 			{ name: "diamond" },
-			{ name: "heart" },
 			{ name: "spade" }
 		],
 		cards: [
