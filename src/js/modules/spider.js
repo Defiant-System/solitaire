@@ -98,6 +98,9 @@ let spider = {
 				}
 				break;
 			case "spider-deal-cards":
+				// reset cards
+				self.layout.find(".card.landing").removeClass("landing");
+
 				let empty = self.layout.find(".pile:empty");
 				if (empty.length) {
 					// no-dealing if there are empty slots
