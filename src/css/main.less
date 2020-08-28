@@ -273,7 +273,7 @@ transition: width 100ms,
 
 	h1 {
 		font-family: 'Tangerine', cursive;
-		font-size: 53px;
+		font-size: 43px;
 		font-weight: 100;
 		color: #fff;
 		text-shadow: 0 2px 2px rgba(0,0,0,.5);
@@ -289,23 +289,23 @@ transition: width 100ms,
 		background: rgba(0,0,0,.1);
 		position: relative;
 		width: 233px;
-		height: 23px;
+		height: 19px;
 		padding: 3px;
 		margin: 31px auto 0;
 		text-align: left;
 		border-radius: 21px;
 		box-shadow: inset 0 1px 2px rgba(0,0,0,.2),
 					0 1px 0 rgba(255,255,255,.1);
-		animation: fadeOut 500ms 8s forwards;
+		animation: fadeOut 500ms 6s forwards;
 
 		span {
 			position: relative;
 			display: inline-block;
-			height: 17px;
+			height: 13px;
 			width: 0%;
 			overflow: hidden;
 			border-radius: 21px;
-			animation: progress 8s ease-in-out forwards;
+			animation: progress 6s ease-in-out forwards;
 
 			&:after {
 				content: "";
@@ -317,7 +317,7 @@ transition: width 100ms,
 				background-image: linear-gradient(45deg, #fff 25%, #69d 25%, #69d 50%, #fff 50%, #fff 75%, #69d 75%, #69d);
 				background-size: 30px 30px;
 				opacity: .35;
-				animation: progressBg 1s infinite linear;
+				animation: progressBg 500ms infinite linear;
 			}
 		}
 	}
@@ -326,14 +326,15 @@ transition: width 100ms,
 		position: relative;
 		width: 90px;
 		height: 123px;
-		margin: 160px auto 0;
+		margin: 170px auto 0;
 		opacity: 0;
-		animation: fadeIn 1s 9s linear forwards;
+		animation: fadeIn 1s 7s linear forwards;
 
 		.card {
 			position: absolute;
-			animation: hMove 15s ease-in-out infinite,
-						rMove 13s ease-in-out infinite;
+			will-change: transform, top;
+			animation: hMove 11s ease-out infinite,
+						rMove 17s ease-in-out infinite;
 			.cardAnim(52);
 		}
 	}
@@ -1418,15 +1419,17 @@ transition: width 100ms,
 }
 
 @keyframes hMove {
-	0%   { left: -300px; }
-	50%  { left: 300px; }
-	100% { left: -300px; }
+	0%   { left: -280px; }
+	50%  { left: 290px; }
+	100% { left: -280px; }
 }
 
 @keyframes rMove {
-	0%   { transform: translateY(-150px) rotate(360deg); }
-	50%  { transform: translateY(150px) rotate(180deg); }
-	100% { transform: translateY(-150px) rotate(0deg); }
+	0%   { transform: translateY(-150px) rotate(360deg) scale(1) skewX(0deg) skewY(0deg); }
+	25%  { transform: translateY(150px) rotate(180deg) scale(.7) skewX(-20deg) skewY(15deg); }
+	50%  { transform: translateY(-150px) rotate(0deg) scale(1.1) skewX(0deg) skewY(0deg); }
+	75%  { transform: translateY(150px) rotate(180deg) scale(.8) skewX(-10deg) skewY(15deg); }
+	100% { transform: translateY(-150px) rotate(360deg) scale(1) skewX(0deg) skewY(0deg); }
 }
 
 @keyframes progress {
@@ -1442,7 +1445,7 @@ transition: width 100ms,
 .cardAnim(@count) when (@count > 0) {
 	.cardAnim(@count - 1);
 	&:nth-child(@{count}) {
-		animation-delay: (@count * 0.125s), (2s + (@count * 0.125s));
+		animation-delay: (@count * 0.075s), (2s + (@count * 0.075s));
 		z-index: (53 - @count);
 	}
 }
