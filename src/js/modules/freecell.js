@@ -195,7 +195,7 @@ let freecell = {
 									self.dispatch({type: "auto-complete", silent: event.silent, next: true}), 10);
 							}
 						})
-						.css({top: "0px", left: "0px"}), 25);
+						.css({top: "0px", left: "0px"}), 10);
 
 					// push move to undo stack
 					UNDO_STACK.push({

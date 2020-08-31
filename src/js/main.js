@@ -28,7 +28,7 @@ const app = {
 			ENGINES[key].init(this, CARD_DECK, SUIT_DICT, NUMB_DICT);
 		}
 
-		// temp
+		// Select starting point
 		if (this.board.hasClass("playing")) {
 			// set active engine
 			this.activeEngine = ENGINES[ACTIVE];

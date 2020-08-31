@@ -261,7 +261,7 @@ let solitaire = {
 									flip: last && last.hasClass("card-back") ? last.data("id") : false
 								});
 						})
-						.css({top: "0px", left: "0px"}), 20);
+						.css({top: "0px", left: "0px"}), 15);
 				}
 
 				return dropable;
@@ -426,7 +426,7 @@ let solitaire = {
 								if (el[0] !== flipEl[0]) {
 									// check if tableau can be auto completed -> toggle toolbar button
 									setTimeout(() =>
-										self.dispatch({ type: "auto-complete", silent: true }), 500);
+										self.dispatch({ type: "auto-complete", silent: true }), 550);
 									// play sound
 									return window.audio.play("shove-card");
 								}
