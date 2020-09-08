@@ -84,7 +84,7 @@ let solitaire = {
 				break;
 			case "game-double-click":
 				el = $(event.target);
-				if (!el.hasClass("card") || el.hasClass("card-back")) return;
+				if (!el.hasClass("card") || el.hasClass("card-back") || el.nextAll(".card").length) return;
 				
 				fromEl = el.parent();
 				if (el[0] !== fromEl.find(".card:last")[0]) return;

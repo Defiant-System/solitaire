@@ -87,7 +87,7 @@ let yukon = {
 				break;
 			case "game-double-click":
 				el = $(event.target);
-				if (!el.hasClass("card") || el.hasClass("card-back")) return;
+				if (!el.hasClass("card") || el.hasClass("card-back") || el.nextAll(".card").length) return;
 				
 				fromEl = el.parent();
 				check = self.layout.find(".hole.fndtn");

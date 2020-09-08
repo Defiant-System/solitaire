@@ -76,7 +76,7 @@ let freecell = {
 				break;
 			case "game-double-click":
 				el = $(event.target);
-				if (!el.hasClass("card") || el.hasClass("card-back")) return;
+				if (!el.hasClass("card") || el.hasClass("card-back") || el.nextAll(".card").length) return;
 				
 				check = self.layout.find(".hole.fndtn");
 				check.filter((fnd, i) => {
@@ -192,10 +192,10 @@ let freecell = {
 							}
 							if (AUTO_COMPLETE) {
 								setTimeout(() =>
-									self.dispatch({type: "auto-complete", silent: event.silent, next: true}), 10);
+									self.dispatch({type: "auto-complete", silent: event.silent, next: true}), 20);
 							}
 						})
-						.css({top: "0px", left: "0px"}), 10);
+						.css({top: "0px", left: "0px"}), 20);
 
 					// push move to undo stack
 					UNDO_STACK.push({
@@ -278,7 +278,7 @@ let freecell = {
 				}
 				return dropable;
 			case "check-card-drag":
-				if (AUTO_COMPLETE) return;
+				//if (AUTO_COMPLETE) return;
 
 				el = $(event.target);
 				from = el.parents(".pile, .slot, fndtn");
