@@ -395,7 +395,7 @@ let solitaire = {
 		});
 
 		// shuffle & prepare animation
-		cards = cards.shuffle();
+		cards = APP.shuffle(cards);
 
 		// left-over cards to deck
 		this.deck.append(cards.splice(0, 24).join(""));

@@ -214,6 +214,15 @@ const app = {
 			case "auto-complete":
 				return Self.activeEngine.dispatch(event);
 		}
+	},
+	shuffle(deck) {
+		for (let j, x, i=deck.length-1; i>0; i--) {
+	        j = Math.floor(Math.random() * (i + 1));
+	        x = deck[i];
+	        deck[i] = deck[j];
+	        deck[j] = x;
+	    }
+	    return deck;
 	}
 };
 

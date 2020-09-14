@@ -338,7 +338,7 @@ let freecell = {
 		});
 
 		// shuffle & prepare animation
-		cards.shuffle().map((el, i) => {
+		APP.shuffle(cards).map((el, i) => {
 			let card = this.piles.get(i % 8).append(el),
 				pile = piles[i % 8];
 

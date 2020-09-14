@@ -274,7 +274,7 @@ let spider = {
 		});
 
 		// shuffle cards
-		cards = cards.shuffle();
+		cards = APP.shuffle(cards);
 
 		// left-over cards to deck
 		this.deck.append(cards.splice(0, 50).join(""));

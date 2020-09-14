@@ -344,7 +344,7 @@ let yukon = {
 		});
 
 		// shuffle & prepare animation
-		cards = cards.shuffle();
+		cards = APP.shuffle(cards);
 
 		// add a fake card for deck-flip animation
 		this.deckCard = this.deck.append(cards[51]);
