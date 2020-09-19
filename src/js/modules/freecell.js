@@ -26,6 +26,7 @@ let freecell = {
 	dispatch(event) {
 		let self = freecell,
 			from,
+			draggedParent,
 			draggedFirst,
 			draggedSuit,
 			draggedNumb,

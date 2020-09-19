@@ -47,6 +47,7 @@ let yukon = {
 			dragable,
 			fromEl,
 			toEl,
+			from,
 			isLastCard,
 			last,
 			cards,
@@ -354,7 +355,7 @@ let yukon = {
 
 		// cards animation
 		cards.map((el, i) => {
-			let j = PILES[i] - 1;
+			let j = PILES[i] - 1,
 				card = this.piles.get(j).append(el),
 				pile = piles[j];
 			

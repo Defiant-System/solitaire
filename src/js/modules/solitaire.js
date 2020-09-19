@@ -36,6 +36,9 @@ let solitaire = {
 	},
 	dispatch(event) {
 		let self = solitaire,
+			zoneLastCard,
+			zoneLastSuit,
+			zoneLastNumb,
 			draggedFirst,
 			draggedParent,
 			cardDistance,

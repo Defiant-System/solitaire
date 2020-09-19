@@ -77,22 +77,22 @@ const app = {
 				break;
 			case "output-pgn-string":
 				// custom portable game notation
-				str = Self.activeEngine.dispatch(event);
-				console.log(str);
+				pgn = Self.activeEngine.dispatch(event);
+				console.log(pgn);
 				break;
 			case "game-from-pgn":
 				layout = Self.activeEngine.layout;
-				str = event.pgn.split("\n");
+				pgn = event.pgn.split("\n");
 
-				let ui = str[1].split(",");
+				let ui = pgn[1].split(",");
 				Self.board.data({"theme": ui[0]});
 				Self.board.data({"card-back": ui[1]});
 
-				if (str[0] === "Solitaire" && ui[2]) {
+				if (pgn[0] === "Solitaire" && ui[2]) {
 					Self.activeEngine.dispatch({ type: "solitaire-set-waste", arg: +ui[2] })
 				}
 
-				str.slice(2).map(p => {
+				pgn.slice(2).map(p => {
 					let parts = p.split(":");
 					if (!parts[1]) return;
 					let pEl = layout.find(`[data-id="${parts[0]}"]`),
