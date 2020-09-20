@@ -112,6 +112,9 @@ const app = {
 				// resets game engine
 				Self.activeEngine.dispatch({ type: "reset-game-board" });
 				break;
+			case "toggle-sound":
+				window.audio.mute = event.checked;
+				break;
 			case "new-game":
 				// clear all cards
 				window.find(".card").remove();

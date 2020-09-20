@@ -45,6 +45,7 @@
 			<Menu name="Medium" click="spider-set-level" arg="2" check-group="spider-level"/>
 			<Menu name="Hard" click="spider-set-level" arg="3" check-group="spider-level"/>
 		</Menu>
+		<Menu name="Sound Effects" click="toggle-sound" check-group="sound-fx" is-checked="1"/>
 		<Menu type="divider"/>
 		<Menu name="Auto Complete" click="auto-complete" disable-if="game-engine" is="spider"/>
 		<Menu name="Output PGN String" click="output-pgn-string"/>
