@@ -9,10 +9,6 @@
 			<Menu name="Yukon" click="set-game-engine" arg="yukon" check-group="game-engine"/>
 		</Menu>
 		<Menu type="divider"/>
-		<Menu name="Hide Solitaire"/>
-		<Menu name="Hide Others"/>
-		<Menu name="Show All" disabled="1"/>
-		<Menu type="divider"/>
 		<Menu name="Quit Solitaire" shell="win -c"/>
 	</Menu>
 	<Menu name="Game" for="game-board">
