@@ -39,6 +39,9 @@ let yukon = {
 	},
 	dispatch(event) {
 		let self = yukon,
+			zoneLastCard,
+			zoneLastSuit,
+			zoneLastNumb,
 			draggedFirst,
 			draggedParent,
 			cardDistance,
