@@ -332,7 +332,7 @@ transition: width 100ms,
 
 		.card {
 			position: absolute;
-			will-change: transform, top;
+		//	will-change: transform, top;
 			animation: hMove 11s ease-out infinite,
 						rMove 17s ease-in-out infinite;
 			.cardAnim(52);
@@ -492,7 +492,7 @@ transition: width 100ms,
 				top: 0;
 				left: 0;
 				box-shadow: 0 0 0;
-				transition: top 150ms ease-out,
+				transition: top 150ms ease-in-out,
 							left 150ms ease-out;
 			}
 
@@ -549,7 +549,7 @@ transition: width 100ms,
 
 			.card.landing {
 				z-index: 99;
-				transition: top 150ms ease-out,
+				transition: top 150ms ease-in-out,
 							left 150ms ease-out;
 			}
 		}
@@ -559,7 +559,7 @@ transition: width 100ms,
 
 			.card.landing {
 				z-index: 99;
-				transition: top 150ms ease-out,
+				transition: top 150ms ease-in-out,
 							left 150ms ease-out;
 			}
 		}
@@ -1050,7 +1050,7 @@ transition: width 100ms,
 
 	&.drag-return-to-origin {
 		z-index: 99;
-		transition: top 150ms ease-out,
+		transition: top 150ms ease-in-out,
 					left 150ms ease-out;
 	}
 
