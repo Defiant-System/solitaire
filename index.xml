@@ -4,6 +4,7 @@
 		<meta name="title" value="Solitaire" version="2.7"/>
 		<meta name="author" value="Hakan Bilgin" namespace="ant"/>
 		<meta name="license" value="AGPL-3.0-or-later"/>
+		<meta name="repository" value="https://github.com/Defiant-System/solitaire"/>
 		<meta name="width" value="758"/>
 		<!-- 1025 881 758 883 -->
 		<meta name="height" value="550"/>
