@@ -87,7 +87,8 @@ let yukon = {
 
 			case "new-game":
 				AUTO_COMPLETE = false;
-				self.start();
+				if (self.deck.hasClass("show")) self.start();
+				else self.deck.cssSequence("show", "transitionend", deck => self.start());
 				break;
 			case "game-double-click":
 				el = $(event.target);
@@ -385,6 +386,7 @@ let yukon = {
 					}
 					// last card
 					if (pos === 151) {
+						self.deck.removeClass("show");
 						// set board in "playing" mode
 						self.board.addClass("playing")
 							.find(".yukon .card")

@@ -836,13 +836,17 @@ transition: width 100ms,
 		position: absolute;
 		width: 90px;
 		height: 123px;
-		bottom: 13px;
+		bottom: -137px;
 		left: 50%;
 		perspective: 800px;
 		margin-left: -33px;
 		border-radius: 5px;
 		z-index: 55;
 		transition: bottom 200ms ease-in-out;
+
+		&.show {
+			bottom: 13px;
+		}
 
 		.card {
 			z-index: 22;

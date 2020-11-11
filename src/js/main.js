@@ -9,7 +9,7 @@ import spider from "./modules/spider"
 import yukon from "./modules/yukon"
 
 // constants
-let ENGINES = { freecell, solitaire, spider, yukon },
+let ENGINES = { solitaire, freecell, spider, yukon },
 	ACTIVE = "solitaire",
 	// for dev purposes
 	pgn = ``;
@@ -44,7 +44,7 @@ const app = {
 			// trigger event
 			this.dispatch({ type: "game-from-pgn", pgn });
 		} else {
-			//this.dispatch({type: "new-game"});
+			// this.dispatch({type: "new-game"});
 
 			// prepare deck
 			let cards = [];
