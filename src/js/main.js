@@ -174,6 +174,7 @@ const app = {
 				// update toolbar buttons
 				Self.btnPrev.addClass("tool-disabled_");
 				Self.btnNext.addClass("tool-disabled_");
+				Self.btnAuto.addClass("tool-disabled_");
 
 				Self.board.removeClass("playing").addClass("game-won");
 
