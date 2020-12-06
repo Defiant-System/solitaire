@@ -71,6 +71,10 @@ const app = {
 			el;
 
 		switch (event.type) {
+			// native events
+			case "window.close":
+				Self.board.removeClass("game-won");
+				break;
 			// custom events
 			case "open-help":
 				defiant.shell("fs -u '~/help/index.md'");
