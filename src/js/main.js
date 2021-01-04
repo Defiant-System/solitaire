@@ -117,7 +117,7 @@ const app = {
 				Self.activeEngine.dispatch({ type: "reset-game-board" });
 				break;
 			case "toggle-sound":
-				window.audio.mute = event.checked;
+				window.audio.mute = event.checked < 0;
 				break;
 			case "new-game":
 				// clear all cards
