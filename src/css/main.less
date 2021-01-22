@@ -144,7 +144,7 @@ transition: width 100ms,
 	}
 }
 
-.board[data-theme = "classic"] {
+.board[data-theme="classic"] {
 	--theme-alert: rgba(100,255,100,.5);
 	background: #050 radial-gradient(circle at top center, rgba(200,255,200,.31) 0%, rgba(0,0,0,.31) 100%);
 	
@@ -169,7 +169,7 @@ transition: width 100ms,
 		&:after {
 			border-color: #afa;
 		}
-		.card:after {
+		.card:not(.landing):after {
 			border-color: #6a6;
 		}
 	}
@@ -187,7 +187,7 @@ transition: width 100ms,
 	}
 }
 
-.board[data-theme = "casino"] {
+.board[data-theme="casino"] {
 	--theme-alert: rgba(100,100,255,.5);
 	background: #248 radial-gradient(circle at top center, rgba(200,200,255,.29) 0%, rgba(0,0,0,.37) 100%);
 	
@@ -229,7 +229,7 @@ transition: width 100ms,
 	}
 }
 
-.board[data-theme = "desert"] {
+.board[data-theme="desert"] {
 	--theme-alert: rgba(200,100,100,.5);
 	background: #841 radial-gradient(circle at top center, rgba(255,200,100,.19) 0%, rgba(0,0,0,.23) 100%);
 
@@ -266,7 +266,7 @@ transition: width 100ms,
 		}
 		&:after {
 			box-shadow: inset 0 1px 3px rgba(40,0,0,.7),
-					inset 0 -1px 0 rgba(255,200,200,.25);
+						inset 0 -1px 0 rgba(255,200,200,.25);
 		}
 	}
 }
