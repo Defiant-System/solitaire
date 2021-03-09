@@ -10,14 +10,15 @@
 }
 
 
-background: url(~/img/card-backs.webp) -999px no-repeat;
+// background: url(~/img/card-backs.webp) -999px no-repeat;
 transition: width 100ms,
 			height 100ms;
 
 .layout-freecell .deck,
 .card-flip-back:before,
 .card-back:before {
-	background-image: url(~/img/card-backs.webp);
+	background-image: url(~/icons/cb-red.png);
+	filter: brightness(1.15);
 }
 
 .board {
@@ -60,7 +61,15 @@ transition: width 100ms,
 		&.layout-freecell .deck,
 		.card.card-flip-back:before,
 		.card.card-back:before {
-			background-position: 0 0;
+			filter: hue-rotate(235deg) brightness(1.35);
+		}
+	}
+
+	&[data-card-back = "green"] {
+		&.layout-freecell .deck,
+		.card.card-flip-back:before,
+		.card.card-back:before {
+			filter: hue-rotate(115deg) brightness(1.15);
 		}
 	}
 
@@ -411,9 +420,9 @@ transition: width 100ms,
 	}
 
 	.deck {
-		background-position: -90px 0;
+		background-position: 0 0;
 		background-repeat: no-repeat;
-		background-size: auto 100%;
+		background-size: contain;
 		position: absolute;
 		width: 90px;
 		height: 123px;
@@ -1117,9 +1126,9 @@ transition: width 100ms,
 
 		&:before {
 			content: "";
-			background-position: -90px 0;
+			background-position: 0 0;
 			background-repeat: no-repeat;
-			background-size: auto 100%;
+			background-size: contain;
 			position: absolute;
 			top: 0;
 			left: 0;

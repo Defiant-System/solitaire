@@ -15,6 +15,6 @@
 		</Options>
 	</Group>
 	<Group width="25%">
-		<Tool symbol="icon-cog" menu="game-board"/>
+		<Tool symbol="icon-gear" menu="game-board"/>
 	</Group>
 </CaptionToolBar>
