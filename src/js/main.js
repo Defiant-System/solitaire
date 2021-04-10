@@ -8,11 +8,21 @@ import solitaire from "./modules/solitaire"
 import spider from "./modules/spider"
 import yukon from "./modules/yukon"
 
+
+// default settings
+const defaultSettings = {
+	"audio": "on",
+	"game-theme": "casino",
+	"card-back": "red",
+};
+
+
 // constants
 let ENGINES = { solitaire, freecell, spider, yukon },
 	ACTIVE = "solitaire",
 	// for dev purposes
 	pgn = ``;
+
 
 const app = {
 	init() {
@@ -22,6 +32,9 @@ const app = {
 		this.btnNext = window.find("[data-click='history-go-next']");
 		this.btnAuto = window.find("[data-click='auto-complete']");
 		this.UNDO_STACK = new History;
+
+		// init settings
+		this.dispatch({ type: "init-settings" });
 
 		// initiate engines
 		for (let key in ENGINES) {
@@ -74,6 +87,8 @@ const app = {
 			// native events
 			case "window.close":
 				Self.board.removeClass("game-won");
+				// save settings
+				window.settings.setItem("settings", Self.settings);
 				break;
 			// custom events
 			case "open-help":
@@ -83,6 +98,28 @@ const app = {
 				// custom portable game notation
 				pgn = Self.activeEngine.dispatch(event);
 				console.log(pgn);
+				break;
+			case "init-settings":
+				Self.settings = window.settings.getItem("settings") || defaultSettings;
+				// apply settings
+				for (let key in Self.settings) {
+					let type = "set-"+ key,
+						arg = Self.settings[key];
+					// call dispatch
+					Self.dispatch({ type, arg });
+
+					// update menu
+					window.bluePrint.selectNodes(`//Menu[@click="${type}"]`).map(xMenu => {
+						if (key === "audio") {
+							if (arg === "on") xMenu.setAttribute("is-checked", 1);
+							else xMenu.removeAttribute("is-checked");
+						} else {
+							let xArg = xMenu.getAttribute("arg");
+							if (xArg === arg) xMenu.setAttribute("is-checked", 1);
+							else xMenu.removeAttribute("is-checked");
+						}
+					});
+				}
 				break;
 			case "game-from-pgn":
 				layout = Self.activeEngine.layout;
@@ -116,9 +153,6 @@ const app = {
 				// resets game engine
 				Self.activeEngine.dispatch({ type: "reset-game-board" });
 				break;
-			case "toggle-sound":
-				window.audio.mute = event.checked < 0;
-				break;
 			case "new-game":
 				// clear all cards
 				window.find(".card").remove();
@@ -129,7 +163,6 @@ const app = {
 					Self.dispatch({type: "set-game-engine", init: true});
 				}
 				setTimeout(() => Self.activeEngine.dispatch(event), 350);
-				//Self.activeEngine.dispatch(event);
 				break;
 			case "set-game-engine":
 				// set global variable
@@ -168,11 +201,20 @@ const app = {
 					Self.dispatch({type: "new-game"});
 				}
 				return true;
+			case "set-audio":
+				window.audio.mute = event.arg ? event.arg === "mute" : event.checked < 0;
+				// update settings
+				Self.settings.audio = window.audio.mute ? "mute" : "on";
+				break;
 			case "set-game-theme":
 				Self.board.data({"theme": event.arg});
+				// update settings
+				Self.settings["game-theme"] = event.arg;
 				break;
 			case "set-card-back":
 				Self.board.data({"card-back": event.arg});
+				// update settings
+				Self.settings["card-back"] = event.arg;
 				break;
 			case "game-won":
 				// update toolbar buttons
