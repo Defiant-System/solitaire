@@ -24,8 +24,8 @@
 		</Menu>
 		<Menu name="Card Backs&#8230;" for="game-card-back">
 			<Menu name="Classic Red" click="set-card-back" arg="red" check-group="card-back" is-checked="1"/>
-			<Menu name="Blue" click="set-card-back" arg="blue" check-group="card-back"/>
-			<Menu name="Green" click="set-card-back" arg="green" check-group="card-back"/>
+			<Menu name="Purple" click="set-card-back" arg="purple" check-group="card-back"/>
+			<Menu name="Teal" click="set-card-back" arg="teal" check-group="card-back"/>
 		</Menu>
 		<!-- Conditional menu options START -->
 		<!--
