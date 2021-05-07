@@ -171,6 +171,8 @@ let freecell = {
 				from = draggedFirst.parent().removeClass("no-drag-hover");
 				break;
 			case "check-foundation-drop":
+				// reset cards
+				self.layout.find(".card.drag-return-to-origin").removeClass("drag-return-to-origin");
 				// number of cards in dropZone
 				draggedFirst = event.el.get(0);
 				from = draggedFirst.parent().removeClass("no-drag-hover");
