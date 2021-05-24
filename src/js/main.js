@@ -57,7 +57,7 @@ const app = {
 			// trigger event
 			this.dispatch({ type: "game-from-pgn", pgn });
 		} else {
-			// this.dispatch({type: "new-game"});
+			// return this.dispatch({type: "new-game"});
 
 			// prepare deck
 			let cards = [];
@@ -100,6 +100,7 @@ const app = {
 				console.log(pgn);
 				break;
 			case "init-settings":
+				// get settings, if any
 				Self.settings = window.settings.getItem("settings") || defaultSettings;
 				// apply settings
 				for (let key in Self.settings) {
