@@ -30,7 +30,7 @@ let spider = {
 		this.deck = window.find(".board > .spider .deck");
 	},
 	dispatch(event) {
-		let self = spider,
+		let Self = spider,
 			draggedFirst,
 			from,
 			cardDistance,
@@ -46,13 +46,13 @@ let spider = {
 
 		switch (event.type) {
 			case "output-pgn-string":
-				str = [self.name];
+				str = [Self.name];
 				str.push(
-					(self.board.attr("data-theme") || "casino") +","+
-					(self.board.attr("data-card-back") || "red")
+					(Self.board.attr("data-theme") || "casino") +","+
+					(Self.board.attr("data-card-back") || "red")
 				);
 				// collect layout info + data
-				self.layout.find("> *").map(el => {
+				Self.layout.find("> *").map(el => {
 					let pId = el.getAttribute("data-id"),
 						cards = $(".card", el).map(c =>
 							c.dataset.suit.slice(0,1) +
@@ -65,19 +65,23 @@ let spider = {
 				return str.join("\n");
 			case "reset-game-board":
 				// reset undo-stack + auto-complete
-				UNDO_STACK.reset(self.setState);
+				UNDO_STACK.reset(Self.setState);
 				AUTO_COMPLETE = false;
 				// set board in "playing" mode
-				self.board.addClass("playing")
+				Self.board.addClass("playing")
 				break;
 
 			case "new-game":
 				setTimeout(() => this.start(), 350);
 				break;
-			case "spider-set-level":
+			case "set-spider-level":
 				LEVEL = +event.arg;
 
-				APP.dispatch({type: "new-game"});
+				if (!event.noStart) {
+					APP.dispatch({type: "new-game"});
+				}
+				// update settings
+				APP.settings["spider-level"] = LEVEL;
 				break;
 			case "game-double-click":
 				el = $(event.target);
@@ -85,7 +89,7 @@ let spider = {
 				// todo ?
 				break;
 			case "trigger-spider-deal-cards":
-				self.layout.find(".deck").trigger("click");
+				Self.layout.find(".deck").trigger("click");
 				break;
 			case "check-game-won":
 				if (this.layout.find(".hole .card").length === 104) {
@@ -99,18 +103,18 @@ let spider = {
 				break;
 			case "spider-deal-cards":
 				// reset cards
-				self.layout.find(".card.landing").removeClass("landing");
+				Self.layout.find(".card.landing").removeClass("landing");
 
-				let empty = self.layout.find(".pile:empty");
+				let empty = Self.layout.find(".pile:empty");
 				if (empty.length) {
 					// no-dealing if there are empty slots
 					return empty.cssSequence("no-deal", "animationend", el => el.removeClass("no-deal"));
 				}
 
-				let pilesOffset = self.piles.addClass("dealing-cards").map((p, i) => self.piles.get(i).offset()),
-					deckOffset = self.deck.offset();
-				cardDistance = parseInt(self.piles.get(0).cssProp("--card-distance"), 10);
-				cards = self.deck.find(".card:nth-last-child(-n+10)");
+				let pilesOffset = Self.piles.addClass("dealing-cards").map((p, i) => Self.piles.get(i).offset()),
+					deckOffset = Self.deck.offset();
+				cardDistance = parseInt(Self.piles.get(0).cssProp("--card-distance"), 10);
+				cards = Self.deck.find(".card:nth-last-child(-n+10)");
 
 				// push move to undo stack
 				UNDO_STACK.push({
@@ -138,7 +142,7 @@ let spider = {
 						animation: "collapse-cards",
 						cards: cards.map(card => card.getAttribute("data-id")),
 						from: event.pile.data("id"),
-						to: self.layout.find(".hole:empty").get(0).data("id"),
+						to: Self.layout.find(".hole:empty").get(0).data("id"),
 						flip: last.length && last.hasClass("card-back") ? last.data("id") : false,
 						dropped: event.dropped,
 						droppedFrom: event.from.data("id"),
@@ -198,7 +202,7 @@ let spider = {
 								event.el.removeClass("landing").removeAttr("style");
 
 								// check if cards are collapsable
-								let undoPushed = self.dispatch({
+								let undoPushed = Self.dispatch({
 									type: "check-sibling-sequence",
 									pile: event.target,
 									dropped: event.el.map(e => e.getAttribute("data-id")),
@@ -226,7 +230,7 @@ let spider = {
 				return dropable;
 			case "check-card-drag":
 				el = $(event.target);
-				if (el.hasClass("landing") || el.hasClass("moving") || el.hasClass("card-back")) return;
+				if (el.hasClass("landing") || el.hasClass("moving") || el.hasClass("card-back")) return;
 
 				from = el.parent();
 				isLastCard = el.index() === from.find(".card").length - 1;
@@ -258,7 +262,7 @@ let spider = {
 		}
 	},
 	start() {
-		let self = spider,
+		let Self = spider,
 			j = 0,
 			cards = [],
 			suits = SUITS[LEVEL],
@@ -297,7 +301,7 @@ let spider = {
 
 					if (pos === 53) {
 						// flips last cards in each pile
-						self.piles.find(".card:last-child")
+						Self.piles.find(".card:last-child")
 							.cssSequence("card-flip", "animationend", flipEl => {
 								// remove class of "card-back"
 								flipEl.removeClass("card-flip card-back");
@@ -309,7 +313,7 @@ let spider = {
 								}
 
 								// set board in "playing" mode
-								self.board.addClass("playing").find(".spider .card").removeAttr("data-pos").removeClass("landing moving landed");
+								Self.board.addClass("playing").find(".spider .card").removeAttr("data-pos").removeClass("landing moving landed");
 							});
 					}
 				})
@@ -329,9 +333,9 @@ let spider = {
 		setTimeout(() => this.layout.find(".card").removeClass("in-deck").css({ top: "", left: "", }), 60);
 	},
 	setState(redo, data) {
-		let self = spider,
+		let Self = spider,
 			selector = data.cards.map(id => `.card[data-id="${id}"]`),
-			cards = self.layout.find(selector.join(",")),
+			cards = Self.layout.find(selector.join(",")),
 			fromEl,
 			toEl,
 			fromOffset,
@@ -348,7 +352,7 @@ let spider = {
 		APP.btnPrev.removeClass("tool-active_").toggleClass("tool-disabled_", UNDO_STACK.canUndo);
 		APP.btnNext.removeClass("tool-active_").toggleClass("tool-disabled_", UNDO_STACK.canRedo);
 		// reset drop zones
-		self.layout.find(".no-drag-hover").removeClass("no-drag-hover");
+		Self.layout.find(".no-drag-hover").removeClass("no-drag-hover");
 
 		// animation "playbacks"
 		switch (data.animation) {
@@ -358,13 +362,13 @@ let spider = {
 					window.audio.play("shove-card");
 
 					// calcaultions
-					fromEl = self.layout.find(`[data-id="${data.from}"]`);
-					toEl = self.layout.find(`[data-id="${data.to}"]`);
+					fromEl = Self.layout.find(`[data-id="${data.from}"]`);
+					toEl = Self.layout.find(`[data-id="${data.to}"]`);
 
 					let droppedSelector = data.dropped.map(id => `.card[data-id="${id}"]`),
-						droppedCards = self.layout.find(droppedSelector.join(","));
+						droppedCards = Self.layout.find(droppedSelector.join(","));
 					if (droppedCards.length && fromEl[0] !== droppedCards.parent()[0]) {
-						self.setState(true, {
+						Self.setState(true, {
 								animation: "card-move",
 								cards: data.dropped,
 								from: data.droppedFrom,
@@ -375,7 +379,7 @@ let spider = {
 					}
 					// wait if there is a "pre-animation"
 					setTimeout(() => {
-						cards = self.layout.find(selector.join(","));
+						cards = Self.layout.find(selector.join(","));
 						targetRect = toEl[0].getBoundingClientRect();
 						cardRect = cards.map(card => {
 							let cardRect = card.getBoundingClientRect();
@@ -419,7 +423,7 @@ let spider = {
 											});
 										}
 										// check if game is complete
-										self.dispatch({type: "check-game-won"})
+										Self.dispatch({type: "check-game-won"})
 									})
 									.css({ top: "0px", left: "0px" });
 								});
@@ -427,8 +431,8 @@ let spider = {
 							.css({ top: cardRect[0].top +"px" })), time);
 				} else {
 					// calcaultions
-					fromEl = self.layout.find(`[data-id="${data.to}"]`);
-					toEl = self.layout.find(`[data-id="${data.from}"]`);
+					fromEl = Self.layout.find(`[data-id="${data.to}"]`);
+					toEl = Self.layout.find(`[data-id="${data.from}"]`);
 					fromOffset = fromEl[0].getBoundingClientRect();
 					toOffset = toEl[0].getBoundingClientRect();
 
@@ -471,7 +475,7 @@ let spider = {
 											lEl.parent().removeClass("undo-collapsing");
 
 											{ // *** last-stage -- START
-												self.layout.find(`.card[data-id="${data.droppedLast}"]`)
+												Self.layout.find(`.card[data-id="${data.droppedLast}"]`)
 													.cssSequence("card-flip-back", "animationend", pfEl => {
 														// reset flipping card
 														pfEl.addClass("card-back").removeClass("card-flip-back");
@@ -480,8 +484,8 @@ let spider = {
 
 												// finally put back original card that triggered collapse
 												let selector = data.dropped.map(id => `.card[data-id="${id}"]`),
-													cards = self.layout.find(selector.join(",")),
-													droppedFrom = self.layout.find(`[data-id="${data.droppedFrom}"]`),
+													cards = Self.layout.find(selector.join(",")),
+													droppedFrom = Self.layout.find(`[data-id="${data.droppedFrom}"]`),
 													targetCards = droppedFrom.find(".card").length,
 													fromEl = droppedFrom[0].getBoundingClientRect(),
 													offset = cards.map(card => {
@@ -492,11 +496,11 @@ let spider = {
 														};
 													});
 
-												if (self.deck[0] === droppedFrom[0]) {
+												if (Self.deck[0] === droppedFrom[0]) {
 													// re-assemble to deck
-													cards = self.layout.find(".pile .card:last-child");
+													cards = Self.layout.find(".pile .card:last-child");
 													
-													self.setState(false, {
+													Self.setState(false, {
 														animation: "deal-cards",
 														cards: cards.map(card => card.getAttribute("data-id")),
 													});
@@ -536,9 +540,9 @@ let spider = {
 			case "deal-cards":
 				if (redo) {
 					// calcaultions
-					toEl = self.piles;
+					toEl = Self.piles;
 					toOffset = toEl.addClass("dealing-cards").map((pile, i) => toEl.get(i).offset());
-					fromOffset = self.deck.offset();
+					fromOffset = Self.deck.offset();
 					cardDistance = parseInt(toEl.get(0).cssProp("--card-distance"), 10) || 0;
 
 					// prepare animation
@@ -567,10 +571,10 @@ let spider = {
 									toEl.map(pEl => {
 										let pile = $(pEl);
 										
-										self.dispatch({
+										Self.dispatch({
 											type: "check-sibling-sequence",
 											dropped: pile.find(".card:last"),
-											from: self.deck,
+											from: Self.deck,
 											last: false,
 											pile,
 										});
@@ -592,12 +596,12 @@ let spider = {
 					}, time);
 				} else {
 					// calcaultions
-					toEl = self.deck;
+					toEl = Self.deck;
 					toOffset = toEl.addClass("undo-collect")[0].getBoundingClientRect();
 					offset = cards.map((c, i) => c.getBoundingClientRect());
 					
 					// adding "flipping-card" to get "3d-perspective"
-					self.piles.addClass("re-flipping-cards");
+					Self.piles.addClass("re-flipping-cards");
 					// prepare for animation
 					cards.cssSequence("card-flip-back", "animationend", fEl => {
 						if (fEl[0] !== cards[0]) return;
@@ -611,7 +615,7 @@ let spider = {
 									// reset cards
 									cards.removeClass("landing").removeAttr("style");
 									// reset piles
-									self.piles.removeClass("re-flipping-cards");
+									Self.piles.removeClass("re-flipping-cards");
 									// reset deck
 									toEl.removeClass("undo-collect");
 								})
@@ -629,11 +633,11 @@ let spider = {
 				break;
 			case "card-move":
 				if (redo) {
-					fromEl = self.layout.find(`[data-id="${data.from}"]`);
-					toEl = self.layout.find(`[data-id="${data.to}"]`).addClass("undo-collapsing");
+					fromEl = Self.layout.find(`[data-id="${data.from}"]`);
+					toEl = Self.layout.find(`[data-id="${data.to}"]`).addClass("undo-collapsing");
 				} else {
-					fromEl = self.layout.find(`[data-id="${data.to}"]`);
-					toEl = self.layout.find(`[data-id="${data.from}"]`);
+					fromEl = Self.layout.find(`[data-id="${data.to}"]`);
+					toEl = Self.layout.find(`[data-id="${data.from}"]`);
 
 					if (data.flip && toEl.hasClass("pile")) {
 						let flipCard = toEl.find(`.card[data-id="${data.flip}"]`);
@@ -671,7 +675,7 @@ let spider = {
 							toEl.removeClass("undo-collapsing");
 
 							if (redo && data.flip && fromEl.hasClass("pile")) {
-								let flipCard = self.layout.find(`.card[data-id="${data.flip}"]`);
+								let flipCard = Self.layout.find(`.card[data-id="${data.flip}"]`);
 								// adding "flipping-card" to get "3d-perspective"
 								fromEl.addClass("flipping-card");
 								// flip last card from source pile

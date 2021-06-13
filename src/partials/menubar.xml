@@ -34,13 +34,13 @@
 		</Menu>
 		-->
 		<Menu name="Settings&#8230;" show-if-group="game-engine" is="solitaire">
-			<Menu name="Turn 1 card" click="solitaire-set-waste" arg="1" check-group="solitaire-waste"/>
-			<Menu name="Turn 3 cards" click="solitaire-set-waste" arg="3" check-group="solitaire-waste" is-checked="1"/>
+			<Menu name="Turn 1 card" click="set-solitaire-waste" arg="1" check-group="solitaire-waste"/>
+			<Menu name="Turn 3 cards" click="set-solitaire-waste" arg="3" check-group="solitaire-waste" is-checked="1"/>
 		</Menu>
 		<Menu name="Settings&#8230;" show-if-group="game-engine" is="spider">
-			<Menu name="Easy" click="spider-set-level" arg="1" check-group="spider-level" is-checked="1"/>
-			<Menu name="Medium" click="spider-set-level" arg="2" check-group="spider-level"/>
-			<Menu name="Hard" click="spider-set-level" arg="3" check-group="spider-level"/>
+			<Menu name="Easy" click="set-spider-level" arg="1" check-group="spider-level" is-checked="1"/>
+			<Menu name="Medium" click="set-spider-level" arg="2" check-group="spider-level"/>
+			<Menu name="Hard" click="set-spider-level" arg="3" check-group="spider-level"/>
 		</Menu>
 		<Menu type="divider"/>
 		<Menu name="Toggle Music" click="toggle-music"/>

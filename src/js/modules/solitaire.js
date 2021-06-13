@@ -35,7 +35,7 @@ let solitaire = {
 		this.waste = window.find(".board > .solitaire .waste");
 	},
 	dispatch(event) {
-		let self = solitaire,
+		let Self = solitaire,
 			zoneLastCard,
 			zoneLastSuit,
 			zoneLastNumb,
@@ -56,14 +56,14 @@ let solitaire = {
 
 		switch (event.type) {
 			case "output-pgn-string":
-				str = [self.name];
+				str = [Self.name];
 				str.push(
-					(self.board.attr("data-theme") || "casino") +","+
-					(self.board.attr("data-card-back") || "red") +","+
+					(Self.board.attr("data-theme") || "casino") +","+
+					(Self.board.attr("data-card-back") || "red") +","+
 					WASTE_TURN
 				);
 				// collect layout info + data
-				self.layout.find("> *").map(el => {
+				Self.layout.find("> *").map(el => {
 					let pId = el.getAttribute("data-id"),
 						cards = $(".card", el).map(c =>
 							c.dataset.suit.slice(0,1) +
@@ -75,32 +75,32 @@ let solitaire = {
 				return str.join("\n");
 			case "reset-game-board":
 				// reset undo-stack + auto-complete
-				UNDO_STACK.reset(self.setState);
+				UNDO_STACK.reset(Self.setState);
 				AUTO_COMPLETE = false;
 				// set board in "playing" mode
-				self.board.addClass("playing")
+				Self.board.addClass("playing")
 				break;
 
 			case "new-game":
 				AUTO_COMPLETE = false;
-				self.start();
+				Self.start();
 				break;
 			case "game-double-click":
 				el = $(event.target);
-				if (!el.hasClass("card") || el.hasClass("card-back") || el.nextAll(".card").length) return;
+				if (!el.hasClass("card") || el.hasClass("card-back") || el.nextAll(".card").length) return;
 				
 				fromEl = el.parent();
 				if (el[0] !== fromEl.find(".card:last")[0]) return;
 
-				check = self.layout.find(".hole.fndtn");
+				check = Self.layout.find(".hole.fndtn");
 				check.filter((fnd, i) => {
 					if (toEl) return;
 					let target = check.get(i);
-					if (self.isCardFoundationDropable(el, target)) toEl = target;
+					if (Self.isCardFoundationDropable(el, target)) toEl = target;
 				});
 				
 				// reset drop zones
-				self.layout.find(".no-drag-hover").removeClass("no-drag-hover");
+				Self.layout.find(".no-drag-hover").removeClass("no-drag-hover");
 				
 				if (toEl && toEl.length) {
 					last = fromEl.hasClass("pile") && fromEl.find(".card-back:nth-last-child(2)").length
@@ -118,19 +118,21 @@ let solitaire = {
 						});
 				}
 				break;
-			case "solitaire-set-waste":
+			case "set-solitaire-waste":
 				WASTE_TURN = +event.arg;
-				self.layout.toggleClass("waste-single", WASTE_TURN === 3);
+				Self.layout.toggleClass("waste-single", WASTE_TURN === 3);
+				// update settings
+				APP.settings["solitaire-waste"] = WASTE_TURN;
 				break;
 			case "trigger-solitaire-cycle-flip-cards":
-				self.layout.find(".deck").trigger("click");
+				Self.layout.find(".deck").trigger("click");
 				break;
 			case "can-auto-complete":
-				dropable = self.layout.find(".hole.fndtn");
-				self.layout.find(".pile .card:last-child").map(c => {
+				dropable = Self.layout.find(".hole.fndtn");
+				Self.layout.find(".pile .card:last-child").map(c => {
 					let card = $(c);
 					[...Array(4)].map((e, i) => {
-						check = check || self.isCardFoundationDropable(card, dropable.get(i));
+						check = check || Self.isCardFoundationDropable(card, dropable.get(i));
 					});
 				});
 				APP.btnAuto.toggleClass("tool-disabled_", check);
@@ -141,11 +143,11 @@ let solitaire = {
 				dropable = true;
 
 				// clean cards
-				self.layout.find(".card.landing").removeClass("landing");
+				Self.layout.find(".card.landing").removeClass("landing");
 
-				self.layout.find(".drag-return-to-origin").removeClass("drag-return-to-origin");
-				check = self.layout.find(".hole.fndtn");
-				cards = self.layout.find(".pile .card:last-child, .waste .card:last-child")
+				Self.layout.find(".drag-return-to-origin").removeClass("drag-return-to-origin");
+				check = Self.layout.find(".hole.fndtn");
+				cards = Self.layout.find(".pile .card:last-child, .waste .card:last-child")
 							.toArray()
 							.sort((a, b) => CARD_DECK.values[a.dataset.numb] - CARD_DECK.values[b.dataset.numb]);
 
@@ -156,7 +158,7 @@ let solitaire = {
 					check.map((fnd, i) => {
 						let target = check.get(i);
 						
-						if (dropable && self.isCardFoundationDropable(el, target)) {
+						if (dropable && Self.isCardFoundationDropable(el, target)) {
 							let eRect = el[0].getBoundingClientRect(),
 								tRect = target[0].getBoundingClientRect(),
 								targetOffset = [{
@@ -164,7 +166,7 @@ let solitaire = {
 									left:  eRect.left - tRect.left
 								}];
 							// trigger animation
-							self.dispatch({
+							Self.dispatch({
 								type: "check-foundation-drop",
 								silent: event.silent,
 								targetOffset,
@@ -176,16 +178,16 @@ let solitaire = {
 						}
 					});
 				});
-				if (!cards.length || dropable) {
+				if (!cards.length || dropable) {
 					AUTO_COMPLETE = false;
-					if (!event.silent && !self.board.hasClass("game-won")) {
+					if (!event.silent && !Self.board.hasClass("game-won")) {
 						// show alert dialog
 						window.dialog.alert("Can't autocomplete more&hellip;");
 					}
 				}
 				break;
 			case "check-game-won":
-				if (self.layout.find(".hole .card").length === 52) {
+				if (Self.layout.find(".hole .card").length === 52) {
 					APP.dispatch({type: "game-won"});
 				}
 				break;
@@ -195,17 +197,17 @@ let solitaire = {
 				if (!cards.length) {
 					UNDO_STACK.push({
 							animation: "waste-to-deck",
-							cards: self.waste.find(".card").map(el => el.getAttribute("data-id")),
-							from: self.waste.data("id"),
-							to: self.deck.data("id"),
+							cards: Self.waste.find(".card").map(el => el.getAttribute("data-id")),
+							from: Self.waste.data("id"),
+							to: Self.deck.data("id"),
 						});
 					return;
 				}
 				UNDO_STACK.push({
 						animation: "cycle-flip",
 						cards: cards.map(el => el.getAttribute("data-id")),
-						from: self.deck.data("id"),
-						to: self.waste.data("id"),
+						from: Self.deck.data("id"),
+						to: Self.waste.data("id"),
 					});
 				break;
 			case "check-void-drop":
@@ -214,11 +216,11 @@ let solitaire = {
 				break;
 			case "check-foundation-drop":
 				// reset cards
-				self.layout.find(".card.drag-return-to-origin").removeClass("drag-return-to-origin");
+				Self.layout.find(".card.drag-return-to-origin").removeClass("drag-return-to-origin");
 				// number of cards in dropZone
 				draggedFirst = event.el.get(0);
 				draggedParent = draggedFirst.parent().removeClass("no-drag-hover");
-				dropable = self.isCardFoundationDropable(draggedFirst, event.target);
+				dropable = Self.isCardFoundationDropable(draggedFirst, event.target);
 				
 				if (dropable) {
 					// for seamless transition - position dragged el where dropped
@@ -251,12 +253,12 @@ let solitaire = {
 						.cssSequence("landing", "transitionend", el => {
 							el.removeClass("landing").removeAttr("style");
 
-							if (self.dispatch({type: "check-game-won"})) return;
+							if (Self.dispatch({type: "check-game-won"})) return;
 							
 							if (AUTO_COMPLETE) {
 								last = draggedParent.find(".card:last-child");
 								setTimeout(() =>
-									self.dispatch({type: "auto-complete", silent: event.silent, next: true}), last.hasClass("card-back") ? 500 : 0);
+									Self.dispatch({type: "auto-complete", silent: event.silent, next: true}), last.hasClass("card-back") ? 500 : 0);
 							}
 							// push move to undo stack
 							UNDO_STACK.push({
@@ -272,7 +274,7 @@ let solitaire = {
 				return dropable;
 			case "check-pile-drop":
 				// reset drop zones
-				self.layout.find(".no-drag-hover").removeClass("no-drag-hover");
+				Self.layout.find(".no-drag-hover").removeClass("no-drag-hover");
 
 				draggedFirst = event.el.get(0);
 				draggedParent = draggedFirst.parent();
@@ -386,7 +388,7 @@ let solitaire = {
 				|| (cardSuit === fndLastSuit && NUMB_DICT[fndLastNumb].founDrop === cardNumb);
 	},
 	start() {
-		let self = solitaire,
+		let Self = solitaire,
 			j = 0,
 			cards = [],
 			deckOffset = this.deck.offset(),
@@ -422,7 +424,7 @@ let solitaire = {
 					}
 					if (pos === 27) {
 						// flips last cards in each pile
-						self.piles.find(".card:last-child")
+						Self.piles.find(".card:last-child")
 							.cssSequence("card-flip", "animationend", flipEl => {
 								// remove class of "card-back"
 								flipEl.removeClass("card-flip card-back");
@@ -431,15 +433,15 @@ let solitaire = {
 								if (el[0] !== flipEl[0]) {
 									// check if tableau can be auto completed -> toggle toolbar button
 									setTimeout(() =>
-										self.dispatch({ type: "auto-complete", silent: true }), 550);
+										Self.dispatch({ type: "auto-complete", silent: true }), 550);
 									// play sound
 									return window.audio.play("shove-card");
 								}
 
 								// set board in "playing" mode
-								self.board.addClass("playing");
+								Self.board.addClass("playing");
 								// reset cards
-								self.layout.find(".card")
+								Self.layout.find(".card")
 									.removeAttr("data-pos")
 									.removeClass("landing landed moving");
 							});
@@ -462,13 +464,13 @@ let solitaire = {
 
 		// trigger animation
 		setTimeout(() =>
-				self.layout.find(".card")
+				Self.layout.find(".card")
 					.css({ top: "", left: "" }), 100);
 	},
 	setState(redo, data) {
-		let self = solitaire,
+		let Self = solitaire,
 			selector = data.cards.map(id => `.card[data-id="${id}"]`),
-			cards = self.layout.find(selector.join(",")),
+			cards = Self.layout.find(selector.join(",")),
 			fromEl,
 			fromElOffset,
 			toEl,
@@ -490,8 +492,8 @@ let solitaire = {
 				window.audio.play("flip-card");
 
 				if (redo) {
-					fromEl = self.layout.find(`[data-id="${data.from}"]`);
-					toEl = self.layout.find(`[data-id="${data.to}"]`);
+					fromEl = Self.layout.find(`[data-id="${data.from}"]`);
+					toEl = Self.layout.find(`[data-id="${data.to}"]`);
 
 					// prepare for 3d flip in deck-element
 					fromEl.addClass("flipping-card unfan-cards").data({cardsLeft: cards.length});
@@ -540,8 +542,8 @@ let solitaire = {
 						cards.cssSequence("card-unfan", "transitionend", fnWasteToDeck);
 					}
 				} else {
-					fromEl = self.layout.find(`[data-id="${data.to}"]`);
-					toEl = self.layout.find(`[data-id="${data.from}"]`);
+					fromEl = Self.layout.find(`[data-id="${data.to}"]`);
+					toEl = Self.layout.find(`[data-id="${data.from}"]`);
 
 					// adding "flipping-card" to get "3d-perspective"
 					toEl.addClass("flipping-card").data({cardsLeft: cards.length});
@@ -573,11 +575,11 @@ let solitaire = {
 				window.audio.play("flip-card");
 
 				if (redo) {
-					fromEl = self.layout.find(`[data-id="${data.from}"]`);
-					toEl = self.layout.find(`[data-id="${data.to}"]`);
+					fromEl = Self.layout.find(`[data-id="${data.from}"]`);
+					toEl = Self.layout.find(`[data-id="${data.to}"]`);
 				} else {
-					fromEl = self.layout.find(`[data-id="${data.to}"]`);
-					toEl = self.layout.find(`[data-id="${data.from}"]`);
+					fromEl = Self.layout.find(`[data-id="${data.to}"]`);
+					toEl = Self.layout.find(`[data-id="${data.from}"]`);
 				}
 
 				// prepare calculation
@@ -649,15 +651,15 @@ let solitaire = {
 				break;
 			case "card-move":
 				if (redo) {
-					fromEl = self.layout.find(`[data-id="${data.from}"]`);
-					toEl = self.layout.find(`[data-id="${data.to}"]`);
+					fromEl = Self.layout.find(`[data-id="${data.from}"]`);
+					toEl = Self.layout.find(`[data-id="${data.to}"]`);
 
 					if (fromEl.hasClass("waste")) {
 						fromEl.data({"cardsLeft": +fromEl.data("cardsLeft") - 1});
 					}
 				} else {
-					fromEl = self.layout.find(`[data-id="${data.to}"]`);
-					toEl = self.layout.find(`[data-id="${data.from}"]`);
+					fromEl = Self.layout.find(`[data-id="${data.to}"]`);
+					toEl = Self.layout.find(`[data-id="${data.from}"]`);
 
 					if (toEl.hasClass("waste")) {
 						toEl.data({"cardsLeft": +toEl.data("cardsLeft") + 1});
@@ -689,17 +691,17 @@ let solitaire = {
 
 				// number of cards in from element
 				targetCards = toEl.find(".card");
-				cardDistance = toEl.hasClass("waste") ? 0 : parseInt(toEl.cssProp("--card-distance"), 10) || 0;
+				cardDistance = toEl.hasClass("waste") ? 0 : parseInt(toEl.cssProp("--card-distance"), 10) || 0;
 				el = toEl.append(cards);
 				el.map((item, i) => {
 					el.get(i)
-						.cssSequence("landing", "transitionend", lEl => {
+						.cssSequence("landing", "transitionend", lEl => {
 							lEl.removeClass("landing").removeAttr("style");
 
-							if (redo && self.dispatch({type: "check-game-won"})) return;
+							if (redo && Self.dispatch({type: "check-game-won"})) return;
 
 							if (redo && data.flip && fromEl.hasClass("pile")) {
-								let flipCard = self.layout.find(`.card[data-id="${data.flip}"]`);
+								let flipCard = Self.layout.find(`.card[data-id="${data.flip}"]`);
 								// adding "flipping-card" to get "3d-perspective"
 								fromEl.addClass("flipping-card");
 								// flip last card from source pile
@@ -721,7 +723,7 @@ let solitaire = {
 				setTimeout(() => 
 					el.map((item, i) => {
 						let cardsMargin = parseInt(toEl.cssProp("--card-margin"), 10) || 0,
-							left = !self.layout.hasClass("waste-single") && toEl.hasClass("waste")
+							left = !Self.layout.hasClass("waste-single") && toEl.hasClass("waste")
 								? Math.min(+toEl.data("cardsLeft") - 1, 3) * cardsMargin : 0,
 							top = cardDistance * (targetCards.length + i);
 						el.get(i).css({
@@ -738,7 +740,7 @@ let solitaire = {
 		}
 
 		// check if tableau can be auto completed -> toggle toolbar button
-		setTimeout(() => self.dispatch({ type: "can-auto-complete" }), 355);
+		setTimeout(() => Self.dispatch({ type: "can-auto-complete" }), 355);
 	}
 };
 

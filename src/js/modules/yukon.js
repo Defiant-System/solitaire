@@ -38,7 +38,7 @@ let yukon = {
 		this.deck = window.find(".board > .yukon .deck");
 	},
 	dispatch(event) {
-		let self = yukon,
+		let Self = yukon,
 			zoneLastCard,
 			zoneLastSuit,
 			zoneLastNumb,
@@ -60,13 +60,13 @@ let yukon = {
 
 		switch (event.type) {
 			case "output-pgn-string":
-				str = [self.name];
+				str = [Self.name];
 				str.push(
-					(self.board.attr("data-theme") || "casino") +","+
-					(self.board.attr("data-card-back") || "red")
+					(Self.board.attr("data-theme") || "casino") +","+
+					(Self.board.attr("data-card-back") || "red")
 				);
 				// collect layout info + data
-				self.layout.find("> *").map(el => {
+				Self.layout.find("> *").map(el => {
 					let pId = el.getAttribute("data-id"),
 						cards = $(".card", el).map(c =>
 							c.dataset.suit.slice(0,1) +
@@ -79,31 +79,31 @@ let yukon = {
 				return str.join("\n");
 			case "reset-game-board":
 				// reset undo-stack + auto-complete
-				UNDO_STACK.reset(self.setState);
+				UNDO_STACK.reset(Self.setState);
 				AUTO_COMPLETE = false;
 				// set board in "playing" mode
-				self.board.addClass("playing")
+				Self.board.addClass("playing")
 				break;
 
 			case "new-game":
 				AUTO_COMPLETE = false;
-				if (self.deck.hasClass("show")) self.start();
-				else self.deck.cssSequence("show", "transitionend", deck => self.start());
+				if (Self.deck.hasClass("show")) Self.start();
+				else Self.deck.cssSequence("show", "transitionend", deck => Self.start());
 				break;
 			case "game-double-click":
 				el = $(event.target);
-				if (!el.hasClass("card") || el.hasClass("card-back") || el.nextAll(".card").length) return;
+				if (!el.hasClass("card") || el.hasClass("card-back") || el.nextAll(".card").length) return;
 				
 				fromEl = el.parent();
-				check = self.layout.find(".hole.fndtn");
+				check = Self.layout.find(".hole.fndtn");
 				check.filter((fnd, i) => {
 					if (toEl) return;
 					let target = check.get(i);
-					if (self.isCardFoundationDropable(el, target)) toEl = target;
+					if (Self.isCardFoundationDropable(el, target)) toEl = target;
 				});
 				
 				// reset drop zones
-				self.layout.find(".no-drag-hover").removeClass("no-drag-hover");
+				Self.layout.find(".no-drag-hover").removeClass("no-drag-hover");
 				
 				if (toEl && toEl.length) {
 					last = fromEl.hasClass("pile") && fromEl.find(".card-back:nth-last-child(2)").length
@@ -122,11 +122,11 @@ let yukon = {
 				}
 				break;
 			case "can-auto-complete":
-				dropable = self.layout.find(".hole.fndtn");
-				self.layout.find(".pile .card:last-child").map(c => {
+				dropable = Self.layout.find(".hole.fndtn");
+				Self.layout.find(".pile .card:last-child").map(c => {
 					let card = $(c);
 					[...Array(4)].map((e, i) => {
-						check = check || self.isCardFoundationDropable(card, dropable.get(i));
+						check = check || Self.isCardFoundationDropable(card, dropable.get(i));
 					});
 				});
 				APP.btnAuto.toggleClass("tool-disabled_", check);
@@ -137,11 +137,11 @@ let yukon = {
 				dropable = true;
 
 				// clean cards
-				self.layout.find(".card.landing").removeClass("landing");
+				Self.layout.find(".card.landing").removeClass("landing");
 
-				self.layout.find(".drag-return-to-origin").removeClass("drag-return-to-origin");
-				check = self.layout.find(".hole.fndtn");
-				cards = self.layout.find(".pile .card:last-child, .waste .card:last-child")
+				Self.layout.find(".drag-return-to-origin").removeClass("drag-return-to-origin");
+				check = Self.layout.find(".hole.fndtn");
+				cards = Self.layout.find(".pile .card:last-child, .waste .card:last-child")
 							.toArray()
 							.sort((a, b) => CARD_DECK.values[a.dataset.numb] - CARD_DECK.values[b.dataset.numb]);
 
@@ -152,7 +152,7 @@ let yukon = {
 					check.map((fnd, i) => {
 						let target = check.get(i);
 						
-						if (dropable && self.isCardFoundationDropable(el, target)) {
+						if (dropable && Self.isCardFoundationDropable(el, target)) {
 							let eRect = el[0].getBoundingClientRect(),
 								tRect = target[0].getBoundingClientRect(),
 								targetOffset = [{
@@ -160,7 +160,7 @@ let yukon = {
 									left:  eRect.left - tRect.left
 								}];
 							// trigger animation
-							self.dispatch({
+							Self.dispatch({
 								type: "check-foundation-drop",
 								silent: event.silent,
 								targetOffset,
@@ -172,16 +172,16 @@ let yukon = {
 						}
 					});
 				});
-				if (!cards.length || dropable) {
+				if (!cards.length || dropable) {
 					AUTO_COMPLETE = false;
-					if (!event.silent && !self.board.hasClass("game-won")) {
+					if (!event.silent && !Self.board.hasClass("game-won")) {
 						// show alert dialog
 						window.dialog.alert("Can't autocomplete more&hellip;");
 					}
 				}
 				break;
 			case "check-game-won":
-				if (self.layout.find(".hole .card").length === 52) {
+				if (Self.layout.find(".hole .card").length === 52) {
 					APP.dispatch({type: "game-won"});
 				}
 				break;
@@ -193,7 +193,7 @@ let yukon = {
 				// number of cards in dropZone
 				draggedFirst = event.el.get(0);
 				from = draggedFirst.parent().removeClass("no-drag-hover");
-				dropable = event.el.length  === 1 && self.isCardFoundationDropable(draggedFirst, event.target);
+				dropable = event.el.length  === 1 && Self.isCardFoundationDropable(draggedFirst, event.target);
 
 				if (dropable) {
 					// for seamless transition - position dragged el where dropped
@@ -223,10 +223,10 @@ let yukon = {
 						.cssSequence("landing", "transitionend", el => {
 							el.removeClass("landing").removeAttr("style");
 							
-							if (self.dispatch({type: "check-game-won"})) return;
+							if (Self.dispatch({type: "check-game-won"})) return;
 
 							if (AUTO_COMPLETE) {
-								self.dispatch({type: "auto-complete", silent: event.silent, next: true});
+								Self.dispatch({type: "auto-complete", silent: event.silent, next: true});
 							}
 						})
 						.css({top: "0px", left: "0px"}), 15);
@@ -242,7 +242,7 @@ let yukon = {
 				return dropable;
 			case "check-pile-drop":
 				// reset drop zones
-				self.layout.find(".no-drag-hover").removeClass("no-drag-hover");
+				Self.layout.find(".no-drag-hover").removeClass("no-drag-hover");
 
 				draggedFirst = event.el.get(0);
 				draggedParent = draggedFirst.parent();
@@ -334,7 +334,7 @@ let yukon = {
 				|| (cardSuit === fndLastSuit && NUMB_DICT[fndLastNumb].founDrop === cardNumb);
 	},
 	start() {
-		let self = yukon,
+		let Self = yukon,
 			j = 0,
 			cards = [],
 			deckOffset = this.deck.offset(),
@@ -377,24 +377,24 @@ let yukon = {
 
 					// deck flip time
 					if (pos === 20) {
-						self.deckCard
+						Self.deckCard
 							.cssSequence("card-flip", "animationend", flipEl => {
-								self.layout.find(".card.hidden").removeClass("hidden");
+								Self.layout.find(".card.hidden").removeClass("hidden");
 								// remove fake flip card
 								flipEl.remove();
 							});
 					}
 					// last card
 					if (pos === 151) {
-						self.deck.removeClass("show");
+						Self.deck.removeClass("show");
 						// set board in "playing" mode
-						self.board.addClass("playing")
+						Self.board.addClass("playing")
 							.find(".yukon .card")
 							.removeAttr("data-pos")
 							.removeClass("landing landed moving");
 						// check if tableau can be auto completed -> toggle toolbar button
 						setTimeout(() =>
-							self.dispatch({ type: "auto-complete", silent: true }), 10);
+							Self.dispatch({ type: "auto-complete", silent: true }), 10);
 					}
 				})
 				.css({
@@ -414,13 +414,13 @@ let yukon = {
 
 		// trigger animation
 		setTimeout(() =>
-				self.layout.find(".card")
+				Self.layout.find(".card")
 					.css({ top: "", left: "" }), 100);
 	},
 	setState(redo, data) {
-		let self = yukon,
+		let Self = yukon,
 			selector = data.cards.map(id => `.card[data-id="${id}"]`),
-			cards = self.layout.find(selector.join(",")),
+			cards = Self.layout.find(selector.join(",")),
 			fromEl,
 			fromElOffset,
 			toEl,
@@ -439,15 +439,15 @@ let yukon = {
 		switch (data.animation) {
 			case "card-move":
 				if (redo) {
-					fromEl = self.layout.find(`[data-id="${data.from}"]`);
-					toEl = self.layout.find(`[data-id="${data.to}"]`);
+					fromEl = Self.layout.find(`[data-id="${data.from}"]`);
+					toEl = Self.layout.find(`[data-id="${data.to}"]`);
 
 					if (fromEl.hasClass("waste")) {
 						fromEl.data({"cardsLeft": +fromEl.data("cardsLeft") - 1});
 					}
 				} else {
-					fromEl = self.layout.find(`[data-id="${data.to}"]`);
-					toEl = self.layout.find(`[data-id="${data.from}"]`);
+					fromEl = Self.layout.find(`[data-id="${data.to}"]`);
+					toEl = Self.layout.find(`[data-id="${data.from}"]`);
 
 					if (toEl.hasClass("waste")) {
 						toEl.data({"cardsLeft": +toEl.data("cardsLeft") + 1});
@@ -479,17 +479,17 @@ let yukon = {
 
 				// number of cards in from element
 				targetCards = toEl.find(".card");
-				cardDistance = toEl.hasClass("waste") ? 0 : parseInt(toEl.cssProp("--card-distance"), 10) || 0;
+				cardDistance = toEl.hasClass("waste") ? 0 : parseInt(toEl.cssProp("--card-distance"), 10) || 0;
 				el = toEl.append(cards);
 				el.map((item, i) => {
 					el.get(i)
-						.cssSequence("landing", "transitionend", lEl => {
+						.cssSequence("landing", "transitionend", lEl => {
 							lEl.removeClass("landing").removeAttr("style");
 
-							if (redo && self.dispatch({type: "check-game-won"})) return;
+							if (redo && Self.dispatch({type: "check-game-won"})) return;
 
 							if (redo && data.flip && fromEl.hasClass("pile")) {
-								let flipCard = self.layout.find(`.card[data-id="${data.flip}"]`);
+								let flipCard = Self.layout.find(`.card[data-id="${data.flip}"]`);
 								// adding "flipping-card" to get "3d-perspective"
 								fromEl.addClass("flipping-card");
 								// flip last card from source pile
@@ -511,7 +511,7 @@ let yukon = {
 				setTimeout(() => 
 					el.map((item, i) => {
 						let cardsMargin = parseInt(toEl.cssProp("--card-margin"), 10) || 0,
-							left = !self.layout.hasClass("waste-single") && toEl.hasClass("waste")
+							left = !Self.layout.hasClass("waste-single") && toEl.hasClass("waste")
 								? Math.min(+toEl.data("cardsLeft") - 1, 3) * cardsMargin : 0,
 							top = cardDistance * (targetCards.length + i);
 						el.get(i).css({
@@ -528,7 +528,7 @@ let yukon = {
 		}
 
 		// check if tableau can be auto completed -> toggle toolbar button
-		setTimeout(() => self.dispatch({ type: "can-auto-complete" }), 360);
+		setTimeout(() => Self.dispatch({ type: "can-auto-complete" }), 360);
 	}
 };
 

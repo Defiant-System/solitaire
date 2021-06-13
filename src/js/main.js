@@ -11,9 +11,13 @@ import yukon from "./modules/yukon"
 
 // default settings
 const defaultSettings = {
+	"width": 758,
+	"height": 550,
 	"audio": "on",
 	"game-theme": "casino",
 	"card-back": "red",
+	"spider-level": 1,
+	"solitaire-waste": 3,
 };
 
 
@@ -33,13 +37,13 @@ const app = {
 		this.btnAuto = window.find("[data-click='auto-complete']");
 		this.UNDO_STACK = new History;
 
-		// init settings
-		this.dispatch({ type: "init-settings" });
-
 		// initiate engines
 		for (let key in ENGINES) {
 			ENGINES[key].init(this, CARD_DECK, SUIT_DICT, NUMB_DICT);
 		}
+
+		// init settings
+		this.dispatch({ type: "init-settings" });
 
 		// Select starting point
 		if (this.board.hasClass("playing")) {
@@ -101,7 +105,13 @@ const app = {
 				break;
 			case "init-settings":
 				// get settings, if any
-				Self.settings = window.settings.getItem("settings") || defaultSettings;
+				Self.settings = window.settings.getItem("settings") || defaultSettings;
+
+				// resize window
+				window.body.css({
+					width: Self.settings.width,
+					height: Self.settings.height,
+				});
 				// apply settings
 				for (let key in Self.settings) {
 					let type = "set-"+ key,
@@ -116,7 +126,7 @@ const app = {
 							else xMenu.removeAttribute("is-checked");
 						} else {
 							let xArg = xMenu.getAttribute("arg");
-							if (xArg === arg) xMenu.setAttribute("is-checked", 1);
+							if (xArg === arg || +xArg === +arg) xMenu.setAttribute("is-checked", 1);
 							else xMenu.removeAttribute("is-checked");
 						}
 					});
@@ -130,9 +140,9 @@ const app = {
 				Self.board.data({"theme": ui[0]});
 				Self.board.data({"card-back": ui[1]});
 
-				if (pgn[0] === "Solitaire" && ui[2]) {
-					Self.activeEngine.dispatch({ type: "solitaire-set-waste", arg: +ui[2] })
-				}
+				// if (pgn[0] === "Solitaire" && ui[2]) {
+				// 	Self.activeEngine.dispatch({ type: "solitaire-set-waste", arg: +ui[2] })
+				// }
 
 				pgn.slice(2).map(p => {
 					let parts = p.split(":");
@@ -192,10 +202,14 @@ const app = {
 				window.find(`.tool-active_[data-click="set-game-engine"]`).removeClass("tool-active_");
 				window.find(`[data-click="set-game-engine"][data-arg="${ACTIVE}"]`).addClass("tool-active_");
 
+				// save to settings
+				Self.settings.width = Self.board.cssProp("--layout-width");
+				Self.settings.height = Self.board.cssProp("--layout-height");
+
 				// resize window
 				window.body.css({
-					width: Self.board.cssProp("--layout-width"),
-					height: Self.board.cssProp("--layout-height"),
+					width: Self.settings.width,
+					height: Self.settings.height,
 				});
 
 				if (!event.init) {
@@ -203,7 +217,7 @@ const app = {
 				}
 				return true;
 			case "set-audio":
-				window.audio.mute = event.arg ? event.arg === "mute" : event.checked < 0;
+				window.audio.mute = event.arg ? event.arg === "mute" : event.checked < 0;
 				// update settings
 				Self.settings.audio = window.audio.mute ? "mute" : "on";
 				break;
@@ -245,15 +259,16 @@ const app = {
 				Self.board.removeClass("game-won");
 				Self.dispatch({type: "new-game"});
 				break;
-			// solitaire specific events
-			case "solitaire-set-waste":
+			// solitaire specific setting
+			case "set-solitaire-waste":
+				return ENGINES.solitaire.dispatch(event);
+			// spider specific setting
+			case "set-spider-level":
+				return ENGINES.spider.dispatch({ ...event, noStart: true });
+			// proxy events
 			case "trigger-solitaire-cycle-flip-cards":
-			
-			// spider specific events
-			case "spider-set-level":
 			case "spider-deal-cards":
 			case "trigger-spider-deal-cards":
-
 			case "game-double-click":
 			case "undo-move":
 			case "cycle-flip-cards":

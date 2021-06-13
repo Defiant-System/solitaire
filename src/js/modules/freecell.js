@@ -24,7 +24,7 @@ let freecell = {
 		this.deck = window.find(".board > .freecell .deck");
 	},
 	dispatch(event) {
-		let self = freecell,
+		let Self = freecell,
 			from,
 			draggedParent,
 			draggedFirst,
@@ -44,13 +44,13 @@ let freecell = {
 
 		switch (event.type) {
 			case "output-pgn-string":
-				str = [self.name];
+				str = [Self.name];
 				str.push(
-					(self.board.attr("data-theme") || "casino") +","+
-					(self.board.attr("data-card-back") || "red")
+					(Self.board.attr("data-theme") || "casino") +","+
+					(Self.board.attr("data-card-back") || "red")
 				);
 				// collect layout info + data
-				self.layout.find("> *").map(el => {
+				Self.layout.find("> *").map(el => {
 					let pId = el.getAttribute("data-id"),
 						cards = $(".card", el).map(c =>
 							c.dataset.suit.slice(0,1) +
@@ -63,27 +63,27 @@ let freecell = {
 				return str.join("\n");
 			case "reset-game-board":
 				// reset undo-stack + auto-complete
-				UNDO_STACK.reset(self.setState);
+				UNDO_STACK.reset(Self.setState);
 				AUTO_COMPLETE = false;
 				// set board in "playing" mode
-				self.board.addClass("playing")
+				Self.board.addClass("playing")
 				break;
 
 			case "new-game":
 				// show deck before dealing
 				AUTO_COMPLETE = false;
-				if (self.deck.hasClass("show")) self.start();
-				else self.deck.cssSequence("show", "transitionend", deck => self.start());
+				if (Self.deck.hasClass("show")) Self.start();
+				else Self.deck.cssSequence("show", "transitionend", deck => Self.start());
 				break;
 			case "game-double-click":
 				el = $(event.target);
-				if (!el.hasClass("card") || el.hasClass("card-back") || el.nextAll(".card").length) return;
+				if (!el.hasClass("card") || el.hasClass("card-back") || el.nextAll(".card").length) return;
 				
-				check = self.layout.find(".hole.fndtn");
+				check = Self.layout.find(".hole.fndtn");
 				check.filter((fnd, i) => {
 					if (dropable) return;
 					let target = check.get(i);
-					if (self.isCardFoundationDropable(el, target)) dropable = target;
+					if (Self.isCardFoundationDropable(el, target)) dropable = target;
 				});
 				
 				if (dropable && dropable.length) {
@@ -102,16 +102,16 @@ let freecell = {
 				}
 				break;
 			case "check-game-won":
-				if (self.layout.find(".hole .card").length === 52) {
+				if (Self.layout.find(".hole .card").length === 52) {
 					APP.dispatch({type: "game-won"});
 				}
 				break;
 			case "can-auto-complete":
-				dropable = self.layout.find(".hole.fndtn");
-				self.layout.find(".pile .card:last-child").map(c => {
+				dropable = Self.layout.find(".hole.fndtn");
+				Self.layout.find(".pile .card:last-child").map(c => {
 					let card = $(c);
 					[...Array(4)].map((e, i) => {
-						check = check || self.isCardFoundationDropable(card, dropable.get(i));
+						check = check || Self.isCardFoundationDropable(card, dropable.get(i));
 					});
 				});
 				APP.btnAuto.toggleClass("tool-disabled_", check);
@@ -122,11 +122,11 @@ let freecell = {
 				dropable = true;
 
 				// clean cards
-				self.layout.find(".card.landing").removeClass("landing");
+				Self.layout.find(".card.landing").removeClass("landing");
 
-				self.layout.find(".drag-return-to-origin").removeClass("drag-return-to-origin");
-				check = self.layout.find(".hole.fndtn");
-				cards = self.layout.find(".pile .card:last-child, .slot .card:last-child")
+				Self.layout.find(".drag-return-to-origin").removeClass("drag-return-to-origin");
+				check = Self.layout.find(".hole.fndtn");
+				cards = Self.layout.find(".pile .card:last-child, .slot .card:last-child")
 							.toArray()
 							.sort((a, b) => CARD_DECK.values[a.dataset.numb] - CARD_DECK.values[b.dataset.numb]);
 
@@ -137,7 +137,7 @@ let freecell = {
 					check.map((fnd, i) => {
 						let target = check.get(i);
 
-						if (dropable && self.isCardFoundationDropable(el, target)) {
+						if (dropable && Self.isCardFoundationDropable(el, target)) {
 							let eRect = el[0].getBoundingClientRect(),
 								tRect = target[0].getBoundingClientRect(),
 								targetOffset = [{
@@ -145,7 +145,7 @@ let freecell = {
 									left:  eRect.left - tRect.left
 								}];
 							// trigger animation
-							self.dispatch({
+							Self.dispatch({
 								type: "check-foundation-drop",
 								silent: event.silent,
 								targetOffset,
@@ -158,7 +158,7 @@ let freecell = {
 					});
 				});
 
-				if (!cards.length || dropable) {
+				if (!cards.length || dropable) {
 					AUTO_COMPLETE = false;
 					if (!event.silent) {
 						// show alert dialog
@@ -172,11 +172,11 @@ let freecell = {
 				break;
 			case "check-foundation-drop":
 				// reset cards
-				self.layout.find(".card.drag-return-to-origin").removeClass("drag-return-to-origin");
+				Self.layout.find(".card.drag-return-to-origin").removeClass("drag-return-to-origin");
 				// number of cards in dropZone
 				draggedFirst = event.el.get(0);
 				from = draggedFirst.parent().removeClass("no-drag-hover");
-				dropable = event.el.length  === 1 && self.isCardFoundationDropable(draggedFirst, event.target);
+				dropable = event.el.length  === 1 && Self.isCardFoundationDropable(draggedFirst, event.target);
 
 				if (dropable) {
 					// for seamless transition - position dragged el where dropped
@@ -190,12 +190,12 @@ let freecell = {
 					setTimeout(() => el[0]
 						.cssSequence("landing", "transitionend", el => {
 							el.removeClass("landing").removeAttr("style");
-							if (self.layout.find(".fndtn .card").length === 52) {
+							if (Self.layout.find(".fndtn .card").length === 52) {
 								return APP.dispatch({type: "game-won"});
 							}
 							if (AUTO_COMPLETE) {
 								setTimeout(() =>
-									self.dispatch({type: "auto-complete", silent: event.silent, next: true}), 20);
+									Self.dispatch({type: "auto-complete", silent: event.silent, next: true}), 20);
 							}
 						})
 						.css({top: "0px", left: "0px"}), 20);
@@ -305,7 +305,7 @@ let freecell = {
 					dragable = cards.length === check.length ? cards : false;
 				}
 				// ensure enough free slots existing to handle number of cards being dragged
-				if (dragable.length - 1 > (4 - self.layout.find(".slot .card").length) && el.nextAll(".card").length) {
+				if (dragable.length - 1 > (4 - Self.layout.find(".slot .card").length) && el.nextAll(".card").length) {
 					dragable = false;
 				}
 
@@ -324,10 +324,10 @@ let freecell = {
 			fndLastNumb = fndLastCard.data("numb");
 
 		return (!fndLastCard.length && cardNumb === "A")
-				|| (fndCards.length && cardSuit === fndLastSuit && NUMB_DICT[fndLastNumb].founDrop === cardNumb)
+				|| (fndCards.length && cardSuit === fndLastSuit && NUMB_DICT[fndLastNumb].founDrop === cardNumb)
 	},
 	start() {
-		let self = freecell,
+		let Self = freecell,
 			j = 0,
 			cards = [],
 			deckOffset = this.deck.offset(),
@@ -357,15 +357,15 @@ let freecell = {
 					}
 					if (pos === 51) {
 						// hide the deck
-						self.deck.removeClass("show");
+						Self.deck.removeClass("show");
 						// set board in "playing" mode
-						self.board.addClass("playing")
+						Self.board.addClass("playing")
 							.find(".freecell .card")
 							.removeAttr("data-pos")
 							.removeClass("moving landed");
 						// check if tableau can be auto completed -> toggle toolbar button
 						setTimeout(() =>
-							self.dispatch({ type: "auto-complete", silent: true }), 10);
+							Self.dispatch({ type: "auto-complete", silent: true }), 10);
 					}
 				})
 				.css({
@@ -384,9 +384,9 @@ let freecell = {
 		setTimeout(() => this.layout.find(".card").removeClass("in-deck").css({ top: "", left: "", }), 1);
 	},
 	setState(redo, data) {
-		let self = freecell,
+		let Self = freecell,
 			selector = data.cards.map(id => `.card[data-id="${id}"]`),
-			cards = self.layout.find(selector.join(",")),
+			cards = Self.layout.find(selector.join(",")),
 			fromEl,
 			toEl,
 			fromOffset,
@@ -401,17 +401,17 @@ let freecell = {
 		APP.btnPrev.removeClass("tool-active_").toggleClass("tool-disabled_", UNDO_STACK.canUndo);
 		APP.btnNext.removeClass("tool-active_").toggleClass("tool-disabled_", UNDO_STACK.canRedo);
 		// reset drop zones
-		self.layout.find(".no-drag-hover").removeClass("no-drag-hover");
+		Self.layout.find(".no-drag-hover").removeClass("no-drag-hover");
 
 		// animation "playbacks"
 		switch (data.animation) {
 			case "card-move":
 				if (redo) {
-					fromEl = self.layout.find(`[data-id="${data.from}"]`);
-					toEl = self.layout.find(`[data-id="${data.to}"]`);
+					fromEl = Self.layout.find(`[data-id="${data.from}"]`);
+					toEl = Self.layout.find(`[data-id="${data.to}"]`);
 				} else {
-					fromEl = self.layout.find(`[data-id="${data.to}"]`);
-					toEl = self.layout.find(`[data-id="${data.from}"]`);
+					fromEl = Self.layout.find(`[data-id="${data.to}"]`);
+					toEl = Self.layout.find(`[data-id="${data.from}"]`);
 				}
 
 				// play sound
@@ -441,7 +441,7 @@ let freecell = {
 
 							if (redo) {
 								// check if game is complete
-								self.dispatch({type: "check-game-won"});
+								Self.dispatch({type: "check-game-won"});
 							}
 						})
 						.css({
@@ -467,7 +467,7 @@ let freecell = {
 				data.animation = "card-move";
 		}
 		// check if tableau can be auto completed -> toggle toolbar button
-		setTimeout(() => self.dispatch({ type: "can-auto-complete" }), 200);
+		setTimeout(() => Self.dispatch({ type: "can-auto-complete" }), 200);
 	}
 };
 
