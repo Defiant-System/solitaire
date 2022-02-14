@@ -307,6 +307,9 @@ let yukon = {
 				}
 				return dropable;
 			case "check-card-drag":
+				Self.layout.find(".landing, .drag-return-to-origin")
+					.removeClass("landing drag-return-to-origin");
+				
 				el = $(event.target);
 				draggedParent = el.parents(".pile, .deck, .waste");
 

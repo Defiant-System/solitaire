@@ -282,6 +282,8 @@ let freecell = {
 				return dropable;
 			case "check-card-drag":
 				//if (AUTO_COMPLETE) return;
+				Self.layout.find(".landing, .drag-return-to-origin")
+					.removeClass("landing drag-return-to-origin");
 
 				el = $(event.target);
 				from = el.parents(".pile, .slot, fndtn");

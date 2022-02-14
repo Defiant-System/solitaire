@@ -229,6 +229,9 @@ let spider = {
 
 				return dropable;
 			case "check-card-drag":
+				Self.layout.find(".landing, .drag-return-to-origin")
+					.removeClass("landing drag-return-to-origin");
+
 				el = $(event.target);
 				if (el.hasClass("landing") || el.hasClass("moving") || el.hasClass("card-back")) return;
 

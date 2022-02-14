@@ -163,6 +163,14 @@ const app = {
 				});
 				// resets game engine
 				Self.activeEngine.dispatch({ type: "reset-game-board" });
+
+				// setTimeout(() => {
+				// 	Self.activeEngine.piles.addClass("flipping-card");
+				// 	Self.activeEngine.piles.find(".card:last-child")
+				// 		.cssSequence("card-flip", "animationend", flipEl => {
+				// 			// console.log(flipEl);
+				// 		});
+				// }, 500);
 				break;
 			case "new-game":
 				// clear all cards
