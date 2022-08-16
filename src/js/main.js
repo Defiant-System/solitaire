@@ -96,7 +96,7 @@ const app = {
 				break;
 			// custom events
 			case "open-help":
-				defiant.shell("fs -u '~/help/index.md'");
+				karaqu.shell("fs -u '~/help/index.md'");
 				break;
 			case "output-pgn-string":
 				// custom portable game notation
