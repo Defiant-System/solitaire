@@ -88,7 +88,7 @@ const app = {
 			el;
 
 		switch (event.type) {
-			// native events
+			// system events
 			case "window.close":
 				Self.board.removeClass("game-won");
 				// save settings
