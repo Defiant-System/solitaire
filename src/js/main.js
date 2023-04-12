@@ -177,6 +177,8 @@ const app = {
 				window.find(".card").remove();
 				// reset board
 				Self.board.removeClass("playing game-won");
+				// disable auto complete
+				Self.btnAuto.addClass("tool-disabled_");
 
 				if (!Self.activeEngine) {
 					Self.dispatch({type: "set-game-engine", init: true});
