@@ -27,6 +27,24 @@ let ENGINES = { solitaire, freecell, spider, yukon },
 	// for dev purposes
 	pgn = ``;
 
+// 	pgn = `Freecell
+// casino,red
+// 401:
+// 402:
+// 403:
+// 404:
+// 411:
+// 412:
+// 413:
+// 414:
+// 421:c8-S20,sA-S39,c7-S19,h10-S9,d9-S34,d8-S33,s4-S42
+// 422:h9-S8,s6-S44,h6-S5,d6-S31,cA-S13,sK-S51,d7-S32
+// 423:d10-S35,sQ-S50,d3-S28,d2-S27,c3-S15,h4-S3,hK-S12
+// 424:cJ-S23,s3-S41,s7-S45,c9-S21,cK-S25,cQ-S24,h5-S4
+// 425:c2-S14,h3-S2,s9-S47,dJ-S36,c5-S17,dK-S38
+// 426:s8-S46,dQ-S37,s2-S40,c4-S16,c10-S22,hJ-S10
+// 427:d5-S30,s10-S48,d4-S29,h7-S6,dA-S26,hQ-S11
+// 428:sJ-S49,h8-S7,hA-S0,c6-S18,h2-S1,s5-S43`;
 
 const app = {
 	init() {

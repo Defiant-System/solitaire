@@ -6,7 +6,7 @@
 		</Options>
 		<Tool symbol="icon-automatic" state="disabled" click="auto-complete" title="Autocomplete."/>
 	</Group>
-	<Group>
+	<Group center="1">
 		<Options>
 			<Tool name="Solitaire" click="set-game-engine" arg="solitaire"/>
 			<Tool name="Freecell" click="set-game-engine" arg="freecell"/>
