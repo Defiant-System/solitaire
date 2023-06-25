@@ -6,7 +6,7 @@
 		</Options>
 		<Tool symbol="icon-automatic" state="disabled" click="auto-complete" title="Autocomplete."/>
 	</Group>
-	<Group center="1">
+	<Group>
 		<Options>
 			<Tool name="Solitaire" click="set-game-engine" arg="solitaire"/>
 			<Tool name="Freecell" click="set-game-engine" arg="freecell"/>
@@ -14,7 +14,5 @@
 			<Tool name="Yukon" click="set-game-engine" arg="yukon"/>
 		</Options>
 	</Group>
-	<Group width="25%">
-		<Tool symbol="icon-gear" menu="game-board"/>
-	</Group>
+	<Group class="empty"/>
 </CaptionToolBar>
