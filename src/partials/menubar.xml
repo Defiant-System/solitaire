@@ -11,7 +11,7 @@
 		<Menu type="divider"/>
 		<Menu name="Quit Solitaire" shell="win -c"/>
 	</Menu>
-	<Menu name="Game">
+	<Menu name="Game" for="game-board">
 		<Menu name="New Game" click="new-game" hotkey="alt+n"/>
 		<!-- optional menus depending on game engine -->
 		<Menu name="Deal" click="trigger-solitaire-cycle-flip-cards" show-if-group="game-engine" is="solitaire"/>
