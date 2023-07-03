@@ -9,6 +9,9 @@ import spider from "./modules/spider"
 import yukon from "./modules/yukon"
 
 
+@import "./modules/test.js"
+
+
 // default settings
 const defaultSettings = {
 	"width": 758,
@@ -27,7 +30,7 @@ let ENGINES = { solitaire, freecell, spider, yukon },
 	// for dev purposes
 	pgn = ``;
 
-// 	pgn = `Freecell
+// pgn = `Freecell
 // casino,red
 // 401:
 // 402:
@@ -96,6 +99,10 @@ const app = {
 				window.find(".intro h1 span:first").remove();
 			});
 		}
+
+		// DEV-ONLY-START
+		Test.init(this);
+		// DEV-ONLY-END
 	},
 	dispatch(event) {
 		let Self = app,
