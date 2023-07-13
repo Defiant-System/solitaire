@@ -1,6 +1,9 @@
 
 let Test = {
 	init() {
+
+		// setTimeout(() => window.find(`.toolbar-tool_[data-arg="freecell"]`).trigger("click"), 100);
+
 		return;
 		
 		// show alert dialog
