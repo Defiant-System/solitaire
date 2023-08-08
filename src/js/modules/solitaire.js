@@ -182,7 +182,7 @@ let solitaire = {
 					AUTO_COMPLETE = false;
 					if (!event.silent && !Self.board.hasClass("game-won")) {
 						// show alert dialog
-						window.dialog.alert("Can't autocomplete more&hellip;");
+						setTimeout(() => window.dialog.alert("Can't autocomplete more&hellip;"), 350);
 					}
 				}
 				break;

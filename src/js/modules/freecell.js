@@ -162,7 +162,7 @@ let freecell = {
 					AUTO_COMPLETE = false;
 					if (!event.silent) {
 						// show alert dialog
-						window.dialog.alert("Can't autocomplete more&hellip;");
+						setTimeout(() => window.dialog.alert("Can't autocomplete more&hellip;"), 350);
 					}
 				}
 				break;
