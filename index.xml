@@ -1,7 +1,7 @@
 <Application>
 	<Head>
 		<meta name="id" value="solitaire"/>
-		<meta name="title" value="Solitaire" version="3.35"/>
+		<meta name="title" value="Solitaire" version="3.36"/>
 		<meta name="author" value="Hakan Bilgin" namespace="ant"/>
 		<meta name="license" value="AGPL-3.0-or-later"/>
 		<meta name="repository" value="https://github.com/Defiant-System/solitaire"/>
