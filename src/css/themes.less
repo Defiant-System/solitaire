@@ -3,6 +3,45 @@
 	.win-body_ content.board {
 		&[data-theme="casino"] {
 			background: #453318 radial-gradient(circle at top center, rgba(#fca,.3), rgba(#000,.37));
+
+			.deck {
+				&:before {
+					background: rgba(#210,.15);
+					box-shadow: inset 0 0 0 1px rgba(#210,.35),
+								inset 0 1px 3px rgba(#210,.5),
+								inset 0 -1px 0 rgba(#fed,.25);
+				}
+			}
+
+			.hole {
+				background: linear-gradient(180deg, rgba(#210,.2), transparent);
+				color: rgba(#210,.15);
+
+				&:before {
+					border-color: rgba(#ba9,.5);
+				}
+
+				&:after {
+					box-shadow: inset 0 1px 3px rgba(#210,.5),
+								inset 0 -1px 0 rgba(#fed,.25);
+				}
+			}
+
+			.pile {
+				&:before {
+					background: rgba(#210,.15);
+					box-shadow: inset 0 1px 3px rgba(#210,.5),
+								inset 0 -1px 0 rgba(#fed,.25);
+				}
+
+				&:after {
+					border-color: #ba9;
+				}
+			}
+
+			.pile .card:not(.landing):after {
+				border-color: #ba9;
+			}
 		}
 	}
 }
@@ -11,6 +50,12 @@
 	.win-body_ content.board {
 		&[data-theme="casino"] {
 			background: #3a3665 radial-gradient(circle at top center, rgba(#ccf,.3), rgba(#000,.37));
+			
+			.hole {
+				&:before {
+					border-color: rgba(#aaf,.65);
+				}
+			}
 		}
 	}
 }
@@ -19,6 +64,36 @@
 	.win-body_ content.board {
 		&[data-theme="casino"] {
 			background: #226d0f radial-gradient(circle at top center, rgba(#cfc,.3), rgba(#000,.37));
+
+			.hole {
+				background: linear-gradient(180deg, rgba(#121,.2), transparent);
+				color: rgba(#121,.15);
+
+				&:before {
+					border-color: rgba(#aea,.35);
+				}
+
+				&:after {
+					box-shadow: inset 0 1px 3px rgba(#121,.5),
+								inset 0 -1px 0 rgba(#efe,.25);
+				}
+			}
+
+			.pile {
+				&:before {
+					background: rgba(#121,.15);
+					box-shadow: inset 0 1px 3px rgba(#121,.5),
+								inset 0 -1px 0 rgba(#efe,.35);
+				}
+
+				&:after {
+					border-color: #aea;
+				}
+			}
+
+			.pile .card:not(.landing):after {
+				border-color: #aea;
+			}
 		}
 	}
 }
@@ -26,7 +101,46 @@
 [data-ui="royale-purple"] {
 	.win-body_ content.board {
 		&[data-theme="casino"] {
-			background: #812288 radial-gradient(circle at top center, rgba(#ccf,.3), rgba(#000,.37));
+			background: #812288 radial-gradient(circle at top center, rgba(#fcf,.3), rgba(#000,.37));
+
+			.deck {
+				&:before {
+					background: rgba(#210,.15);
+					box-shadow: inset 0 0 0 1px rgba(#212,.35),
+								inset 0 1px 3px rgba(#212,.5),
+								inset 0 -1px 0 rgba(#fef,.25);
+				}
+			}
+
+			.hole {
+				background: linear-gradient(180deg, rgba(#515,.2), transparent);
+				color: rgba(#313,.15);
+
+				&:before {
+					border-color: rgba(#eae,.75);
+				}
+
+				&:after {
+					box-shadow: inset 0 1px 3px rgba(#212,.5),
+								inset 0 -1px 0 rgba(#fef,.25);
+				}
+			}
+
+			.pile {
+				&:before {
+					background: rgba(#212,.15);
+					box-shadow: inset 0 1px 3px rgba(#212,.5),
+								inset 0 -1px 0 rgba(#fef,.35);
+				}
+
+				&:after {
+					border-color: #eae;
+				}
+			}
+
+			.pile .card:not(.landing):after {
+				border-color: #eae;
+			}
 		}
 	}
 }
@@ -34,7 +148,50 @@
 [data-ui="royale-pink"] {
 	.win-body_ content.board {
 		&[data-theme="casino"] {
-			background: #d37fdb radial-gradient(circle at top center, rgba(#ffedfd,.3), rgba(#000,.37));
+			background: #e284eb radial-gradient(circle at top center, rgba(#fef,.5), transparent);
+
+			&:before {
+				opacity: .075;
+			}
+
+			.deck {
+				&:before {
+					background: rgba(#210,.15);
+					box-shadow: inset 0 0 0 1px rgba(#727,.35),
+								inset 0 1px 3px rgba(#727,.35),
+								inset 0 -1px 0 rgba(#fef,.75);
+				}
+			}
+
+			.hole {
+				background: linear-gradient(180deg, rgba(#929,.2), transparent);
+				color: rgba(#929,.1);
+
+				&:before {
+					border-color: #ffd7ff;
+				}
+
+				&:after {
+					box-shadow: inset 0 1px 3px rgba(#727,.35),
+								inset 0 -1px 0 rgba(#fef,.75);
+				}
+			}
+
+			.pile {
+				&:before {
+					background: rgba(#727,.15);
+					box-shadow: inset 0 1px 3px rgba(#212,.35),
+								inset 0 -1px 0 rgba(#fef,1);
+				}
+
+				&:after {
+					border-color: #ffd7ff;
+				}
+			}
+
+			.pile .card:not(.landing):after {
+				border-color: #ffd7ff;
+			}
 		}
 	}
 }
