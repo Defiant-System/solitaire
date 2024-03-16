@@ -32,22 +32,22 @@ let ENGINES = { solitaire, freecell, spider, yukon },
 
 // pgn = `Freecell
 // casino,red
-// 401:
-// 402:
-// 403:
-// 404:
+// 401:sA-S39
+// 402:hA-S0,h2-S1,h3-S2
+// 403:dA-S26
+// 404:cA-S13,c2-S14,c3-S15
 // 411:
 // 412:
 // 413:
 // 414:
-// 421:c8-S20,sA-S39,c7-S19,h10-S9,d9-S34,d8-S33,s4-S42
-// 422:h9-S8,s6-S44,h6-S5,d6-S31,cA-S13,sK-S51,d7-S32
-// 423:d10-S35,sQ-S50,d3-S28,d2-S27,c3-S15,h4-S3,hK-S12
-// 424:cJ-S23,s3-S41,s7-S45,c9-S21,cK-S25,cQ-S24,h5-S4
-// 425:c2-S14,h3-S2,s9-S47,dJ-S36,c5-S17,dK-S38
-// 426:s8-S46,dQ-S37,s2-S40,c4-S16,c10-S22,hJ-S10
-// 427:d5-S30,s10-S48,d4-S29,h7-S6,dA-S26,hQ-S11
-// 428:sJ-S49,h8-S7,hA-S0,c6-S18,h2-S1,s5-S43`;
+// 421:dK-S38,sQ-S50,dJ-S36,s10-S48,d9-S34,c8-S20,d7-S32,c6-S18,d5-S30,c4-S16
+// 422:cK-S25,hQ-S11,cJ-S23,d10-S35,s9-S47,d8-S33,s7-S45,h6-S5,c5-S17,d4-S29,s3-S41,d2-S27
+// 423:sK-S51,dQ-S37,sJ-S49,h10-S9,c9-S21,h8-S7,c7-S19,d6-S31,s5-S43,h4-S3
+// 424:hK-S12,cQ-S24,hJ-S10,c10-S22,h9-S8,s8-S46,h7-S6,s6-S44,h5-S4,s4-S42,d3-S28,s2-S40
+// 425:
+// 426:
+// 427:
+// 428:`;
 
 const app = {
 	init() {

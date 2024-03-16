@@ -8,9 +8,9 @@ class History {
 	push(data) {
 		this.index++;
 
-		this.setState.call({}, true, data);
 		this.stack.splice(this.index);
 		this.stack.push(data);
+		this.setState.call({}, true, data);
 	}
 
 	undo() {

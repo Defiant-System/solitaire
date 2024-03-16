@@ -109,13 +109,14 @@ let solitaire = {
 					// play sound
 					window.audio.play("shove-card");
 
+					// push move to undo stack
 					UNDO_STACK.push({
 							animation: "card-move",
 							cards: [el.data("id")],
 							from: fromEl.data("id"),
 							to: toEl.data("id"),
 							flip: last ? last.data("id") : false
-						});
+						})
 				}
 				break;
 			case "set-solitaire-waste":
